@@ -11,14 +11,14 @@ import priv.cdk.bomberman.room.Room;
 public class UserInterface{
 
     public final Game game;
-    private static long lastPressProcessed = System.currentTimeMillis();
+    private long lastPressProcessed = System.currentTimeMillis();
 
     public UserInterface(Game game) {
         this.game = game;
     }
 
     public void keyPressed(int pNumber ,int keyCode) {
-        if(game.getGameOver()){
+        if(game.isGameOver()){
             if(keyCode == 72){
                 game.startGame();
             }
@@ -97,7 +97,7 @@ public class UserInterface{
             case 72://H
                 room.suspendRoom();//房间暂停或开始
                 break;
-            case 71://H
+            case 71://G
                 room.reloadRoom();//跳关
                 break;
             case 49://1

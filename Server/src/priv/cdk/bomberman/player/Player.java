@@ -18,7 +18,7 @@ public class Player extends Biota {
 
     private final AtomicInteger bomNumber = new AtomicInteger();
     public int bomSize;
-    private int pressProcessed = 40;//移动速度
+    private int pressProcessed = 20;//移动速度
     private int moveInterval = 100;//移动间隔时间
     public final MoveThread moveThread = new MoveThread(this);
     public final AtomicBoolean canMoveThread = new AtomicBoolean(true);
@@ -58,7 +58,9 @@ public class Player extends Biota {
     //移动
     @Override
     public boolean move(int xPx,int yPx){
+//        System.out.println(name + "移动0");
         if(canMoveThread.get() && !isDie()) {
+
             boolean b = ! playerMoveOnce(xPx/3, yPx/3, false);
 
             if(b) {

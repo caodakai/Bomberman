@@ -1,5 +1,6 @@
 package priv.cdk.bomberman.server;
 
+import priv.cdk.bomberman.UserInterface;
 import priv.cdk.bomberman.game.Game;
 
 import java.net.InetAddress;
@@ -11,6 +12,8 @@ public class PlayerData {
     private String playerName;//玩家名称
 
     private Game game;//玩家所处游戏对象
+
+    private UserInterface userInterface;//玩家操作对象
 
     private InetAddress address;//连接集合
 
@@ -98,5 +101,13 @@ public class PlayerData {
 
     public void setTimer(Timer timer) {
         this.timer = timer;
+    }
+
+    public UserInterface getUserInterface() {
+        return userInterface;
+    }
+
+    public void setUserInterface(UserInterface userInterface) {
+        this.userInterface = userInterface;
     }
 }

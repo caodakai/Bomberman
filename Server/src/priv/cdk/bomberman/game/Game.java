@@ -44,17 +44,19 @@ public class Game {
      * 重新开始游戏
      */
     void reloadGame(){
-        this.customsPass = 1;
+        if(!stop.get()) {
+            this.customsPass = 1;
 
-        CopyOnWriteArrayList<Player> ps = this.room.ps;
+            CopyOnWriteArrayList<Player> ps = this.room.ps;
 
-        this.room = new Room(this, null);
+            this.room = new Room(this, null);
 
-        ps.forEach(player -> {
-            this.room.addPlayer(player.name);
-        });
-        this.score.set(0);
-        this.gameOver.set(false);
+            ps.forEach(player -> {
+                this.room.addPlayer(player.name);
+            });
+            this.score.set(0);
+            this.gameOver.set(false);
+        }
     }
 
     /**
@@ -72,26 +74,27 @@ public class Game {
      * 彻底关闭游戏
      */
     public void gameStop(){
-        room.closeRoom();//清除小怪
+       if(stop.compareAndSet(false, true)) {
+           room.closeRoom();//清除小怪
 
-        room.ps.forEach(player -> {
-            player.stop();
+           room.ps.forEach(player -> {
+               player.stop();
 
-            synchronized (player.moveThread) {
-                player.moveThread.notify();
-            }
-            synchronized (player.questionMarkThread) {
-                player.questionMarkThread.notify();
-            }
-        });
+               synchronized (player.moveThread) {
+                   player.moveThread.notify();
+               }
+               synchronized (player.questionMarkThread) {
+                   player.questionMarkThread.notify();
+               }
+           });
 
-        stop.set(true);
-        synchronized (gameOverThread) {
-            gameOverThread.notify();
-        }
+           synchronized (gameOverThread) {
+               gameOverThread.notify();
+           }
+       }
     }
 
-    public boolean getGameOver() {
+    public boolean isGameOver() {
         return gameOver.get();
     }
 
@@ -106,7 +109,8 @@ public class Game {
     }
 
     public void startGame(){
-        if(gameOver.get() && gameOverThread.isCanManualAwaken()){
+        if(gameOver.get() && gameOverThread.canManualAwaken.compareAndSet(true, false)){
+            System.out.println("重启");
             gameOverThread.interrupt();
         }
     }

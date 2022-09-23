@@ -52,7 +52,7 @@ public class InputData implements Serializable {
         });
 
         this.body = room.getBody();
-        this.gameOver = game.getGameOver();
+        this.gameOver = game.isGameOver();
         this.score = game.getScore();
         this.surplusCrittersSize = critters.size();
         this.customsPass = game.getCustomsPass();
@@ -82,7 +82,7 @@ public class InputData implements Serializable {
         });
 
         this.body = room.getBody();
-        this.gameOver = game.getGameOver();
+        this.gameOver = game.isGameOver();
         this.score = game.getScore();
         this.surplusCrittersSize = critters.size();
         this.customsPass = game.getCustomsPass();

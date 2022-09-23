@@ -43,7 +43,7 @@ public class RoomUtil {
                 if(room.getBodyCellValue(i,j) == 0){
                     int randomNumber = random.nextInt(blank);
                     if(randomNumber < size){
-                        room.addCritter(i,j,type);
+                        room.addCritter(j,i,type);
                     }
                 }
             }

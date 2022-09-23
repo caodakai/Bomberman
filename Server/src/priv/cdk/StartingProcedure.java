@@ -23,13 +23,13 @@ public class StartingProcedure extends JFrame {
     public static final int PORT = 2688;
     public static final int SEND_PORT = 3688;
 
-    public static final int maxPlayerNumber = 1;//最多多少人加入游戏
+    public static final int maxPlayerNumber = 2;//最多多少人加入游戏
 
     public static AtomicBoolean playerIsMax = new AtomicBoolean(false);//人数已达上限
     public final AtomicBoolean gameStop = new AtomicBoolean(false);//游戏关闭  最终指令
 
     //设置面板
-    private UserInterface userInterface;
+    private Game game;
 
     private final PlayerData[] playerData = new PlayerData[maxPlayerNumber];
 
@@ -111,13 +111,12 @@ public class StartingProcedure extends JFrame {
                             for (PlayerData datum : playerData) {
                                 players[datum.getNumber()] = datum.getPlayerName();
                             }
-                            Game game = new Game(players);
-
-                            userInterface = new UserInterface(game);
+                            game = new Game(players);
 
                             for (PlayerData datum : playerData) {
 
                                 datum.setGame(game);
+                                datum.setUserInterface(new UserInterface(game));
 
                                 createGame(datum.getNumber());
                             }
@@ -131,7 +130,7 @@ public class StartingProcedure extends JFrame {
                             System.out.println(playerDatum.getPlayerName() + "退出！");
                             break;
                         }
-                        userInterface.keyPressed(i, Integer.parseInt(data));
+                        playerDatum.getUserInterface().keyPressed(i, Integer.parseInt(data));
                     }
 
                     outString(s, "接收成功！");
