@@ -1,5 +1,7 @@
 package priv.cdk.bomberman;
 
+import priv.cdk.bomberman.charmander.Charmander;
+import priv.cdk.bomberman.charmander.CharmanderThread;
 import priv.cdk.bomberman.common.Common;
 import priv.cdk.bomberman.game.Game;
 import priv.cdk.bomberman.player.Player;
@@ -9,7 +11,6 @@ import priv.cdk.bomberman.room.Room;
  * 界面程序
  */
 public class UserInterface{
-
     public final Game game;
     private long lastPressProcessed = System.currentTimeMillis();
 
@@ -18,6 +19,9 @@ public class UserInterface{
     }
 
     public void keyPressed(int pNumber ,int keyCode) {
+        Room room = game.room;
+        Player player = room.ps.get(pNumber);
+
         if(game.isGameOver()){
             if(keyCode == 72){
                 game.startGame();
@@ -25,20 +29,17 @@ public class UserInterface{
             return;
         }
 
-        Room room = game.room;
-        Player player = room.ps.get(pNumber);
-
         if(player.isDie()){
             return;
         }
 
-        if(room.suspend.get()){//游戏暂停了
+        if(room.suspend.get() && !player.isMember()){//游戏暂停了
             if(keyCode != 72){//非按 H 开始 ，不继续运行
                 return;
             }
         }
 
-        if(System.currentTimeMillis() - lastPressProcessed > player.getMoveInterval()) {
+        if(System.currentTimeMillis() - lastPressProcessed >= player.getMoveInterval()) {
             //Do your work here...
             lastPressProcessed = System.currentTimeMillis();
         }else{
@@ -109,6 +110,8 @@ public class UserInterface{
             case 51://2
                 room.setBodyCellValue(player.getTy(), player.getLx(), Common.PROP_QUESTION_MARK);
                 break;
+            case 82://R
+                room.addCharmander(player.getLx(), player.getTy());
         }
     }
 

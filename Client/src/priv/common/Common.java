@@ -1,7 +1,6 @@
 package priv.common;
 
 import java.awt.*;
-import java.util.Objects;
 
 public class Common {
     public static final int interfaceStartX = 10;
@@ -39,10 +38,10 @@ public class Common {
     public static final Image fire2;
     public static final Image fire3;
 
-    public static final Image[] basicsCritter = new Image[4];
-    public static final Image[] basicsCritterDie = new Image[3];
-    public static final Image[] bossCritter = new Image[4];
-    public static final Image[] bossCritterDie = new Image[3];
+    public static final Image basicsCritter;
+    public static final Image basicsCritterDie;
+    public static final Image bossCritter;
+    public static final Image bossCritterDie;
 
     public static final Image prop;
     public static final Image door;
@@ -69,10 +68,10 @@ public class Common {
         second_stage_bom = defaultToolkit.getImage(commonClass.getResource("/bom/second_stage_bom.png"));
         third_stage_bom = defaultToolkit.getImage(commonClass.getResource("/bom/third_stage_bom.png"));
 
-        loader(commonClass,basicsCritter, "/critter/basics/basics_critter_");
-        loader(commonClass,basicsCritterDie, "/critter/basics/basics_critter_die_");
-        loader(commonClass,bossCritter, "/critter/boss/boss_critter_");
-        loader(commonClass,bossCritterDie, "/critter/boss/boss_critter_die_");
+        basicsCritter = defaultToolkit.getImage(commonClass.getResource("/critter/basics/basics_critter.png"));
+        basicsCritterDie = defaultToolkit.getImage(commonClass.getResource("/critter/basics/basics_critter_die.png"));
+        bossCritter = defaultToolkit.getImage(commonClass.getResource("/critter/boss/boss_critter.png"));
+        bossCritterDie = defaultToolkit.getImage(commonClass.getResource("/critter/boss/boss_critter_die.png"));
 
         prop = defaultToolkit.getImage(commonClass.getResource("/prop/prop.png"));
         door = defaultToolkit.getImage(commonClass.getResource("/prop/door.png"));
@@ -85,12 +84,5 @@ public class Common {
 
         charmander = defaultToolkit.getImage(commonClass.getResource("/charmander/charmander.png"));
     }
-
-    private static void loader(Class<Common> commonClass, Image[] images, String path){
-        for (int i = 0; i < images.length; i++) {
-            images[i] = defaultToolkit.getImage(commonClass.getResource(path + i + ".png"));
-        }
-    }
-
 
 }

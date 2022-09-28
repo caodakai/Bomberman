@@ -13,17 +13,19 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 public class Start extends JFrame {
+    private static final int connNumber = 1;
+
     public static boolean stop = false;
 
     private static UserInterface userInterface;
 
     public static void main(String[] args) {
-        String host = "192.168.1.26";
+        String host = "127.0.0.1";
         int post;
         try {
             Start start = new Start();
             int dataPort = 1;
-            for(int i=0; i<2; i++) {
+            for(int i=0; i < connNumber; i++) {
                 Socket so = new Socket(host, 2688);
 
                 outString(so, "当前用户ip:" + InetAddress.getLocalHost().getHostAddress());
@@ -95,7 +97,7 @@ public class Start extends JFrame {
         byte[] bs=new byte[10240];
         int len=0;
         try {
-            len=socket.getInputStream().read(bs);		//读取数据,异常则说明客户端突然关闭,则将本端口号设置成可连接状态
+            len=socket.getInputStream().read(bs);
         }catch(Exception e) {
             System.out.println("服务器关闭");
             stop = true;

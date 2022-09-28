@@ -25,7 +25,9 @@ public class QuestionMarkThread extends MyThread {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                questionMarkTime.addAndGet(-1);
+                if(!player.isMember()) {
+                    questionMarkTime.addAndGet(-1);
+                }
             }
 
             player.questionMark.set(false);

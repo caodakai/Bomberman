@@ -135,9 +135,28 @@ public abstract class Biota implements Movement {
     }
 
     /**
-     * 开始移动，记录移动后的坐标
+     * 开始移动，记录移动后的坐标。
+     * 修改目标状态
      */
     private boolean beganToMove(int y, int x){
+        switch (motorDirection) {
+            case NOT_MOVE:
+                break;
+            case TOP:
+                setState(getState() == 5 ? 4 : 5);
+                break;
+            case BOTTOM:
+                setState(getState() == 7 ? 6 : 7);
+                break;
+            case LEFT:
+                setState(getState() == 9 ? 8 : 9);
+                break;
+            case RIGHT:
+                setState(getState() == 11 ? 10 : 11);
+                break;
+        }
+
+
         if(!canMove(y,x)){
             return false;
         }else{

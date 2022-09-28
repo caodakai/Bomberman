@@ -1,11 +1,13 @@
 package priv.cdk.bomberman.data;
 
+import priv.cdk.bomberman.critter.BossCritter;
 import priv.cdk.bomberman.game.Game;
 import priv.cdk.bomberman.room.Room;
 
 import java.io.Serializable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class InputData implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -19,6 +21,7 @@ public class InputData implements Serializable {
 
     private Player[] players;
     private Critter[] critters;
+    private Charmander[] charmanders;
     private int[][] body;
     private boolean gameOver;
     private int score;//分数
@@ -29,33 +32,9 @@ public class InputData implements Serializable {
 
     public InputData(int pNumber, Game game){
         this.pNumber = pNumber;
-        Room room = game.room;
 
-        this.H = room.getH();
-        this.W = room.getW();
-        this.wSize = room.wSize;
-        this.hSize = room.hSize;
-
-        CopyOnWriteArrayList<priv.cdk.bomberman.player.Player> ps = room.ps;
-        players = new Player[ps.size()];
-        for (int i = 0; i < ps.size(); i++) {
-            players[i] = new Player(ps.get(i));
-        }
-
-        CopyOnWriteArraySet<priv.cdk.bomberman.critter.Critter> critters = room.critters;
-
-        this.critters = new Critter[critters.size()];
-
-        int i = 0;
-        critters.forEach(critter -> {
-            this.critters[i] = new Critter(critter);
-        });
-
-        this.body = room.getBody();
-        this.gameOver = game.isGameOver();
-        this.score = game.getScore();
-        this.surplusCrittersSize = critters.size();
-        this.customsPass = game.getCustomsPass();
+        this.players = new Player[game.room.ps.size()];
+        reload(game);
     }
 
 
@@ -69,17 +48,31 @@ public class InputData implements Serializable {
 
         CopyOnWriteArrayList<priv.cdk.bomberman.player.Player> ps = room.ps;
         for (int i = 0; i < ps.size(); i++) {
-            players[i].reload(ps.get(i));
+            if(players[i] == null){
+                players[i] = new Player(ps.get(i));
+            }else {
+                players[i].reload(ps.get(i));
+            }
         }
 
         CopyOnWriteArraySet<priv.cdk.bomberman.critter.Critter> critters = room.critters;
 
         this.critters = new Critter[critters.size()];
 
-        final int[] i = {0};
+        AtomicInteger i = new AtomicInteger();
         critters.forEach(critter -> {
-            this.critters[i[0]++] = new Critter(critter);
+            this.critters[i.getAndIncrement()] = new Critter(critter);
         });
+
+        CopyOnWriteArraySet<priv.cdk.bomberman.charmander.Charmander> charmanders = room.charmanders;
+
+        this.charmanders = new Charmander[charmanders.size()];
+
+        AtomicInteger j = new AtomicInteger();
+        charmanders.forEach(charmander -> {
+            this.charmanders[j.getAndIncrement()] = new Charmander( charmander );
+        });
+
 
         this.body = room.getBody();
         this.gameOver = game.isGameOver();
@@ -88,35 +81,15 @@ public class InputData implements Serializable {
         this.customsPass = game.getCustomsPass();
     }
 
-    public static class Player implements Serializable{
+    public static class BasicAttribute implements Serializable{
         private static final long serialVersionUID = 1L;
 
         private String name;
         private int actualX;//实际X坐标像素位置
         private int actualY;//实际Y坐标像素位置
-
         private int state;//状态
-        private boolean questionMark;//是否处于无敌状态
+
         private boolean die;//是否死亡
-        private int bomNumber;//炸弹数量
-        private int bomSize;//炸弹范围
-        private int questionMarkTime;//无敌时间
-
-        public Player(priv.cdk.bomberman.player.Player player){
-            reload(player);
-        }
-
-        public void reload(priv.cdk.bomberman.player.Player player){
-            this.name = player.name;
-            this.actualX = player.getActualX();
-            this.actualY = player.getActualY();
-            this.state = player.getState();
-            this.questionMark = player.isQuestionMark();
-            this.die = player.isDie();
-            this.bomNumber = player.getBomNumber();
-            this.bomSize = player.getBomSize();
-            this.questionMarkTime = player.questionMarkThread.getQuestionMarkTime();
-        }
 
         public String getName() {
             return name;
@@ -156,6 +129,32 @@ public class InputData implements Serializable {
 
         public void setDie(boolean die) {
             this.die = die;
+        }
+    }
+
+    public static class Player extends BasicAttribute implements Serializable{
+        private static final long serialVersionUID = 1L;
+
+        private boolean questionMark;//是否处于无敌状态
+        private int bomNumber;//炸弹数量
+        private int bomSize;//炸弹范围
+        private int questionMarkTime;//无敌时间
+
+        public Player(priv.cdk.bomberman.player.Player player){
+            reload(player);
+        }
+
+        public void reload(priv.cdk.bomberman.player.Player player){
+            this.setName(player.name);
+            this.setActualX(player.getActualX());
+            this.setActualY(player.getActualY());
+            this.setState(player.getState());
+            this.setDie(player.isDie());
+
+            this.questionMark = player.isQuestionMark();
+            this.bomNumber = player.getBomNumber();
+            this.bomSize = player.getBomSize();
+            this.questionMarkTime = player.questionMarkThread.getQuestionMarkTime();
         }
 
         public boolean isQuestionMark() {
@@ -191,63 +190,31 @@ public class InputData implements Serializable {
         }
     }
 
-    public static class Critter implements Serializable{
+    public static class Critter extends BasicAttribute implements Serializable{
         private static final long serialVersionUID = 1L;
 
-        private String name;
-        private int actualX;//实际X坐标像素位置
-        private int actualY;//实际Y坐标像素位置
-
-        private int state;//状态
-        private boolean die;//是否死亡
-
         public Critter(priv.cdk.bomberman.critter.Critter critter){
-            this.name = "";
-            this.actualX = critter.getActualX();
-            this.actualY = critter.getActualY();
-            this.state = critter.getState();
-            this.die = critter.isDie();
+
+            this.setName(critter instanceof BossCritter ? "Boss" : "");
+            this.setActualX(critter.getActualX());
+            this.setActualY(critter.getActualY());
+            this.setState(critter.getState());
+            this.setDie(critter.isDie());
         }
 
-        public String getName() {
-            return name;
+    }
+
+    public static class Charmander extends BasicAttribute implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        public Charmander(priv.cdk.bomberman.charmander.Charmander charmander) {
+            this.setName( "" );
+            this.setActualX(charmander.getActualX());
+            this.setActualY(charmander.getActualY());
+            this.setState(charmander.getState());
+            this.setDie(charmander.isDie());
         }
 
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getActualX() {
-            return actualX;
-        }
-
-        public void setActualX(int actualX) {
-            this.actualX = actualX;
-        }
-
-        public int getActualY() {
-            return actualY;
-        }
-
-        public void setActualY(int actualY) {
-            this.actualY = actualY;
-        }
-
-        public int getState() {
-            return state;
-        }
-
-        public void setState(int state) {
-            this.state = state;
-        }
-
-        public boolean isDie() {
-            return die;
-        }
-
-        public void setDie(boolean die) {
-            this.die = die;
-        }
     }
 
 
@@ -313,5 +280,13 @@ public class InputData implements Serializable {
 
     public void setCustomsPass(int customsPass) {
         this.customsPass = customsPass;
+    }
+
+    public Charmander[] getCharmanders() {
+        return charmanders;
+    }
+
+    public void setCharmanders(Charmander[] charmanders) {
+        this.charmanders = charmanders;
     }
 }

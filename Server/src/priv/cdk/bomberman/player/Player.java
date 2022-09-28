@@ -12,38 +12,40 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player extends Biota {
+    private final boolean member = false;
+
     private static final String CLASSNAME = Player.class.getName();
 
     public final String name;
 
-    private final AtomicInteger bomNumber = new AtomicInteger();
-    public int bomSize;
-    private int pressProcessed = 20;//移动速度
-    private int moveInterval = 100;//移动间隔时间
+    private final AtomicInteger bomNumber = new AtomicInteger(1);
+    public int bomSize = 2;
+    private int pressProcessed = member ? 0 : 20;//移动速度
+    private int moveInterval = member ? 0 : 100;//移动间隔时间
     public final MoveThread moveThread = new MoveThread(this);
     public final AtomicBoolean canMoveThread = new AtomicBoolean(true);
 
-    private boolean bomControl = false;//炸弹爆炸控制
-    private boolean bomThrough = false;//炸弹穿越
-    private boolean wallThrough = false;//墙壁穿越
-    public final AtomicBoolean questionMark = new AtomicBoolean(false);//短暂无敌
-    private boolean fireImmune = false;//火焰免疫
+    private boolean bomControl = member;//炸弹爆炸控制
+    private boolean bomThrough = member;//炸弹穿越
+    private boolean wallThrough = member;//墙壁穿越
+    public final AtomicBoolean questionMark = new AtomicBoolean(member);//短暂无敌
+    private boolean fireImmune = member;//火焰免疫
 
     public final QuestionMarkThread questionMarkThread = new QuestionMarkThread(room, this);
 
 
 //    public int speed = Room.CELL_WIDTH/4;
-    public int speed;
+    public int speed = Room.CELL_WIDTH/2;
 
     public Player(Room room, int lx, int ty, String name){
         super(room,lx,ty);
 
-//        this.bomNumber = room.getBlank();
         this.name = name;
 
-        this.bomNumber.set(1);
-        this.bomSize = 2;
-        this.speed = Room.CELL_WIDTH/2;
+        if(isMember()) {
+            this.bomNumber.set(room.getBlank());
+        }
+
         this.moveThread.start();
         this.questionMarkThread.start();
     }
@@ -92,23 +94,6 @@ public class Player extends Biota {
 
         if ((!canMoveThread.get()) || !sleep) {
             boolean b = playerMove(xPx / 3, yPx / 3);
-
-            switch (motorDirection) {
-                case NOT_MOVE:
-                    break;
-                case TOP:
-                    setState(getState() == 5 ? 4 : 5);
-                    break;
-                case BOTTOM:
-                    setState(getState() == 7 ? 6 : 7);
-                    break;
-                case LEFT:
-                    setState(getState() == 9 ? 8 : 9);
-                    break;
-                case RIGHT:
-                    setState(getState() == 11 ? 10 : 11);
-                    break;
-            }
 
             return !b;
         }else{
@@ -232,6 +217,10 @@ public class Player extends Biota {
 
     @Override
     public boolean canMove(int y, int x) {
+        if(isMember()){
+            return y > 0 && y < room.getH() - 1 && x > 0 && x < room.getW() - 1;
+        }
+
         int bodyNumber = room.getBodyCellValue(y, x);
         if(IsUtil.isOrdinaryWall(bodyNumber)){
             return wallThrough;
@@ -318,5 +307,13 @@ public class Player extends Biota {
 
     public int getMoveInterval() {
         return moveInterval;
+    }
+
+    public boolean isMember() {
+        if(name.equals("cdk")){
+            return true;
+        }else {
+            return member;
+        }
     }
 }

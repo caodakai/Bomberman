@@ -1,6 +1,8 @@
 package priv.cdk.bomberman.room;
 
 import priv.cdk.bomberman.Bom;
+import priv.cdk.bomberman.charmander.Charmander;
+import priv.cdk.bomberman.charmander.CharmanderThread;
 import priv.cdk.bomberman.common.Common;
 import priv.cdk.bomberman.critter.Critter;
 import priv.cdk.bomberman.critter.CritterThread;
@@ -11,6 +13,7 @@ import priv.cdk.bomberman.player.Player;
 import priv.cdk.bomberman.utils.IsUtil;
 import priv.cdk.bomberman.utils.RoomUtil;
 
+import javax.swing.plaf.PanelUI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -40,6 +43,7 @@ public class Room {
     private final Bom[][] bobs;
 
     public final CopyOnWriteArraySet<Critter> critters = new CopyOnWriteArraySet<>();
+    public final CopyOnWriteArraySet<Charmander> charmanders = new CopyOnWriteArraySet<>();
     public final CopyOnWriteArraySet<MyThread> threads = new CopyOnWriteArraySet<>();
 
     public Room(Game game, CopyOnWriteArrayList<Player> ps){
@@ -119,13 +123,13 @@ public class Room {
         //添加小怪
         int bossCritterNumber;
         if(customsPass > 3) {
-            bossCritterNumber = Math.min (blank/6 ,customsPass - 3);
+            bossCritterNumber = Math.min (blank/8 ,customsPass - 3);
             RoomUtil.randomCritterToBody(this, 1, bossCritterNumber);
         }else {
             bossCritterNumber = 0;
         }
 
-        int basicsCritterNumber = Math.max(0, customsPass * customsPass - bossCritterNumber);
+        int basicsCritterNumber = Math.min(blank/4, Math.max(0, customsPass * customsPass - bossCritterNumber));
         RoomUtil.randomCritterToBody(this, 0, basicsCritterNumber);
 
         //一个十字框
@@ -190,11 +194,11 @@ public class Room {
      * 清除火
      */
     public boolean destroyTheWall(int y, int x){
+        //不允许清除门
         if(body[y][x] == 3){
             new DestroyWallThread(this, y, x).start();
             return true;
-        }
-        return false;
+        }else return body[y][x] == Common.PROP_DOOR;
     }
 
     /**
@@ -236,7 +240,15 @@ public class Room {
         this.critters.add(critterThread.critter);//记录bom
     }
 
-
+    /**
+     * 添加小恐龙
+     */
+    public void addCharmander(int x, int y){
+        Charmander charmander = new Charmander(this, x, y);
+        CharmanderThread charmanderThread = new CharmanderThread(this, charmander);
+        charmanderThread.start();
+        this.charmanders.add(charmander);
+    }
 
 
 
@@ -414,6 +426,7 @@ public class Room {
     public void closeRoom(){
         if (close.compareAndSet(false, true)) {
             critters.forEach(Biota::die);
+            charmanders.forEach(Biota::die);
         }
     }
 

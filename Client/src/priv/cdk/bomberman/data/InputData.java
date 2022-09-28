@@ -14,6 +14,7 @@ public class InputData implements Serializable {
 
     private Player[] players;
     private Critter[] critters;
+    private Charmander[] charmanders;
     private int[][] body;
     private boolean gameOver;
     private int score;//分数
@@ -22,19 +23,15 @@ public class InputData implements Serializable {
 
     private int pNumber;//第几个玩家
 
-    public static class Player implements Serializable{
+    public static class BasicAttribute implements Serializable{
         private static final long serialVersionUID = 1L;
 
         private String name;
         private int actualX;//实际X坐标像素位置
         private int actualY;//实际Y坐标像素位置
-
         private int state;//状态
-        private boolean questionMark;//是否处于无敌状态
+
         private boolean die;//是否死亡
-        private int bomNumber;//炸弹数量
-        private int bomSize;//炸弹范围
-        private int questionMarkTime;//无敌时间
 
         public String getName() {
             return name;
@@ -75,6 +72,15 @@ public class InputData implements Serializable {
         public void setDie(boolean die) {
             this.die = die;
         }
+    }
+
+    public static class Player extends BasicAttribute implements Serializable{
+        private static final long serialVersionUID = 1L;
+
+        private boolean questionMark;//是否处于无敌状态
+        private int bomNumber;//炸弹数量
+        private int bomSize;//炸弹范围
+        private int questionMarkTime;//无敌时间
 
         public boolean isQuestionMark() {
             return questionMark;
@@ -109,55 +115,12 @@ public class InputData implements Serializable {
         }
     }
 
-    public static class Critter implements Serializable{
+    public static class Critter extends BasicAttribute implements Serializable{
         private static final long serialVersionUID = 1L;
+    }
 
-        private String name;
-        private int actualX;//实际X坐标像素位置
-        private int actualY;//实际Y坐标像素位置
-
-        private int state;//状态
-        private boolean isDie;//是否死亡
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getActualX() {
-            return actualX;
-        }
-
-        public void setActualX(int actualX) {
-            this.actualX = actualX;
-        }
-
-        public int getActualY() {
-            return actualY;
-        }
-
-        public void setActualY(int actualY) {
-            this.actualY = actualY;
-        }
-
-        public int getState() {
-            return state;
-        }
-
-        public void setState(int state) {
-            this.state = state;
-        }
-
-        public boolean isDie() {
-            return isDie;
-        }
-
-        public void setDie(boolean die) {
-            isDie = die;
-        }
+    public static class Charmander extends BasicAttribute implements Serializable {
+        private static final long serialVersionUID = 1L;
     }
 
 
@@ -223,5 +186,9 @@ public class InputData implements Serializable {
 
     public void setCustomsPass(int customsPass) {
         this.customsPass = customsPass;
+    }
+
+    public Charmander[] getCharmanders() {
+        return charmanders;
     }
 }

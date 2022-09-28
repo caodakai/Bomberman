@@ -239,47 +239,32 @@ public class UserInterface extends JPanel implements KeyListener {
         InputData.Player[] ps = inputData.getPlayers();
 
         for (InputData.Player player : ps) {
-            drawPlayer(g, player);
+            drawBiology(g, player, Common.playerDie, player.isQuestionMark() ? Common.player_question_mark : Common.player);
         }
 
         for (InputData.Critter critter : inputData.getCritters()) {
             if(critter != null){
-                Image img;
-                int die = 3;
-                int state = 4;
-                switch (critter.getState()){
-                    case 1:
-                        die --;
-                    case 2:
-                        die --;
-                    case 3:
-                        die --;
-                        if(critter.getName().equals("Boss")){
-                            img = Common.bossCritterDie[die];
-                        }else {
-                            img = Common.basicsCritterDie[die];
-                        }
-                        break;
-                    case 4:
-                        state--;
-                    case 5:
-                        state--;
-                    case 6:
-                        state--;
-                    case 7:
-                        state--;
-                        if(critter.getName().equals("Boss")){
-                            img = Common.bossCritter[state];
-                        }else {
-                            img = Common.basicsCritter[state];
-                        }
-                        break;
-                    default:
-                        img = null;
-                        break;
+                if(critter != null){
+                    Image dieImg;
+                    Image image;
+                    if(critter.getName().equals("Boss")){
+                        dieImg = Common.bossCritterDie;
+                        image = Common.bossCritter;
+                    }else{
+                        dieImg = Common.basicsCritterDie;
+                        image = Common.basicsCritter;
+                    }
+
+                    drawBiology(g, critter, dieImg, image);
                 }
-                g.drawImage(img, critter.getActualX(), critter.getActualY(),critter.getActualX() + inputData.CELL_WIDTH,critter.getActualY() + inputData.CELL_HEIGHT,
-                        0, 0, 40, 40, null);
+            }
+        }
+
+        InputData.Charmander[] charmanders = inputData.getCharmanders();
+
+        for (InputData.Charmander charmander : charmanders) {
+            if(charmander != null){
+                drawBiology(g, charmander, null, Common.charmander);
             }
         }
 
@@ -294,55 +279,55 @@ public class UserInterface extends JPanel implements KeyListener {
     /**
      * 绘制玩家
      */
-    public void drawPlayer(Graphics g, InputData.Player player){
-        int dx1 = player.getActualX();
-        int dy1 = player.getActualY();
+    public void drawBiology(Graphics g, InputData.BasicAttribute basicAttribute, Image dieImg, Image image){
+        int dx1 = basicAttribute.getActualX();
+        int dy1 = basicAttribute.getActualY();
         Image img;
         int dx2 = dx1 + inputData.CELL_WIDTH, dy2 = dy1 + inputData.CELL_HEIGHT;
         int sx1,sy1,sx2,sy2;
-        switch (player.getState()){
+        switch (basicAttribute.getState()){
             case 1:
-                img = Common.playerDie;
+                img = dieImg;
                 sx1 = 80;sy1 = 0;
                 break;
             case 2:
-                img = Common.playerDie;
+                img = dieImg;
                 sx1 = 40;sy1 = 0;
                 break;
             case 3:
-                img = Common.playerDie;
+                img = dieImg;
                 sx1 = 0;sy1 = 0;
                 break;
             case 4:
-                img = player.isQuestionMark() ? Common.player_question_mark : Common.player;
+                img = image;
                 sx1 = 80;sy1 = 0;
                 break;
             case 5:
-                img = player.isQuestionMark() ? Common.player_question_mark : Common.player;
+                img = image;
                 sx1 = 80;sy1 = 40;
                 break;
             case 6:
-                img = player.isQuestionMark() ? Common.player_question_mark : Common.player;
+                img = image;
                 sx1 = 80;sy1 = 120;
                 break;
             case 7:
-                img = player.isQuestionMark() ? Common.player_question_mark : Common.player;
+                img = image;
                 sx1 = 80;sy1 = 160;
                 break;
             case 8:
-                img = player.isQuestionMark() ? Common.player_question_mark : Common.player;
+                img = image;
                 sx1 = 0;sy1 = 80;
                 break;
             case 9:
-                img = player.isQuestionMark() ? Common.player_question_mark : Common.player;
+                img = image;
                 sx1 = 40;sy1 = 80;
                 break;
             case 10:
-                img = player.isQuestionMark() ? Common.player_question_mark : Common.player;
+                img = image;
                 sx1 = 120;sy1 = 80;
                 break;
             case 11:
-                img = player.isQuestionMark() ? Common.player_question_mark : Common.player;
+                img = image;
                 sx1 = 160;sy1 = 80;
                 break;
             default:
@@ -398,7 +383,20 @@ public class UserInterface extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
 //        System.out.println("按下了能输入内容的按键 : " + e.getKeyCode());
 
-        switch (e.getKeyCode()){
+        sockets.forEach(socket -> {
+            Start.outString(socket, e.getKeyCode() + "");
+        });
+
+        sockets.forEach(socket -> {
+            try {
+                String s = Start.inString(socket);
+            }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
+                System.out.println("服务器关闭！");
+                Start.stop = true;
+            }
+        });
+
+        /*switch (e.getKeyCode()){
             case 38:
             case 87://W
             case 37:
@@ -425,7 +423,7 @@ public class UserInterface extends JPanel implements KeyListener {
                 });
             default:
                 break;
-        }
+        }*/
     }
 
     /**

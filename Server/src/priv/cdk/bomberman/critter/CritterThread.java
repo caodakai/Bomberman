@@ -67,20 +67,6 @@ public class CritterThread extends MyThread {
             }else {
                 while (!critter.isDie()) {
                     boolean move = critter.move(tb, lr);
-                    switch (critter.getState()) {
-                        case 4:
-                            critter.setState(5);
-                            break;
-                        case 5:
-                            critter.setState(4);
-                            break;
-                        case 6:
-                            critter.setState(7);
-                            break;
-                        case 7:
-                            critter.setState(6);
-                            break;
-                    }
                     try {
                         mySleep(moveTime);
                         if (!move) {
