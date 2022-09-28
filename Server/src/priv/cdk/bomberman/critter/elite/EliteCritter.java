@@ -1,13 +1,14 @@
-package priv.cdk.bomberman.critter;
+package priv.cdk.bomberman.critter.elite;
 
 import priv.cdk.bomberman.common.Common;
 import priv.cdk.bomberman.common.MotorDirection;
+import priv.cdk.bomberman.critter.Critter;
 import priv.cdk.bomberman.room.Room;
 import priv.cdk.bomberman.utils.IsUtil;
 
-public class BossCritter extends Critter {
+public class EliteCritter extends Critter {
 
-    public BossCritter(Room room, int lx, int ty) {
+    public EliteCritter(Room room, int lx, int ty) {
         super(room, lx, ty);
         this.moveSize = Room.CELL_WIDTH/4;
         this.moveTime = 100;
@@ -197,11 +198,7 @@ public class BossCritter extends Critter {
     }
 
     @Override
-    public boolean die(){
-        boolean die = super.die();
-        if(die){
-            room.addScore(5 * room.getCustomsPass());
-        }
-        return die;
+    public int dieScore() {
+        return 5 * room.getCustomsPass();
     }
 }

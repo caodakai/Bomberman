@@ -1,5 +1,6 @@
-package priv.cdk.bomberman.critter;
+package priv.cdk.bomberman.critter.basic;
 
+import priv.cdk.bomberman.critter.Critter;
 import priv.cdk.bomberman.room.Room;
 import priv.cdk.bomberman.utils.IsUtil;
 
@@ -20,12 +21,9 @@ public class BasicsCritter extends Critter {
         return (!IsUtil.isWall(bodyNumber)) && (!IsUtil.isBom(bodyNumber));
     }
 
+
     @Override
-    public boolean die(){
-        boolean die = super.die();
-        if(die) {
-            room.addScore(room.getCustomsPass());
-        }
-        return die;
+    public int dieScore() {
+        return room.getCustomsPass();
     }
 }

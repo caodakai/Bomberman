@@ -1,8 +1,13 @@
 package priv.cdk.bomberman.utils;
 
+import priv.cdk.bomberman.critter.Critter;
+import priv.cdk.bomberman.parent.Biota;
+import priv.cdk.bomberman.parent.Movement;
 import priv.cdk.bomberman.room.Room;
 
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class RoomUtil {
     /**
@@ -71,5 +76,24 @@ public class RoomUtil {
         }
 
         room.addDoor(room.getH() - 2, room.getH() - 2);
+    }
+
+
+    /**
+     * 判断当前位置的对象死亡
+     * @param biota 需要死亡的对象
+     * @param riskX 危险坐标x
+     * @param riskY 危险坐标y
+     */
+    public static void toDetermineDeath(Biota biota, int riskX, int riskY){
+        if (!biota.isDie()) {
+            int x = biota.getActualX() - riskX;
+            int y = biota.getActualY() - riskY;
+
+            boolean b = (y >= 0 && y < Room.CELL_HEIGHT) || (y <= 0 && y > -Room.CELL_HEIGHT);
+            if ((x >= 0 && x < Room.CELL_WIDTH && b) || (x <= 0 && x > -Room.CELL_WIDTH && b)) {
+                biota.die();
+            }
+        }
     }
 }

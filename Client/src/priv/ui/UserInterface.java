@@ -15,12 +15,28 @@ import java.net.Socket;
  * 界面程序
  */
 public class UserInterface extends JPanel implements KeyListener {
+    private static final int showSize = 800;//查看的区域大小
+
+    private int showStartX = 0;
+    private int showStartY = 0;
+
     private final Socket socket;
 
     public InputData inputData;
 
     public UserInterface(Socket socket) {
         this.socket = socket;
+    }
+
+    //计算可视区域
+    public void calculateShow(){
+        int pNumber = inputData.getpNumber();
+        InputData.Player thisPlayer = inputData.getPlayers()[pNumber];
+        showStartX = Math.max(0, thisPlayer.getActualX() - showSize/2 - Common.interfaceStartX);
+        showStartY = Math.max(0, thisPlayer.getActualY() - showSize/2 - Common.interfaceStartY);
+
+        showStartX = Math.min(showStartX, Math.max(0, inputData.wSize  - showSize + Common.interfaceStartX));
+        showStartY = Math.min(showStartY, Math.max(0, inputData.hSize - showSize + Common.interfaceStartY));
     }
 
     public void paint(Graphics g) {
@@ -31,10 +47,16 @@ public class UserInterface extends JPanel implements KeyListener {
             return;
         }
 
+        calculateShow();
+
         for (int i = 0; i < inputData.H; i++) {
             for (int j = 0; j < inputData.W; j++) {
-                int dx1 = j * inputData.CELL_WIDTH + Common.interfaceStartX;
-                int dy1 = i * inputData.CELL_HEIGHT + Common.interfaceStartY;
+                int dx1 = j * inputData.CELL_WIDTH + Common.interfaceStartX - showStartX;
+                int dy1 = i * inputData.CELL_HEIGHT + Common.interfaceStartY - showStartY;
+                if(cannotDraw(dx1, dy1)){
+                    continue;
+                }
+
                 Image img;
                 int dx2 = dx1 + inputData.CELL_WIDTH, dy2 = dy1 + inputData.CELL_HEIGHT;
                 int sx1,sy1,sx2,sy2;
@@ -240,9 +262,9 @@ public class UserInterface extends JPanel implements KeyListener {
             if(critter != null){
                 Image dieImg;
                 Image image;
-                if(critter.getName().equals("Boss")){
-                    dieImg = Common.bossCritterDie;
-                    image = Common.bossCritter;
+                if(critter.getName().equals("Elite")){
+                    dieImg = Common.eliteCritterDie;
+                    image = Common.eliteCritter;
                 }else{
                     dieImg = Common.basicsCritterDie;
                     image = Common.basicsCritter;
@@ -261,7 +283,7 @@ public class UserInterface extends JPanel implements KeyListener {
         }
 
         if(inputData.isGameOver()){
-            g.drawImage(Common.gameOver, Common.interfaceStartX - 1, Common.interfaceStartY - 1,Common.interfaceStartX + inputData.wSize + 2,Common.interfaceStartY + inputData.hSize + 2,
+            g.drawImage(Common.gameOver, Common.interfaceStartX - 1, Common.interfaceStartY - 1,Common.interfaceStartX + showSize + 2,Common.interfaceStartY + showSize + 2,
                     0, 0, 802, 802, null);
         }
 
@@ -272,8 +294,13 @@ public class UserInterface extends JPanel implements KeyListener {
      * 绘制玩家
      */
     public void drawBiology(Graphics g, InputData.BasicAttribute basicAttribute, Image dieImg, Image image){
-        int dx1 = basicAttribute.getActualX();
-        int dy1 = basicAttribute.getActualY();
+        int dx1 = basicAttribute.getActualX() - showStartX;
+        int dy1 = basicAttribute.getActualY() - showStartY;
+
+        if(cannotDraw(dx1, dy1)){
+            return;
+        }
+
         Image img;
         int dx2 = dx1 + inputData.CELL_WIDTH, dy2 = dy1 + inputData.CELL_HEIGHT;
         int sx1,sy1,sx2,sy2;
@@ -341,7 +368,7 @@ public class UserInterface extends JPanel implements KeyListener {
      * 绘制右侧属性面板
      */
     private void drawProperty(Graphics g, InputData.Player[] ps){
-        int x = Common.interfaceStartX + inputData.wSize + 2 + inputData.CELL_WIDTH * 2;
+        int x = Common.interfaceStartX + showSize + 2 + inputData.CELL_WIDTH * 2;
 
         g.setColor(Color.black);
         g.drawRect(x, Common.interfaceStartY, 100, inputData.hSize);//框
@@ -366,6 +393,14 @@ public class UserInterface extends JPanel implements KeyListener {
         }
     }
 
+
+    public boolean cannotDraw(int dx1, int dy1){
+        return dx1 < Common.interfaceStartX || dx1 > showSize - inputData.CELL_WIDTH || dy1 < Common.interfaceStartY || dy1 > showSize - inputData.CELL_HEIGHT;
+    }
+
+
+
+
     @Override
     public void keyTyped(KeyEvent e) {
 //        System.out.println("按下了能输入内容的按键 : " + e.getKeyCode());
@@ -375,7 +410,16 @@ public class UserInterface extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
 //        System.out.println("按下了能输入内容的按键 : " + e.getKeyCode());
 
-        switch (e.getKeyCode()){
+        Start.outString(socket, e.getKeyCode() + "");
+
+        try {
+            String s = Start.inString(socket);
+        }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
+            System.out.println("服务器关闭！");
+            Start.stop = true;
+        }
+
+        /*switch (e.getKeyCode()){
             case 38:
             case 87://W
             case 37:
@@ -397,7 +441,7 @@ public class UserInterface extends JPanel implements KeyListener {
                 }
             default:
                 break;
-        }
+        }*/
     }
 
     /**
@@ -407,8 +451,6 @@ public class UserInterface extends JPanel implements KeyListener {
     public void keyReleased(KeyEvent e) {
 
     }
-
-
 
 
 

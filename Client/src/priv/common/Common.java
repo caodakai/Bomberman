@@ -40,8 +40,9 @@ public class Common {
 
     public static final Image basicsCritter;
     public static final Image basicsCritterDie;
-    public static final Image bossCritter;
-    public static final Image bossCritterDie;
+    public static final Image eliteCritter;
+    public static final Image eliteCritterDie;
+    public static final Image knightCritter;
 
     public static final Image prop;
     public static final Image door;
@@ -70,8 +71,9 @@ public class Common {
 
         basicsCritter = defaultToolkit.getImage(commonClass.getResource("/critter/basics/basics_critter.png"));
         basicsCritterDie = defaultToolkit.getImage(commonClass.getResource("/critter/basics/basics_critter_die.png"));
-        bossCritter = defaultToolkit.getImage(commonClass.getResource("/critter/boss/boss_critter.png"));
-        bossCritterDie = defaultToolkit.getImage(commonClass.getResource("/critter/boss/boss_critter_die.png"));
+        eliteCritter = defaultToolkit.getImage(commonClass.getResource("/critter/elite/elite_critter.png"));
+        eliteCritterDie = defaultToolkit.getImage(commonClass.getResource("/critter/elite/elite_critter_die.png"));
+        knightCritter = defaultToolkit.getImage(commonClass.getResource("/critter/knight/knight_critter.png"));
 
         prop = defaultToolkit.getImage(commonClass.getResource("/prop/prop.png"));
         door = defaultToolkit.getImage(commonClass.getResource("/prop/door.png"));

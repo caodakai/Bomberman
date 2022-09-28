@@ -2,8 +2,9 @@ package priv.cdk.bomberman.critter;
 
 import priv.cdk.bomberman.parent.Biota;
 import priv.cdk.bomberman.room.Room;
+import priv.cdk.bomberman.utils.RoomUtil;
 
-public abstract class Critter extends Biota {
+public abstract class Critter extends Biota implements CritterDie{
     public int moveSize;
     public int moveTime;
 
@@ -19,20 +20,21 @@ public abstract class Critter extends Biota {
             if(move){
                 //监听玩家死亡
                 room.ps.forEach(player -> {
-                    if(!player.isDie()) {
-                        int x = player.getActualX() - getActualX();
-                        int y = player.getActualY() - getActualY();
-
-                        boolean b = (y >= 0 && y < Room.CELL_HEIGHT) || (y <= 0 && y > -Room.CELL_HEIGHT);
-                        if ((x >= 0 && x < Room.CELL_WIDTH && b) || (x <= 0 && x > -Room.CELL_WIDTH && b)) {
-                            player.die();
-                        }
-                    }
+                    RoomUtil.toDetermineDeath(player, getActualX(), getActualY());
                 });
             }
             return move;
         }else {
             return false;
         }
+    }
+
+    @Override
+    public boolean die(){
+        boolean die = super.die();
+        if(die) {
+            room.addScore( dieScore() );
+        }
+        return die;
     }
 }

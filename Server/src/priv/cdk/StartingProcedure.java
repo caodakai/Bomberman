@@ -23,7 +23,7 @@ public class StartingProcedure extends JFrame {
     public static final int PORT = 2688;
     public static final int SEND_PORT = 3688;
 
-    public static final int maxPlayerNumber = 1;//最多多少人加入游戏
+    public static final int maxPlayerNumber = 2;//最多多少人加入游戏
 
     public static AtomicBoolean playerIsMax = new AtomicBoolean(false);//人数已达上限
     public final AtomicBoolean gameStop = new AtomicBoolean(false);//游戏关闭  最终指令

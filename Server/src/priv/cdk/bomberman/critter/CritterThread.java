@@ -1,5 +1,7 @@
 package priv.cdk.bomberman.critter;
 
+import priv.cdk.bomberman.critter.basic.BasicsCritter;
+import priv.cdk.bomberman.critter.elite.EliteCritter;
 import priv.cdk.bomberman.parent.MyThread;
 import priv.cdk.bomberman.room.Room;
 import priv.cdk.bomberman.utils.IsUtil;
@@ -12,13 +14,13 @@ public class CritterThread extends MyThread {
 
     /**
      *
-     * @param type  0：普通  1： boss
+     * @param type  0：普通  1： elite
      */
     public CritterThread(Room room, int lx, int ty, int type){
         super(room);
 
         if (type == 1) {
-            critter = new BossCritter(room, lx, ty);
+            critter = new EliteCritter(room, lx, ty);
         } else {
             critter = new BasicsCritter(room, lx, ty);
         }
@@ -73,7 +75,7 @@ public class CritterThread extends MyThread {
                             break;
                         } else {
                             if (critter.getTy() == critter.getBy() && critter.getLx() == critter.getRx()) {//路过路口时，有20%概率会重新寻路
-                                if(critter instanceof BossCritter) {
+                                if(critter instanceof EliteCritter) {
                                     int futureBodyNumber = critter.room.futureBody[critter.getTy()][critter.getLx()];
                                     if (!IsUtil.isFutureBodyFire(futureBodyNumber)) {//不在火中，那么随机转向
                                         if (random.nextInt(5) == 0) {

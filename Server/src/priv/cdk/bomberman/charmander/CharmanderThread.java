@@ -9,9 +9,8 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 未定义 ，待开发
+ * 小火龙移动线程，自动追踪小怪,不包括骑士
  */
-//Todo
 public class CharmanderThread extends MyThread {
     private final Charmander charmander;
 

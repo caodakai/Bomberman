@@ -1,6 +1,6 @@
 package priv.cdk.bomberman.data;
 
-import priv.cdk.bomberman.critter.BossCritter;
+import priv.cdk.bomberman.critter.elite.EliteCritter;
 import priv.cdk.bomberman.game.Game;
 import priv.cdk.bomberman.room.Room;
 
@@ -195,7 +195,7 @@ public class InputData implements Serializable {
 
         public Critter(priv.cdk.bomberman.critter.Critter critter){
 
-            this.setName(critter instanceof BossCritter ? "Boss" : "");
+            this.setName(critter instanceof EliteCritter ? "Elite" : "");
             this.setActualX(critter.getActualX());
             this.setActualY(critter.getActualY());
             this.setState(critter.getState());

@@ -21,10 +21,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Room {
-    public static final int CELL_WIDTH = 20;
-    public static final int CELL_HEIGHT = 20;
-    private int w = 41;
-    private int h = w;
+    public static final int CELL_WIDTH = 30;
+    public static final int CELL_HEIGHT = 30;
+    private int w;
+    private int h;
     private int blank;//所有空白格的数量
 
     public final int wSize;
@@ -114,22 +114,22 @@ public class Room {
         //随机添加门
         RoomUtil.randomAddDoor(this);
 
-        //创建boss body对象
+        //创建elite body对象
         futureBody = new int[h][w];
         for (int i = 0; i < body.length; i++) {
             System.arraycopy(body[i], 0, futureBody[i], 0, body[i].length);
         }
 
         //添加小怪
-        int bossCritterNumber;
+        int eliteCritterNumber;
         if(customsPass > 3) {
-            bossCritterNumber = Math.min (blank/8 ,customsPass - 3);
-            RoomUtil.randomCritterToBody(this, 1, bossCritterNumber);
+            eliteCritterNumber = Math.min (blank/8 ,customsPass - 3);
+            RoomUtil.randomCritterToBody(this, 1, eliteCritterNumber);
         }else {
-            bossCritterNumber = 0;
+            eliteCritterNumber = 0;
         }
 
-        int basicsCritterNumber = Math.min(blank/4, Math.max(0, customsPass * customsPass - bossCritterNumber));
+        int basicsCritterNumber = Math.min(blank/4, Math.max(0, customsPass * customsPass - eliteCritterNumber));
         RoomUtil.randomCritterToBody(this, 0, basicsCritterNumber);
 
         //一个十字框

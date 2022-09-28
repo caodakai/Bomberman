@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player extends Biota {
-    private final boolean member = false;
+    private final boolean member = true;
 
     private static final String CLASSNAME = Player.class.getName();
 
