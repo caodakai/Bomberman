@@ -11,7 +11,7 @@ public class BasicsCritter extends Critter {
 
     public BasicsCritter(Room room, int lx, int ty) {
         super(room, lx, ty);
-        this.moveSize = Room.CELL_WIDTH/6;
+        this.moveSize = Room.CELL_WIDTH/5;
         this.moveTime = 200;
     }
 

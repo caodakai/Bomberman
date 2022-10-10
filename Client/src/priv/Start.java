@@ -19,7 +19,7 @@ public class Start extends JFrame {
     private static UserInterface userInterface;
 
     public static void main(String[] args) {
-        String host = "192.168.1.46";
+        String host = "192.168.1.80";
         int post;
         try {
             Socket so = new Socket(host, 2688);

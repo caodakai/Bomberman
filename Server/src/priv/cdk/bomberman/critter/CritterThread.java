@@ -1,6 +1,7 @@
 package priv.cdk.bomberman.critter;
 
 import priv.cdk.bomberman.critter.basic.BasicsCritter;
+import priv.cdk.bomberman.critter.dragon.DragonCritter;
 import priv.cdk.bomberman.critter.elite.EliteCritter;
 import priv.cdk.bomberman.parent.MyThread;
 import priv.cdk.bomberman.room.Room;
@@ -14,15 +15,17 @@ public class CritterThread extends MyThread {
 
     /**
      *
-     * @param type  0：普通  1： elite
+     * @param type  0：普通  1： elite  3: dragon
      */
     public CritterThread(Room room, int lx, int ty, int type){
         super(room);
 
-        if (type == 1) {
-            critter = new EliteCritter(room, lx, ty);
-        } else {
+        if (type == 0) {
             critter = new BasicsCritter(room, lx, ty);
+        } else if (type == 1){
+            critter = new EliteCritter(room, lx, ty);
+        }else {
+            critter = new DragonCritter(room, lx, ty);
         }
     }
 
@@ -34,31 +37,10 @@ public class CritterThread extends MyThread {
         while (!critter.isDie()) {
             int i = random.nextInt(4);
 
-            int number = randomMove(i, i);
+            int number = CritterThreadUtil.randomMove(critter, i, i);
 
-            int tb, lr;
-            switch (number) {
-                case 0:
-                    tb = - moveSize;
-                    lr = 0;
-                    break;
-                case 1:
-                    tb = moveSize;
-                    lr = 0;
-                    break;
-                case 2:
-                    tb = 0;
-                    lr = - moveSize;
-                    break;
-                case 3:
-                    tb = 0;
-                    lr = moveSize;
-                    break;
-                default:
-                    tb = 0;
-                    lr = 0;
-                    break;
-            }
+            int[] ints = CritterThreadUtil.movePx(number, moveSize);
+            int tb = ints[0], lr = ints[1];
 
             if(number > 3){
                 try {
@@ -100,55 +82,6 @@ public class CritterThread extends MyThread {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * 随机移动，如果随机的路线不可走，那么依次判断路口
-     */
-    public int randomMove(int startNumber, int number){
-
-        int tb, lr;
-        switch (number) {
-            case 0:
-                critter.setState(7);
-                tb = - critter.moveSize;
-                lr = 0;
-                break;
-            case 1:
-                critter.setState(4);
-                tb = critter.moveSize;
-                lr = 0;
-                break;
-            case 2:
-                critter.setState(5);
-                tb = 0;
-                lr = - critter.moveSize;
-                break;
-            case 3:
-                critter.setState(6);
-                tb = 0;
-                lr = critter.moveSize;
-                break;
-            default:
-                tb = 0;
-                lr = 0;
-                break;
-        }
-
-        if(!critter.isDie()){
-            boolean move = critter.move(tb, lr);
-            if(!move){
-                if(startNumber == (number == 3 ? 0 : (number + 1))){
-                    return 5;//全没找到
-                }else{
-                    return randomMove(startNumber, (number == 3 ? 0 : (number + 1)));
-                }
-            }else{
-                return number;
-            }
-        }else {
-            return 4;//已经死亡
         }
     }
 }

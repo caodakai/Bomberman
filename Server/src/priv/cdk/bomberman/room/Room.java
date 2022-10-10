@@ -6,25 +6,28 @@ import priv.cdk.bomberman.charmander.CharmanderThread;
 import priv.cdk.bomberman.common.Common;
 import priv.cdk.bomberman.critter.Critter;
 import priv.cdk.bomberman.critter.CritterThread;
+import priv.cdk.bomberman.critter.knight.Knight1Thread;
+import priv.cdk.bomberman.critter.knight.KnightCritter;
 import priv.cdk.bomberman.game.Game;
 import priv.cdk.bomberman.parent.Biota;
+import priv.cdk.bomberman.parent.BiotaUtil;
 import priv.cdk.bomberman.parent.MyThread;
 import priv.cdk.bomberman.player.Player;
 import priv.cdk.bomberman.utils.IsUtil;
 import priv.cdk.bomberman.utils.RoomUtil;
 
-import javax.swing.plaf.PanelUI;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Room {
-    public static final int CELL_WIDTH = 30;
-    public static final int CELL_HEIGHT = 30;
-    private int w;
-    private int h;
+    public static final int CELL_WIDTH = 40;
+    public static final int CELL_HEIGHT = 40;
+    private final int w;
+    private final int h;
     private int blank;//所有空白格的数量
 
     public final int wSize;
@@ -120,17 +123,7 @@ public class Room {
             System.arraycopy(body[i], 0, futureBody[i], 0, body[i].length);
         }
 
-        //添加小怪
-        int eliteCritterNumber;
-        if(customsPass > 3) {
-            eliteCritterNumber = Math.min (blank/8 ,customsPass - 3);
-            RoomUtil.randomCritterToBody(this, 1, eliteCritterNumber);
-        }else {
-            eliteCritterNumber = 0;
-        }
-
-        int basicsCritterNumber = Math.min(blank/4, Math.max(0, customsPass * customsPass - eliteCritterNumber));
-        RoomUtil.randomCritterToBody(this, 0, basicsCritterNumber);
+        addCritterAll(customsPass);//添加小怪
 
         //一个十字框
         /*
@@ -160,6 +153,33 @@ public class Room {
 
 
 
+    }
+
+
+    private void addCritterAll(int customsPass){
+        //添加小怪
+
+        if(customsPass % 5 != 0) {
+            int eliteCritterNumber;
+            if (customsPass > 3) {
+                eliteCritterNumber = Math.min(blank / 8, customsPass - 3);
+                RoomUtil.randomCritterToBody(this, 1, eliteCritterNumber);
+            } else {
+                eliteCritterNumber = 0;
+            }
+
+            int basicsCritterNumber = Math.min(blank / 4, Math.max(0, customsPass * customsPass - eliteCritterNumber));
+            RoomUtil.randomCritterToBody(this, 0, basicsCritterNumber);
+
+            if (new Random().nextInt( Math.max(1,20/customsPass) ) == 0) {//有概率出现两条龙
+                RoomUtil.randomCritterToBody(this, 3, 2);
+            }
+        }else{
+            int knightCritterNumber = Math.min(blank/16, customsPass/5);
+            int dragonCritterNumber = Math.min(blank/8, customsPass/5 * 2);
+            RoomUtil.randomCritterToBody(this, 2, knightCritterNumber);
+            RoomUtil.randomCritterToBody(this, 3, dragonCritterNumber);
+        }
     }
 
     //实际像素坐标
@@ -207,7 +227,20 @@ public class Room {
     public boolean destroyTheWallAndPlayer(int y, int x){
         playerDie(y, x);
 
-        return destroyTheWall(y, x);
+        AtomicBoolean b = new AtomicBoolean(destroyTheWall(y, x));
+
+        critters.forEach(critter -> {//监听位置是否有骑士，且生命值高于1，如果有，那么火停止蔓延
+            if (critter instanceof KnightCritter) {
+                KnightCritter knightCritter = (KnightCritter) critter;
+                if (knightCritter.getHP() > 1){
+                    if (BiotaUtil.haveBiota(knightCritter, x, y)) {
+                        b.set(true);
+                    }
+                }
+            }
+        });
+
+        return b.get();
     }
 
     public boolean addBom(int x, int y, Bom bom){
@@ -235,9 +268,20 @@ public class Room {
      * 添加小怪
      */
     public void addCritter(int x, int y, int type){
-        CritterThread critterThread = new CritterThread(this, x, y, type);
-        critterThread.start();
-        this.critters.add(critterThread.critter);//记录bom
+        Critter critter;
+
+        if(type == 0 || type == 1 || type == 3) {
+            CritterThread critterThread = new CritterThread(this, x, y, type);
+            critterThread.start();
+
+            critter = critterThread.critter;
+//        }else if (type == 2){
+        }else{
+            critter = new KnightCritter(this, x, y);
+            Knight1Thread knight1Thread = new Knight1Thread(this, (KnightCritter) critter);
+            knight1Thread.start();
+        }
+        this.critters.add(critter);//记录bom
     }
 
     /**

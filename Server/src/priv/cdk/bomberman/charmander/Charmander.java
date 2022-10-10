@@ -32,8 +32,11 @@ public class Charmander extends Biota {
     @Override
     public boolean canMove(int y, int x) {
         int bodyNumber = room.getBodyCellValue(y, x);
-        return (!IsUtil.isWall(bodyNumber)) && (!IsUtil.isBom(bodyNumber));
+        return canMove(bodyNumber);
     }
 
+    public boolean canMove(int bodyNumber){
+        return (!IsUtil.isWall(bodyNumber)) && (!IsUtil.isBom(bodyNumber));
+    }
 
 }

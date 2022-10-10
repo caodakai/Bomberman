@@ -6,12 +6,15 @@ import priv.cdk.bomberman.critter.Critter;
 import priv.cdk.bomberman.room.Room;
 import priv.cdk.bomberman.utils.IsUtil;
 
+/**
+ * 精英怪类，会自动躲避炸弹。
+ */
 public class EliteCritter extends Critter {
 
     public EliteCritter(Room room, int lx, int ty) {
         super(room, lx, ty);
-        this.moveSize = Room.CELL_WIDTH/4;
-        this.moveTime = 100;
+        this.moveSize = Room.CELL_WIDTH/8;
+        this.moveTime = 200;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class EliteCritter extends Critter {
         return false;
     }
 
-    private boolean canMove1(int bodyNumber){
+    protected boolean canMove1(int bodyNumber){
 //        return !Room.isSpecialWall(bodyNumber) && !Bom.isBom(bodyNumber) && !Bom.isFire(bodyNumber);
         return !IsUtil.isWall(bodyNumber) && !IsUtil.isBom(bodyNumber) && !IsUtil.isFire(bodyNumber);
     }

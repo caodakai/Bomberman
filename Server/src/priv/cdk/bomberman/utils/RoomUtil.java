@@ -43,12 +43,20 @@ public class RoomUtil {
     public static void randomCritterToBody(Room room, int type, int size){
         Random random = new Random();
         int blank = room.getBlank();
-        for (int i=5; i < room.getH() - 1; i++){
-            for (int j=5; j< room.getW() - 1; j++) {
-                if(room.getBodyCellValue(i,j) == 0){
-                    int randomNumber = random.nextInt(blank);
-                    if(randomNumber < size){
-                        room.addCritter(j,i,type);
+        int addSize = 0;
+        while (addSize < size) {
+            for (int i = 5; i < room.getH() - 1; i++) {
+                for (int j = 5; j < room.getW() - 1; j++) {
+                    if (room.getBodyCellValue(i, j) == 0) {
+                        int randomNumber = random.nextInt(blank);
+                        if (randomNumber < size) {
+                            room.addCritter(j, i, type);
+                            addSize ++;
+
+                            if (addSize >= size){
+                                return;
+                            }
+                        }
                     }
                 }
             }

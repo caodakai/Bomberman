@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player extends Biota {
-    private final boolean member = true;
+    private final boolean member = false;//会员
 
     private static final String CLASSNAME = Player.class.getName();
 
@@ -28,7 +28,7 @@ public class Player extends Biota {
     private boolean bomControl = member;//炸弹爆炸控制
     private boolean bomThrough = member;//炸弹穿越
     private boolean wallThrough = member;//墙壁穿越
-    public final AtomicBoolean questionMark = new AtomicBoolean(member);//短暂无敌
+    public final AtomicBoolean questionMark = new AtomicBoolean(true);//短暂无敌
     private boolean fireImmune = member;//火焰免疫
 
     public final QuestionMarkThread questionMarkThread = new QuestionMarkThread(room, this);

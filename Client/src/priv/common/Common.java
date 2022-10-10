@@ -39,10 +39,11 @@ public class Common {
     public static final Image fire3;
 
     public static final Image basicsCritter;
-    public static final Image basicsCritterDie;
     public static final Image eliteCritter;
-    public static final Image eliteCritterDie;
-    public static final Image knightCritter;
+    public static final Image knightCritter1;
+    public static final Image knightCritter2;
+    public static final Image dragonCritter1;
+    public static final Image dragonCritter2;
 
     public static final Image prop;
     public static final Image door;
@@ -51,7 +52,6 @@ public class Common {
 
     public static final Image player;
     public static final Image player_question_mark;
-    public static final Image playerDie;
 
     public static final Image charmander;
 
@@ -70,10 +70,11 @@ public class Common {
         third_stage_bom = defaultToolkit.getImage(commonClass.getResource("/bom/third_stage_bom.png"));
 
         basicsCritter = defaultToolkit.getImage(commonClass.getResource("/critter/basics/basics_critter.png"));
-        basicsCritterDie = defaultToolkit.getImage(commonClass.getResource("/critter/basics/basics_critter_die.png"));
         eliteCritter = defaultToolkit.getImage(commonClass.getResource("/critter/elite/elite_critter.png"));
-        eliteCritterDie = defaultToolkit.getImage(commonClass.getResource("/critter/elite/elite_critter_die.png"));
-        knightCritter = defaultToolkit.getImage(commonClass.getResource("/critter/knight/knight_critter.png"));
+        knightCritter1 = defaultToolkit.getImage(commonClass.getResource("/critter/knight/knight_critter_1.png"));
+        knightCritter2 = defaultToolkit.getImage(commonClass.getResource("/critter/knight/knight_critter_2.png"));
+        dragonCritter1 = defaultToolkit.getImage(commonClass.getResource("/critter/dragon/dragon_critter_1.png"));
+        dragonCritter2 = defaultToolkit.getImage(commonClass.getResource("/critter/dragon/dragon_critter_2.png"));
 
         prop = defaultToolkit.getImage(commonClass.getResource("/prop/prop.png"));
         door = defaultToolkit.getImage(commonClass.getResource("/prop/door.png"));
@@ -82,7 +83,6 @@ public class Common {
 
         player = defaultToolkit.getImage(commonClass.getResource("/player/player.png"));
         player_question_mark = defaultToolkit.getImage(commonClass.getResource("/player/player_question_mark.png"));
-        playerDie = defaultToolkit.getImage(commonClass.getResource("/player/player_die.png"));
 
         charmander = defaultToolkit.getImage(commonClass.getResource("/charmander/charmander.png"));
     }

@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 界面程序
@@ -20,12 +22,18 @@ public class UserInterface extends JPanel implements KeyListener {
     private int showStartX = 0;
     private int showStartY = 0;
 
-    private final Socket socket;
+    private final List<Socket> sockets = new ArrayList<>();
 
     public InputData inputData;
 
-    public UserInterface(Socket socket) {
-        this.socket = socket;
+    public UserInterface(Socket socket){
+        sockets.add(socket);
+    }
+
+    public UserInterface() {}
+
+    public void addSocket(Socket socket){
+        this.sockets.add(socket);
     }
 
     //计算可视区域
@@ -38,6 +46,7 @@ public class UserInterface extends JPanel implements KeyListener {
         showStartX = Math.min(showStartX, Math.max(0, inputData.wSize  - showSize + Common.interfaceStartX));
         showStartY = Math.min(showStartY, Math.max(0, inputData.hSize - showSize + Common.interfaceStartY));
     }
+
 
     public void paint(Graphics g) {
         //覆盖父类的方法
@@ -52,7 +61,7 @@ public class UserInterface extends JPanel implements KeyListener {
         for (int i = 0; i < inputData.H; i++) {
             for (int j = 0; j < inputData.W; j++) {
                 int dx1 = j * inputData.CELL_WIDTH + Common.interfaceStartX - showStartX;
-                int dy1 = i * inputData.CELL_HEIGHT + Common.interfaceStartY - showStartY;
+                int dy1 = i * inputData.CELL_HEIGHT + Common.interfaceStartY  - showStartY;
                 if(cannotDraw(dx1, dy1)){
                     continue;
                 }
@@ -255,22 +264,36 @@ public class UserInterface extends JPanel implements KeyListener {
         InputData.Player[] ps = inputData.getPlayers();
 
         for (InputData.Player player : ps) {
-            drawBiology(g, player, Common.playerDie, player.isQuestionMark() ? Common.player_question_mark : Common.player);
+            drawBiology(g, player, player.isQuestionMark() ? Common.player_question_mark : Common.player);
         }
 
-        for (InputData.Critter critter : inputData.getCritters()) {
+        InputData.Critter[] critters = inputData.getCritters();
+
+        for (InputData.Critter critter : critters) {
             if(critter != null){
-                Image dieImg;
                 Image image;
-                if(critter.getName().equals("Elite")){
-                    dieImg = Common.eliteCritterDie;
-                    image = Common.eliteCritter;
-                }else{
-                    dieImg = Common.basicsCritterDie;
-                    image = Common.basicsCritter;
+
+                switch (critter.getName()){
+                    case "Elite":
+                        image = Common.eliteCritter;
+                        break;
+                    case "Knight_1":
+                        image = Common.knightCritter1;
+                        break;
+                    case "Knight_2":
+                        image = Common.knightCritter2;
+                        break;
+                    case "Dragon_blue":
+                        image = Common.dragonCritter1;
+                        break;
+                    case "Dragon_golden":
+                        image = Common.dragonCritter2;
+                        break;
+                    default:
+                        image = Common.basicsCritter;
                 }
 
-                drawBiology(g, critter, dieImg, image);
+                drawBiology(g, critter, image);
             }
         }
 
@@ -278,7 +301,7 @@ public class UserInterface extends JPanel implements KeyListener {
 
         for (InputData.Charmander charmander : charmanders) {
             if(charmander != null){
-                drawBiology(g, charmander, null, Common.charmander);
+                drawBiology(g, charmander, Common.charmander);
             }
         }
 
@@ -288,12 +311,14 @@ public class UserInterface extends JPanel implements KeyListener {
         }
 
         drawProperty(g, ps);
+
+        drawThumbnail(g, critters, ps, charmanders);
     }
 
     /**
      * 绘制玩家
      */
-    public void drawBiology(Graphics g, InputData.BasicAttribute basicAttribute, Image dieImg, Image image){
+    public void drawBiology(Graphics g, InputData.BasicAttribute basicAttribute, Image image){
         int dx1 = basicAttribute.getActualX() - showStartX;
         int dy1 = basicAttribute.getActualY() - showStartY;
 
@@ -301,64 +326,51 @@ public class UserInterface extends JPanel implements KeyListener {
             return;
         }
 
-        Image img;
         int dx2 = dx1 + inputData.CELL_WIDTH, dy2 = dy1 + inputData.CELL_HEIGHT;
         int sx1,sy1,sx2,sy2;
         switch (basicAttribute.getState()){
             case 1:
-                img = dieImg;
-                sx1 = 80;sy1 = 0;
+                sx1 = 80;sy1 = 200;
                 break;
             case 2:
-                img = dieImg;
-                sx1 = 40;sy1 = 0;
+                sx1 = 40;sy1 = 200;
                 break;
             case 3:
-                img = dieImg;
-                sx1 = 0;sy1 = 0;
+                sx1 = 0;sy1 = 200;
                 break;
             case 4:
-                img = image;
                 sx1 = 80;sy1 = 0;
                 break;
             case 5:
-                img = image;
                 sx1 = 80;sy1 = 40;
                 break;
             case 6:
-                img = image;
                 sx1 = 80;sy1 = 120;
                 break;
             case 7:
-                img = image;
                 sx1 = 80;sy1 = 160;
                 break;
             case 8:
-                img = image;
                 sx1 = 0;sy1 = 80;
                 break;
             case 9:
-                img = image;
                 sx1 = 40;sy1 = 80;
                 break;
             case 10:
-                img = image;
                 sx1 = 120;sy1 = 80;
                 break;
             case 11:
-                img = image;
                 sx1 = 160;sy1 = 80;
                 break;
             default:
-                img = null;
                 sx1 = 0;sy1 = 0;
 
         }
 
-        if (img != null) {
+        if (image != null) {
             sx2 = sx1 + 40;
             sy2 = sy1 + 40;
-            g.drawImage(img, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+            g.drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
         }
     }
 
@@ -393,12 +405,37 @@ public class UserInterface extends JPanel implements KeyListener {
         }
     }
 
-
+    //判断绘制是否超出可视范围
     public boolean cannotDraw(int dx1, int dy1){
         return dx1 < Common.interfaceStartX || dx1 > showSize - inputData.CELL_WIDTH || dy1 < Common.interfaceStartY || dy1 > showSize - inputData.CELL_HEIGHT;
     }
 
+    /**
+     * 绘制缩略图
+     */
+    public void drawThumbnail(Graphics g, InputData.Critter[] critters, InputData.Player[] ps, InputData.Charmander[] charmanders){
+        int startX = Common.interfaceStartX + showSize + 300;
+        int startY = Common.interfaceStartY;
+        int size = 4;
 
+        g.setColor(Color.black);
+        g.drawRect(startX, startY, inputData.W * size, inputData.H * size);//框
+
+        g.setColor(Color.red);
+        for (InputData.Critter critter : critters) {
+            g.fillRect(startX + critter.getLx() * size, startY + critter.getTy() * size, size, size);
+        }
+
+        g.setColor(Color.blue);
+        for (InputData.Player player : ps) {
+            g.fillRect(startX + player.getLx() * size, startY + player.getTy() * size, size, size);
+        }
+
+        g.setColor(Color.green);
+        for (InputData.Charmander charmander : charmanders) {
+            g.fillRect(startX + charmander.getLx() * size, startY + charmander.getTy() * size, size, size);
+        }
+    }
 
 
     @Override
@@ -410,14 +447,18 @@ public class UserInterface extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
 //        System.out.println("按下了能输入内容的按键 : " + e.getKeyCode());
 
-        Start.outString(socket, e.getKeyCode() + "");
+        sockets.forEach(socket -> {
+            Start.outString(socket, e.getKeyCode() + "");
+        });
 
-        try {
-            String s = Start.inString(socket);
-        }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
-            System.out.println("服务器关闭！");
-            Start.stop = true;
-        }
+        sockets.forEach(socket -> {
+            try {
+                String s = Start.inString(socket);
+            }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
+                System.out.println("服务器关闭！");
+                Start.stop = true;
+            }
+        });
 
         /*switch (e.getKeyCode()){
             case 38:
@@ -431,14 +472,19 @@ public class UserInterface extends JPanel implements KeyListener {
             case 74://J
             case 75://K
             case 72://H
-                Start.outString(socket, e.getKeyCode() + "");
 
-                try {
-                    String s = Start.inString(socket);
-                }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
-                    System.out.println("服务器关闭！");
-                    Start.stop = true;
-                }
+                sockets.forEach(socket -> {
+                    Start.outString(socket, e.getKeyCode() + "");
+                });
+
+                sockets.forEach(socket -> {
+                    try {
+                        String s = Start.inString(socket);
+                    }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
+                        System.out.println("服务器关闭！");
+                        Start.stop = true;
+                    }
+                });
             default:
                 break;
         }*/
@@ -451,6 +497,8 @@ public class UserInterface extends JPanel implements KeyListener {
     public void keyReleased(KeyEvent e) {
 
     }
+
+
 
 
 

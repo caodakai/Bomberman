@@ -1,6 +1,7 @@
 package concurrent;
 
 import priv.cdk.bomberman.data.InputData;
+import priv.ui.UserInterface;
 
 import javax.swing.*;
 import java.io.ByteArrayInputStream;

@@ -1,7 +1,10 @@
 package priv.cdk.bomberman.data;
 
+import priv.cdk.bomberman.critter.dragon.DragonCritter;
 import priv.cdk.bomberman.critter.elite.EliteCritter;
+import priv.cdk.bomberman.critter.knight.KnightCritter;
 import priv.cdk.bomberman.game.Game;
+import priv.cdk.bomberman.parent.Biota;
 import priv.cdk.bomberman.room.Room;
 
 import java.io.Serializable;
@@ -87,9 +90,24 @@ public class InputData implements Serializable {
         private String name;
         private int actualX;//实际X坐标像素位置
         private int actualY;//实际Y坐标像素位置
+        private int lx;//单元格位置
+        private int ty;//单元格位置
         private int state;//状态
 
         private boolean die;//是否死亡
+
+        public BasicAttribute(Biota biota){
+            reload(biota);
+        }
+
+        public void reload(Biota biota){
+            this.actualX = biota.getActualX();
+            this.actualY = biota.getActualY();
+            this.lx = biota.getLx();
+            this.ty = biota.getTy();
+            this.state = biota.getState();
+            this.die = biota.isDie();
+        }
 
         public String getName() {
             return name;
@@ -113,6 +131,22 @@ public class InputData implements Serializable {
 
         public void setActualY(int actualY) {
             this.actualY = actualY;
+        }
+
+        public int getLx() {
+            return lx;
+        }
+
+        public void setLx(int lx) {
+            this.lx = lx;
+        }
+
+        public int getTy() {
+            return ty;
+        }
+
+        public void setTy(int ty) {
+            this.ty = ty;
         }
 
         public int getState() {
@@ -141,15 +175,14 @@ public class InputData implements Serializable {
         private int questionMarkTime;//无敌时间
 
         public Player(priv.cdk.bomberman.player.Player player){
+            super(player);
             reload(player);
         }
 
         public void reload(priv.cdk.bomberman.player.Player player){
+            super.reload(player);
+
             this.setName(player.name);
-            this.setActualX(player.getActualX());
-            this.setActualY(player.getActualY());
-            this.setState(player.getState());
-            this.setDie(player.isDie());
 
             this.questionMark = player.isQuestionMark();
             this.bomNumber = player.getBomNumber();
@@ -194,12 +227,30 @@ public class InputData implements Serializable {
         private static final long serialVersionUID = 1L;
 
         public Critter(priv.cdk.bomberman.critter.Critter critter){
+            super(critter);
 
-            this.setName(critter instanceof EliteCritter ? "Elite" : "");
-            this.setActualX(critter.getActualX());
-            this.setActualY(critter.getActualY());
-            this.setState(critter.getState());
-            this.setDie(critter.isDie());
+            String name;
+            if(critter instanceof KnightCritter){
+                KnightCritter knightCritter = (KnightCritter) critter;
+                if (knightCritter.getHP() > 1) {
+                    name = "Knight_1";
+                }else{
+                    name = "Knight_2";
+                }
+            }else if (critter instanceof DragonCritter){
+                DragonCritter dragonCritter = (DragonCritter) critter;
+                if (dragonCritter.isBLUE()){
+                    name = "Dragon_blue";
+                }else{
+                    name = "Dragon_golden";
+                }
+            }else if(critter instanceof EliteCritter){
+                name = "Elite";
+            }else{
+                name = "";
+            }
+
+            this.setName(name);
         }
 
     }
@@ -208,13 +259,9 @@ public class InputData implements Serializable {
         private static final long serialVersionUID = 1L;
 
         public Charmander(priv.cdk.bomberman.charmander.Charmander charmander) {
-            this.setName( "" );
-            this.setActualX(charmander.getActualX());
-            this.setActualY(charmander.getActualY());
-            this.setState(charmander.getState());
-            this.setDie(charmander.isDie());
+            super(charmander);
+            this.setName("小火龙");
         }
-
     }
 
 

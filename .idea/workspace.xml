@@ -1,30 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="client" />
+    </artifacts-to-build>
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="BRANCH:master" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </select>
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" name="My Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/images/critter/dragon/怪物龙1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/images/critter/dragon/怪物龙2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/images/critter/dragon/怪物龙3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/images/critter/dragon/怪物龙4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/images/critter/knight/knight_critter.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/images/critter/knight/魔界骑士1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/images/critter/knight/魔界骑士2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/CritterDie.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/knight/KnightCritter.java" afterDir="false" />
+    <list default="true" id="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" name="My Changelist" comment="视角区域滑动">
+      <change afterPath="$PROJECT_DIR$/Client/images/critter/dragon/dragon_critter_1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/images/critter/dragon/dragon_critter_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/images/critter/knight/knight_critter_2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/ai/wayfinding/Point.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/ai/wayfinding/PointHelper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/ai/wayfinding/PointInterface.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/CritterThreadUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/dragon/DragonCritter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/knight/Knight1Thread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/knight/Knight2Thread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/knight/KnightDieThread.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/parent/BiotaUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/images/critter/boss/boss_critter.png" beforeDir="false" afterPath="$PROJECT_DIR$/Client/images/critter/elite/elite_critter.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/images/critter/boss/boss_critter_die.png" beforeDir="false" afterPath="$PROJECT_DIR$/Client/images/critter/elite/elite_critter_die.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/images/critter/basics/basics_critter.png" beforeDir="false" afterPath="$PROJECT_DIR$/Client/images/critter/basics/basics_critter.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/images/critter/basics/basics_critter_die.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/images/critter/elite/elite_critter.png" beforeDir="false" afterPath="$PROJECT_DIR$/Client/images/critter/elite/elite_critter.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/images/critter/elite/elite_critter_die.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/images/critter/knight/knight_critter.png" beforeDir="false" afterPath="$PROJECT_DIR$/Client/images/critter/knight/knight_critter_1.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/images/player/player.png" beforeDir="false" afterPath="$PROJECT_DIR$/Client/images/player/player.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/images/player/player_die.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/priv/Start.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/priv/Start.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/src/priv/cdk/bomberman/data/InputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/priv/cdk/bomberman/data/InputData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/src/priv/common/Common.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/priv/common/Common.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/src/priv/ui/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/priv/ui/UserInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/test/concurrent/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/test/concurrent/UserInterface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/test/concurrent/Start.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/test/concurrent/Start.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/test/concurrent/UserInterface.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/StartingProcedure.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/StartingProcedure.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/UserInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/charmander/Charmander.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/charmander/Charmander.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/charmander/CharmanderThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/charmander/CharmanderThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/BasicsCritter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/basic/BasicsCritter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/BossCritter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/elite/EliteCritter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/Critter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/Critter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/CritterThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/CritterThread.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/basic/BasicsCritter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/basic/BasicsCritter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/elite/EliteCritter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/elite/EliteCritter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/knight/KnightCritter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/knight/KnightCritter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/data/InputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/data/InputData.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/player/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/room/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/room/Room.java" afterDir="false" />
@@ -34,7 +74,6 @@
       <change afterPath="$PROJECT_DIR$/.idea/artifacts/client.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Thinkpad.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,60 +83,13 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-  </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/.idea/workspace.xml">
-      <ranges>
-        <range start1="2" end1="2" start2="2" end2="31" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-        <range start1="3" end1="7" start2="32" end2="43" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="8" end1="10" start2="44" end2="55" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="11" end1="13" start2="56" end2="56" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="14" end1="15" start2="57" end2="58" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="19" end1="20" start2="62" end2="64" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="26" end1="26" start2="70" end2="78" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="30" end1="30" start2="82" end2="131" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="31" end1="31" start2="132" end2="133" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="38" end1="38" start2="140" end2="141" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="40" end1="42" start2="143" end2="146" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="47" end1="47" start2="151" end2="158" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="50" end1="55" start2="161" end2="161" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="57" end1="65" start2="163" end2="164" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="74" end1="74" start2="173" end2="180" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="87" end1="87" start2="193" end2="200" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="92" end1="93" start2="205" end2="207" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="94" end1="94" start2="208" end2="209" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="108" end1="108" start2="223" end2="224" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="117" end1="117" start2="233" end2="251" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="118" end1="118" start2="252" end2="253" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="123" end1="123" start2="258" end2="287" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="124" end1="125" start2="288" end2="289" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="127" end1="128" start2="291" end2="292" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="132" end1="133" start2="296" end2="297" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="135" end1="137" start2="299" end2="301" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="139" end1="141" start2="303" end2="305" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="143" end1="145" start2="307" end2="309" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="147" end1="149" start2="311" end2="321" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="152" end1="153" start2="324" end2="325" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="155" end1="157" start2="327" end2="329" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="159" end1="161" start2="331" end2="333" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="163" end1="165" start2="335" end2="337" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="167" end1="169" start2="339" end2="341" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="171" end1="173" start2="343" end2="345" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="175" end1="177" start2="347" end2="349" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="179" end1="181" start2="351" end2="353" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="183" end1="184" start2="355" end2="356" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="188" end1="189" start2="360" end2="381" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="191" end1="193" start2="383" end2="385" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="195" end1="196" start2="387" end2="392" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-      </ranges>
-    </file>
   </component>
   <component name="ProjectId" id="2F4TgRW3630pNrOTG9riPROBBbO" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -111,27 +103,30 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Client/images/critter/knight" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../dachangjiang" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2724138" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Idea Location\games\Bomberman\Client\images\critter\knight" />
       <recent name="D:\Idea Location\games\Bomberman\Client\images\critter\dragon" />
+      <recent name="D:\Idea Location\games\Bomberman\Client\images\critter\knight" />
+      <recent name="D:\Idea Location\games\Bomberman\Client\images\critter\elite" />
       <recent name="D:\Idea Location\games\Bomberman\Client\images\critter\basics" />
-      <recent name="D:\Idea Location\games\Bomberman\Client\images\critter\boss" />
-      <recent name="D:\Idea Location\games\Bomberman\Client\test" />
+      <recent name="D:\Idea Location\games\Bomberman\Client\images\player" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="priv.ui" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Idea Location\games\Bomberman\Client" />
       <recent name="D:\Idea Location\games\Bomberman" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.client2">
+  <component name="RunManager" selected="Application.client1">
     <configuration name="client1" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="priv.Start" />
       <module name="Client" />
@@ -204,7 +199,10 @@
       <workItem from="1664155182462" duration="19474000" />
       <workItem from="1664241460376" duration="2411000" />
       <workItem from="1664327494576" duration="8824000" />
-      <workItem from="1664345317628" duration="10593000" />
+      <workItem from="1664345317628" duration="13190000" />
+      <workItem from="1665144698711" duration="49000" />
+      <workItem from="1665278594954" duration="15674000" />
+      <workItem from="1665364254326" duration="20385000" />
     </task>
     <task id="LOCAL-00001" summary="第一次提交">
       <created>1663809955217</created>
@@ -220,7 +218,14 @@
       <option name="project" value="LOCAL" />
       <updated>1664345614811</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="视角区域滑动">
+      <created>1664356752803</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1664356752803</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -253,25 +258,30 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="第一次提交" />
     <MESSAGE value="新增抓怪的小恐龙" />
-    <option name="LAST_COMMIT_MESSAGE" value="新增抓怪的小恐龙" />
+    <MESSAGE value="视角区域滑动" />
+    <option name="LAST_COMMIT_MESSAGE" value="视角区域滑动" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="223" y="63" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1664345456154">
+    <state x="223" y="63" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1665386435659">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="223" y="63" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.816@0.0.1536.816" timestamp="1664345456154" />
+    <state x="223" y="63" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.816@0.0.1536.816" timestamp="1665386435659" />
     <state x="456" y="209" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1663927084084">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="456" y="209" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.816@0.0.1536.816" timestamp="1663927084084" />
-    <state x="574" y="92" key="#com.intellij.ide.util.MemberChooser" timestamp="1664351213448">
+    <state x="574" y="92" key="#com.intellij.ide.util.MemberChooser" timestamp="1665384945638">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="574" y="92" key="#com.intellij.ide.util.MemberChooser/0.0.1536.816@0.0.1536.816" timestamp="1664351213448" />
+    <state x="574" y="92" key="#com.intellij.ide.util.MemberChooser/0.0.1536.816@0.0.1536.816" timestamp="1665384945638" />
     <state x="498" y="197" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1664345449668">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="498" y="197" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.816@0.0.1536.816" timestamp="1664345449668" />
+    <state x="468" y="266" key="#com.intellij.refactoring.memberPullUp.PullUpDialog" timestamp="1665384934661">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="468" y="266" key="#com.intellij.refactoring.memberPullUp.PullUpDialog/0.0.1536.816@0.0.1536.816" timestamp="1665384934661" />
     <state x="499" y="155" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1664349887349">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
@@ -280,50 +290,50 @@
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="745" y="263" width="488" height="553" key="#xdebugger.evaluate/0.0.1536.816@0.0.1536.816" timestamp="1664181942595" />
-    <state width="487" height="466" key="DebuggerActiveHint" timestamp="1664186108656">
+    <state width="487" height="466" key="DebuggerActiveHint" timestamp="1665382624032">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="487" height="466" key="DebuggerActiveHint/0.0.1536.816@0.0.1536.816" timestamp="1664186108656" />
-    <state x="503" y="165" key="FileChooserDialogImpl" timestamp="1664345253399">
+    <state width="487" height="466" key="DebuggerActiveHint/0.0.1536.816@0.0.1536.816" timestamp="1665382624032" />
+    <state x="503" y="165" key="FileChooserDialogImpl" timestamp="1665385581846">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="503" y="165" key="FileChooserDialogImpl/0.0.1536.816@0.0.1536.816" timestamp="1664345253399" />
+    <state x="503" y="165" key="FileChooserDialogImpl/0.0.1536.816@0.0.1536.816" timestamp="1665385581846" />
     <state x="632" y="306" key="Github.ShareDialog" timestamp="1663810442196">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="632" y="306" key="Github.ShareDialog/0.0.1536.816@0.0.1536.816" timestamp="1663810442196" />
-    <state width="1493" height="254" key="GridCell.Tab.0.bottom" timestamp="1664356653194">
+    <state width="1493" height="255" key="GridCell.Tab.0.bottom" timestamp="1665386483673">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="254" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1664356653194" />
-    <state width="1493" height="254" key="GridCell.Tab.0.center" timestamp="1664356653193">
+    <state width="1493" height="255" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1665386483673" />
+    <state width="1493" height="255" key="GridCell.Tab.0.center" timestamp="1665386483672">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="254" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1664356653193" />
-    <state width="1493" height="254" key="GridCell.Tab.0.left" timestamp="1664356653193">
+    <state width="1493" height="255" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1665386483672" />
+    <state width="1493" height="255" key="GridCell.Tab.0.left" timestamp="1665386483672">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="254" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1664356653193" />
-    <state width="1493" height="254" key="GridCell.Tab.0.right" timestamp="1664356653193">
+    <state width="1493" height="255" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1665386483672" />
+    <state width="1493" height="255" key="GridCell.Tab.0.right" timestamp="1665386483673">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="254" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1664356653193" />
-    <state width="1493" height="254" key="GridCell.Tab.1.bottom" timestamp="1664356653194">
+    <state width="1493" height="255" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1665386483673" />
+    <state width="1493" height="255" key="GridCell.Tab.1.bottom" timestamp="1665386483426">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="254" key="GridCell.Tab.1.bottom/0.0.1536.816@0.0.1536.816" timestamp="1664356653194" />
-    <state width="1493" height="254" key="GridCell.Tab.1.center" timestamp="1664356653194">
+    <state width="1493" height="255" key="GridCell.Tab.1.bottom/0.0.1536.816@0.0.1536.816" timestamp="1665386483426" />
+    <state width="1493" height="255" key="GridCell.Tab.1.center" timestamp="1665386483426">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="254" key="GridCell.Tab.1.center/0.0.1536.816@0.0.1536.816" timestamp="1664356653194" />
-    <state width="1493" height="254" key="GridCell.Tab.1.left" timestamp="1664356653194">
+    <state width="1493" height="255" key="GridCell.Tab.1.center/0.0.1536.816@0.0.1536.816" timestamp="1665386483426" />
+    <state width="1493" height="255" key="GridCell.Tab.1.left" timestamp="1665386483426">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="254" key="GridCell.Tab.1.left/0.0.1536.816@0.0.1536.816" timestamp="1664356653194" />
-    <state width="1493" height="254" key="GridCell.Tab.1.right" timestamp="1664356653194">
+    <state width="1493" height="255" key="GridCell.Tab.1.left/0.0.1536.816@0.0.1536.816" timestamp="1665386483426" />
+    <state width="1493" height="255" key="GridCell.Tab.1.right" timestamp="1665386483426">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1493" height="254" key="GridCell.Tab.1.right/0.0.1536.816@0.0.1536.816" timestamp="1664356653194" />
+    <state width="1493" height="255" key="GridCell.Tab.1.right/0.0.1536.816@0.0.1536.816" timestamp="1665386483426" />
     <state x="408" y="112" key="NewModule_or_Project.wizard" timestamp="1663751049704">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
@@ -332,18 +342,22 @@
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="531" y="110" key="RollbackChangesDialog/0.0.1536.816@0.0.1536.816" timestamp="1663922961399" />
-    <state x="297" y="0" key="SettingsEditor" timestamp="1664345294039">
+    <state x="297" y="0" key="SettingsEditor" timestamp="1665300036677">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="297" y="0" key="SettingsEditor/0.0.1536.816@0.0.1536.816" timestamp="1664345294039" />
+    <state x="297" y="0" key="SettingsEditor/0.0.1536.816@0.0.1536.816" timestamp="1665300036677" />
     <state x="599" y="277" key="VCS.EditChangelistDialog" timestamp="1663810027441">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="599" y="277" key="VCS.EditChangelistDialog/0.0.1536.816@0.0.1536.816" timestamp="1663810027441" />
-    <state x="807" y="142" width="600" height="556" key="find.popup" timestamp="1664350273023">
+    <state x="361" y="141" key="Vcs.Push.Dialog.v2" timestamp="1664357121404">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="807" y="142" width="600" height="556" key="find.popup/0.0.1536.816@0.0.1536.816" timestamp="1664350273023" />
+    <state x="361" y="141" key="Vcs.Push.Dialog.v2/0.0.1536.816@0.0.1536.816" timestamp="1664357121404" />
+    <state x="807" y="142" width="600" height="556" key="find.popup" timestamp="1665309485525">
+      <screen x="0" y="0" width="1536" height="816" />
+    </state>
+    <state x="807" y="142" width="600" height="556" key="find.popup/0.0.1536.816@0.0.1536.816" timestamp="1665309485525" />
     <state x="278" y="59" key="new project wizard" timestamp="1664256376151">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
@@ -356,9 +370,9 @@
       <screen x="0" y="0" width="1536" height="816" />
     </state>
     <state x="425" y="185" key="run.anything.popup/0.0.1536.816@0.0.1536.816" timestamp="1664354209627" />
-    <state x="431" y="137" width="672" height="678" key="search.everywhere.popup" timestamp="1663925959086">
+    <state x="431" y="137" width="672" height="678" key="search.everywhere.popup" timestamp="1665375644265">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="431" y="137" width="672" height="678" key="search.everywhere.popup/0.0.1536.816@0.0.1536.816" timestamp="1663925959086" />
+    <state x="431" y="137" width="672" height="678" key="search.everywhere.popup/0.0.1536.816@0.0.1536.816" timestamp="1665375644265" />
   </component>
 </project>

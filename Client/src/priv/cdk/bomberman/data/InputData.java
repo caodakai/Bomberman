@@ -29,6 +29,8 @@ public class InputData implements Serializable {
         private String name;
         private int actualX;//实际X坐标像素位置
         private int actualY;//实际Y坐标像素位置
+        private int lx;//单元格位置
+        private int ty;//单元格位置
         private int state;//状态
 
         private boolean die;//是否死亡
@@ -55,6 +57,22 @@ public class InputData implements Serializable {
 
         public void setActualY(int actualY) {
             this.actualY = actualY;
+        }
+
+        public int getLx() {
+            return lx;
+        }
+
+        public void setLx(int lx) {
+            this.lx = lx;
+        }
+
+        public int getTy() {
+            return ty;
+        }
+
+        public void setTy(int ty) {
+            this.ty = ty;
         }
 
         public int getState() {

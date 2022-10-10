@@ -84,9 +84,14 @@ public class UserInterface{
                     room.setBodyCellValue(player.getTy(), player.getLx(), -1);
                 }
                 break;
-            case 76://L
-            case 80://P
-                room.addCritter(player.getLx(), player.getTy(), keyCode == 76 ? 0 : 1);
+            case 112://F1
+            case 113://F2
+            case 114://F3
+            case 115://F4
+            case 116://F5
+            case 117://F6
+            case 118://F7
+                room.addCritter(player.getLx(), player.getTy(), keyCode - 112);
                 break;
             case 85://U
                 room.setBodyCellValue(player.getTy(), player.getLx(), 3);
