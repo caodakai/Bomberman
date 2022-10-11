@@ -39,6 +39,117 @@ public class IsUtil {
         }
     }
 
+    /**
+     * 是否为上终点火
+     */
+    public static boolean isUpDestination(int number){
+        switch (number){
+            case 1007:
+            case 1008:
+            case 1009:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 是否为上火
+     */
+    public static boolean isUp(int number){
+        switch (number){
+            case 1010:
+            case 1011:
+            case 1012:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 是否为下终点火
+     */
+    public static boolean isDownDestination(int number){
+        switch (number){
+            case 1013:
+            case 1014:
+            case 1015:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 是否为下火
+     */
+    public static boolean isDown(int number){
+        switch (number){
+            case 1016:
+            case 1017:
+            case 1018:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 是否为左终点火
+     */
+    public static boolean isLeftDestination(int number){
+        switch (number){
+            case 1019:
+            case 1020:
+            case 1021:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 是否为左火
+     */
+    public static boolean isLeft(int number){
+        switch (number){
+            case 1022:
+            case 1023:
+            case 1024:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 是否为右终点火
+     */
+    public static boolean isRightDestination(int number){
+        switch (number){
+            case 1025:
+            case 1026:
+            case 1027:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 是否为右火
+     */
+    public static boolean isRight(int number){
+        switch (number){
+            case 1028:
+            case 1029:
+            case 1030:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     /**
      * 坐标是否为墙
