@@ -12,24 +12,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player extends Biota {
-    private final boolean member = false;//会员
+    private final static boolean TEST = true;//是否为测试，如果是测试，那么创建的玩家都是无敌的
+
+    private final boolean member;//会员
 
     private static final String CLASSNAME = Player.class.getName();
 
     public final String name;
 
     private final AtomicInteger bomNumber = new AtomicInteger(1);
-    public int bomSize = 2;
-    private int pressProcessed = member ? 0 : 20;//移动速度
-    private int moveInterval = member ? 0 : 100;//移动间隔时间
+    public int bomSize;
+    private int pressProcessed;//移动速度
+    private int moveInterval;//移动间隔时间
     public final MoveThread moveThread = new MoveThread(this);
     public final AtomicBoolean canMoveThread = new AtomicBoolean(true);
 
-    private boolean bomControl = member;//炸弹爆炸控制
-    private boolean bomThrough = member;//炸弹穿越
-    private boolean wallThrough = member;//墙壁穿越
+    private boolean bomControl;//炸弹爆炸控制
+    private boolean bomThrough;//炸弹穿越
+    private boolean wallThrough;//墙壁穿越
     public final AtomicBoolean questionMark = new AtomicBoolean(true);//短暂无敌
-    private boolean fireImmune = member;//火焰免疫
+    private boolean fireImmune;//火焰免疫
 
     public final QuestionMarkThread questionMarkThread = new QuestionMarkThread(room, this);
 
@@ -42,11 +44,25 @@ public class Player extends Biota {
 
         this.name = name;
 
-        if(isMember()) {
-            this.bomNumber.set(room.getBlank());
+        if (TEST){
+            this.member = true;
+        }else this.member = this.name.equals("cdk");
+
+        if(this.member) {
+            this.bomNumber.set(this.room.getBlank());
         }
 
+        this.bomSize = this.member ? 5 : 2;
+        this.pressProcessed = this.member ? 0 : 20;
+        this.moveInterval = this.member ? 0 : 100;
+
         this.moveThread.start();
+
+        this.bomControl = this.member;
+        this.bomThrough = this.member;
+        this.wallThrough = this.member;
+        this.fireImmune = this.member;
+
         this.questionMarkThread.start();
     }
 
@@ -55,6 +71,10 @@ public class Player extends Biota {
 
         setPosition(1,1);
         this.room = room;
+
+        if(this.member) {
+            this.bomNumber.set(this.room.getBlank());
+        }
     }
 
     //移动
@@ -310,10 +330,6 @@ public class Player extends Biota {
     }
 
     public boolean isMember() {
-        if(name.equals("cdk")){
-            return true;
-        }else {
-            return member;
-        }
+        return member;
     }
 }

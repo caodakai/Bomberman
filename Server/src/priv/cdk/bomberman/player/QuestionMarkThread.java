@@ -33,8 +33,8 @@ public class QuestionMarkThread extends MyThread {
             player.questionMark.set(false);
 
             try {
-                if(!player.isDie()) {
-                    synchronized (this) {
+                synchronized (this) {
+                    if(!player.isDie()) {
                         this.wait();
                     }
                 }

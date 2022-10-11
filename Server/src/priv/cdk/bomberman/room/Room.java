@@ -54,16 +54,8 @@ public class Room {
 
         int customsPass = game.getCustomsPass();
 
-        if(customsPass == 1 || customsPass == 2){
-            h = 21;
-            w = h;
-        }else if(customsPass == 3 || customsPass == 4){
-            h = 31;
-            w = h;
-        }else{
-            h = 41;
-            w = h;
-        }
+        h = Math.min((customsPass/2) * 10 + 11 , 81);
+        w = h;
 
         body = new int[h][w];
         bobs = new Bom[h][w];
@@ -168,11 +160,11 @@ public class Room {
                 eliteCritterNumber = 0;
             }
 
-            int basicsCritterNumber = Math.min(blank / 4, Math.max(0, customsPass * customsPass - eliteCritterNumber));
+            int basicsCritterNumber = Math.min(blank / 8, Math.max(0, customsPass * customsPass - eliteCritterNumber));
             RoomUtil.randomCritterToBody(this, 0, basicsCritterNumber);
 
             if (new Random().nextInt( Math.max(1,20/customsPass) ) == 0) {//有概率出现两条龙
-                RoomUtil.randomCritterToBody(this, 3, 2);
+                RoomUtil.randomCritterToBody(this, 3, Math.min(2 * customsPass/5, 10));
             }
         }else{
             int knightCritterNumber = Math.min(blank/16, customsPass/5);
@@ -469,8 +461,20 @@ public class Room {
 
     public void closeRoom(){
         if (close.compareAndSet(false, true)) {
+            suspend.set(false);//暂停改为false
+
             critters.forEach(Biota::die);
             charmanders.forEach(Biota::die);
+
+            threads.forEach(myThread -> {//将所有的自定义线程重新启动
+                synchronized (myThread) {
+                    if (myThread.isInterrupted()) {
+                        myThread.interrupt();
+                    } else {
+                        myThread.notifyAll();
+                    }
+                }
+            });
         }
     }
 

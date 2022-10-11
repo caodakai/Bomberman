@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 骑士怪 ， 生命值两滴， 第一次被火焰烧后会有3秒无敌时间 。
- * 需要杀死两个龙兵才会掉血。
+ * 骑士怪 ， 生命值两滴
+ * 需要杀死龙兵才会掉血。
  */
 public class KnightCritter extends Critter {
     private final AtomicBoolean stageDie = new AtomicBoolean(false);
@@ -64,12 +64,11 @@ public class KnightCritter extends Critter {
             return false;
         }
 
+        if (room.close.get()) {//如果房间关闭，那么直接死亡
+            return super.die();
+        }
         if (stageDie.get()) {//如果处于状态死亡
-            if (room.close.get()) {//如果房间关闭，那么直接死亡
-                return super.die();
-            }else{
-                return false;
-            }
+            return false;
         }
 
         AtomicBoolean haveDragon = new AtomicBoolean(false);

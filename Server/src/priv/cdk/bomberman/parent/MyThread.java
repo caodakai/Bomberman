@@ -2,7 +2,7 @@ package priv.cdk.bomberman.parent;
 
 import priv.cdk.bomberman.room.Room;
 
-public class MyThread extends Thread {
+public abstract class MyThread extends Thread implements MyRunnable {
     protected Room myRoom;
 
     public MyThread(Room room){
@@ -16,20 +16,18 @@ public class MyThread extends Thread {
         myRoom.threads.remove(this);
     }
 
-    public void myRun(){
-
-    }
-
     public void mySleep(long millis) throws InterruptedException {
-        if (myRoom.suspend.get()) {
-            synchronized (this) {
-                wait();
+        if (!myRoom.close.get()) {
+            if (myRoom.suspend.get()) {
+                synchronized (this) {
+                    wait();
+                }
             }
-        }
-        mainSleep(millis);
-        if (myRoom.suspend.get()) {
-            synchronized (this){
-                wait();
+            mainSleep(millis);
+            if (myRoom.suspend.get()) {
+                synchronized (this) {
+                    wait();
+                }
             }
         }
     }

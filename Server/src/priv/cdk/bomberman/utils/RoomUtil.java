@@ -70,20 +70,21 @@ public class RoomUtil {
     public static void randomAddDoor(Room room){
         Random random = new Random();
         int blank = room.getBlank();
-        for (int i=5; i < room.getH() - 1; i++){
-            for (int j=5; j< room.getW() - 1; j++) {
-                if (room.getBodyCellValue(i, j) == 0) {
-                    int randomNumber = random.nextInt(blank);
-                    if(randomNumber < 2){
-                        if (room.addDoor(j, i)) {
-                            return;
+
+        while (true) {
+            for (int i = 5; i < room.getH() - 1; i++) {
+                for (int j = 5; j < room.getW() - 1; j++) {
+                    if (room.getBodyCellValue(i, j) == 0) {
+                        int randomNumber = random.nextInt(blank);
+                        if (randomNumber < 2) {
+                            if (room.addDoor(j, i)) {
+                                return;
+                            }
                         }
                     }
                 }
             }
         }
-
-        room.addDoor(room.getH() - 2, room.getH() - 2);
     }
 
 

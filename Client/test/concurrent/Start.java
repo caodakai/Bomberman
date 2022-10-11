@@ -47,7 +47,7 @@ public class Start extends JFrame {
                 dataPort = Integer.parseInt(split[1]);
 
                 // '-' 后面的是名字
-                outString(socket, InetAddress.getLocalHost().getHostAddress() + ":" + dataPort + "-" + InetAddress.getLocalHost().getHostAddress() + ":" + dataPort);
+                outString(socket, InetAddress.getLocalHost().getHostAddress() + ":" + dataPort + "-cdk" /*+ InetAddress.getLocalHost().getHostAddress() + ":" + dataPort*/);
 
                 System.out.println(inString(socket));
 
@@ -83,8 +83,8 @@ public class Start extends JFrame {
         this.add(userInterface);
 
         this.addKeyListener(userInterface);
-        this.setSize(1300,1000);
-        this.setLocation(300,50);
+        this.setSize(1800,1000);
+        this.setLocation(100,50);
         this.setTitle("炸弹人");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);

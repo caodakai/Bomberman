@@ -26,11 +26,16 @@ public class UserInterface extends JPanel implements KeyListener {
 
     public InputData inputData;
 
+    private boolean member;
+
     public UserInterface(Socket socket){
-        sockets.add(socket);
+        this.sockets.add(socket);
+        this.member = false;
     }
 
-    public UserInterface() {}
+    public UserInterface() {
+        this.member = true;
+    }
 
     public void addSocket(Socket socket){
         this.sockets.add(socket);
@@ -264,7 +269,9 @@ public class UserInterface extends JPanel implements KeyListener {
         InputData.Player[] ps = inputData.getPlayers();
 
         for (InputData.Player player : ps) {
-            drawBiology(g, player, player.isQuestionMark() ? Common.player_question_mark : Common.player);
+            if (player != null) {
+                drawBiology(g, player, player.isQuestionMark() ? Common.player_question_mark : Common.player);
+            }
         }
 
         InputData.Critter[] critters = inputData.getCritters();
@@ -416,24 +423,44 @@ public class UserInterface extends JPanel implements KeyListener {
     public void drawThumbnail(Graphics g, InputData.Critter[] critters, InputData.Player[] ps, InputData.Charmander[] charmanders){
         int startX = Common.interfaceStartX + showSize + 300;
         int startY = Common.interfaceStartY;
-        int size = 4;
+        int size = 6;
 
         g.setColor(Color.black);
         g.drawRect(startX, startY, inputData.W * size, inputData.H * size);//框
 
         g.setColor(Color.red);
         for (InputData.Critter critter : critters) {
-            g.fillRect(startX + critter.getLx() * size, startY + critter.getTy() * size, size, size);
-        }
-
-        g.setColor(Color.blue);
-        for (InputData.Player player : ps) {
-            g.fillRect(startX + player.getLx() * size, startY + player.getTy() * size, size, size);
+            if (critter != null) {
+                g.fillRect(startX + critter.getLx() * size, startY + critter.getTy() * size, size, size);
+            }
         }
 
         g.setColor(Color.green);
         for (InputData.Charmander charmander : charmanders) {
-            g.fillRect(startX + charmander.getLx() * size, startY + charmander.getTy() * size, size, size);
+            if (charmander != null) {
+                g.fillRect(startX + charmander.getLx() * size, startY + charmander.getTy() * size, size, size);
+            }
+        }
+
+        for (int i = 0; i < ps.length; i++) {
+            InputData.Player player = ps[i];
+            if (player != null) {
+                if (inputData.getpNumber() == i) {//自己的颜色为紫色， 其它的为蓝色
+                    g.setColor(Color.magenta);
+                }else {
+                    g.setColor(Color.blue);
+                }
+                g.fillRect(startX + player.getLx() * size, startY + player.getTy() * size, size, size);
+            }
+        }
+
+        g.setColor(Color.green);
+        for (int i = 0; i < inputData.H; i++) {
+            for (int j = 0; j < inputData.W; j++) {
+                if (inputData.getBody(i, j) == Common.PROP_DOOR) {
+                    g.fillRect(startX + j * size, startY + i * size, size, size);
+                }
+            }
         }
     }
 
@@ -447,47 +474,48 @@ public class UserInterface extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent e) {
 //        System.out.println("按下了能输入内容的按键 : " + e.getKeyCode());
 
-        sockets.forEach(socket -> {
-            Start.outString(socket, e.getKeyCode() + "");
-        });
+        if(member) {
+            sockets.forEach(socket -> {
+                Start.outString(socket, e.getKeyCode() + "");
+            });
 
-        sockets.forEach(socket -> {
-            try {
-                String s = Start.inString(socket);
-            }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
-                System.out.println("服务器关闭！");
-                Start.stop = true;
+            sockets.forEach(socket -> {
+                try {
+                    String s = Start.inString(socket);
+                } catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception) {
+                    System.out.println("服务器关闭！");
+                    Start.stop = true;
+                }
+            });
+        }else {
+            switch (e.getKeyCode()){
+                case 38:
+                case 87://W
+                case 37:
+                case 65://D
+                case 40:
+                case 83://S
+                case 39:
+                case 68://A
+                case 74://J
+                case 75://K
+                case 72://H
+                    sockets.forEach(socket -> {
+                        Start.outString(socket, e.getKeyCode() + "");
+                    });
+
+                    sockets.forEach(socket -> {
+                        try {
+                            String s = Start.inString(socket);
+                        }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
+                            System.out.println("服务器关闭！");
+                            Start.stop = true;
+                        }
+                    });
+                default:
+                    break;
             }
-        });
-
-        /*switch (e.getKeyCode()){
-            case 38:
-            case 87://W
-            case 37:
-            case 65://D
-            case 40:
-            case 83://S
-            case 39:
-            case 68://A
-            case 74://J
-            case 75://K
-            case 72://H
-
-                sockets.forEach(socket -> {
-                    Start.outString(socket, e.getKeyCode() + "");
-                });
-
-                sockets.forEach(socket -> {
-                    try {
-                        String s = Start.inString(socket);
-                    }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
-                        System.out.println("服务器关闭！");
-                        Start.stop = true;
-                    }
-                });
-            default:
-                break;
-        }*/
+        }
     }
 
     /**

@@ -10,45 +10,48 @@ public class MoveThread extends Thread {
     Player player;
 
     @Override
-    public void run(){
-        synchronized (this) {
-            while (!player.isDie()) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+    public void run() {
+        while (!player.isDie()) {
+            try {
+                synchronized (this) {
+                    if (!player.isDie()) {
+                        this.wait();
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (!player.playerMoveOnce(xPx, yPx, true)) {
+
+                //为了不让返回重新走，修改移动规则
+                int i = (player.getActualX() + xPx / 3 - Common.interfaceStartX) % Room.CELL_WIDTH;
+
+                if ((i > 0 && i < player.speed / 3 + 1) || (i < 0 && i > -player.speed / 3 - 1)) {
+                    xPx = (xPx / 3 - i) * 3;
                 }
 
-                if (!player.playerMoveOnce(xPx, yPx, true)) {
-
-                    //为了不让返回重新走，修改移动规则
-                    int i = (player.getActualX() + xPx/3 - Common.interfaceStartX) % Room.CELL_WIDTH;
-
-                    if ((i > 0 && i < player.speed / 3 + 1) || (i < 0 && i > -player.speed / 3 - 1)) {
-                        xPx = (xPx/3 - i) * 3;
-                    }
-
-                    i = Room.CELL_WIDTH - i;
-                    if ((i > 0 && i < player.speed / 3 + 1) || (i < 0 && i > -player.speed / 3 - 1)) {
-                        xPx = (xPx/3 + i) * 3;
-                    }
-
-                    int j = (player.getActualY() + yPx/3 - Common.interfaceStartY) % Room.CELL_HEIGHT;
-
-                    if ((j > 0 && j < player.speed / 3 + 1) || (j < 0 && j > -player.speed / 3 - 1)) {
-                        yPx = (yPx/3 - j) * 3;
-                    }
-
-                    j = Room.CELL_HEIGHT - j;
-
-                    if ((j > 0 && j < player.speed / 3 + 1) || (j < 0 && j > -player.speed / 3 - 1)) {
-                        yPx = (yPx/3 + j) * 3;
-                    }
-
-                    player.playerMoveOnce(xPx, yPx, true);
+                i = Room.CELL_WIDTH - i;
+                if ((i > 0 && i < player.speed / 3 + 1) || (i < 0 && i > -player.speed / 3 - 1)) {
+                    xPx = (xPx / 3 + i) * 3;
                 }
 
-                //校准转弯的路口
+                int j = (player.getActualY() + yPx / 3 - Common.interfaceStartY) % Room.CELL_HEIGHT;
+
+                if ((j > 0 && j < player.speed / 3 + 1) || (j < 0 && j > -player.speed / 3 - 1)) {
+                    yPx = (yPx / 3 - j) * 3;
+                }
+
+                j = Room.CELL_HEIGHT - j;
+
+                if ((j > 0 && j < player.speed / 3 + 1) || (j < 0 && j > -player.speed / 3 - 1)) {
+                    yPx = (yPx / 3 + j) * 3;
+                }
+
+                player.playerMoveOnce(xPx, yPx, true);
+            }
+
+            //校准转弯的路口
                /* int i = (player.getActualX() - Common.interfaceStartX) % Room.CELL_WIDTH;
 
                 if ((i > 0 && i < player.speed / 3 + 1) || (i < 0 && i > -player.speed / 3 - 1)) {
@@ -72,19 +75,18 @@ public class MoveThread extends Thread {
                     player.playerMove(0, j);
                 }*/
 
-                player.canMoveThread.set(true);
-            }
+            player.canMoveThread.set(true);
         }
     }
 
 
-    public void init(int xPx, int yPx){
+    public void init(int xPx, int yPx) {
         this.xPx = xPx;
         this.yPx = yPx;
     }
 
 
-    public MoveThread(Player player){
+    public MoveThread(Player player) {
         this.player = player;
     }
 }

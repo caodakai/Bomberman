@@ -12,7 +12,7 @@ import priv.cdk.bomberman.room.Room;
  */
 public class UserInterface{
     public final Game game;
-    private long lastPressProcessed = System.currentTimeMillis();
+    private long lastPressProcessed = System.currentTimeMillis();//上一次点击的时间
 
     public UserInterface(Game game) {
         this.game = game;
@@ -22,14 +22,14 @@ public class UserInterface{
         Room room = game.room;
         Player player = room.ps.get(pNumber);
 
-        if(game.isGameOver()){
+        if(game.isGameOver()){//游戏结束，只能按H开始
             if(keyCode == 72){
                 game.startGame();
             }
             return;
         }
 
-        if(player.isDie()){
+        if(player.isDie()){//玩家死亡，不能操作
             return;
         }
 
@@ -39,7 +39,7 @@ public class UserInterface{
             }
         }
 
-        if(System.currentTimeMillis() - lastPressProcessed >= player.getMoveInterval()) {
+        if(System.currentTimeMillis() - lastPressProcessed >= player.getMoveInterval()) {//降低长按点击频率
             //Do your work here...
             lastPressProcessed = System.currentTimeMillis();
         }else{

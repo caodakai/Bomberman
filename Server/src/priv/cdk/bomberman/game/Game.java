@@ -60,7 +60,7 @@ public class Game {
     }
 
     /**
-     * 游戏结束，游戏将在2秒后重新启动
+     * 游戏结束，游戏将在13秒后重新启动
      */
     public void gameOver(){
         if (gameOver.compareAndSet(false, true)) {
