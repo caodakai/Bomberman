@@ -25,7 +25,7 @@ public class StartingProcedure extends JFrame {
 
     public static final int maxPlayerNumber = 1;//最多多少人加入游戏
 
-    public static AtomicBoolean playerIsMax = new AtomicBoolean(false);//人数已达上限
+    public AtomicBoolean playerIsMax = new AtomicBoolean(false);//人数已达上限
     public final AtomicBoolean gameStop = new AtomicBoolean(false);//游戏关闭  最终指令
 
     //设置面板
@@ -34,10 +34,29 @@ public class StartingProcedure extends JFrame {
     private final PlayerData[] playerData = new PlayerData[maxPlayerNumber];
 
     public static void main(String[] args) {
-        new StartingProcedure();
+        int port = PORT;
+        int sendPort = SEND_PORT;
+
+        while (true) {
+            try {
+                if (port == SEND_PORT){
+                    System.out.println("端口已经全部被使用");
+                    break;
+                }
+                new StartingProcedure(port, sendPort);
+
+                System.out.println("端口[" + port + "," + (port + maxPlayerNumber) + "][" + sendPort + "," + (sendPort + maxPlayerNumber) + "]已经全部被连接");
+
+                port += maxPlayerNumber + 1;
+                sendPort += maxPlayerNumber + 1;
+            }catch (Exception e){
+                e.printStackTrace();
+                break;
+            }
+        }
     }
 
-    public StartingProcedure(){
+    public StartingProcedure(int port, int sendPort){
         AtomicInteger maxNumber = new AtomicInteger(0);
 
         //打开PORT的端口，接收客户端第一次连接 ，返回一个可交互的端口
@@ -53,16 +72,16 @@ public class StartingProcedure extends JFrame {
 
                 PlayerData playerDatum = new PlayerData(maxNumber.get());//主要交互对象
 
-                int port = PORT + maxNumber.addAndGet(1);//使用一个交互端口
+                int interactionPort = port + maxNumber.addAndGet(1);//使用一个交互端口
 
-                int dataPort = SEND_PORT + maxNumber.get();
+                int dataPort = sendPort + maxNumber.get();
 
-                playerDatum.setPort(port);//保存客户端端口
+                playerDatum.setPort(interactionPort);//保存客户端端口
                 playerDatum.setDataPort(dataPort);//保存客户端接收数据的端口
 
                 this.playerData[i] = playerDatum;
 
-                outString(s, port + "-" + dataPort);
+                outString(s, interactionPort + "-" + dataPort);
 
                 createConnect(i);
             } while (maxNumber.get() < maxPlayerNumber);

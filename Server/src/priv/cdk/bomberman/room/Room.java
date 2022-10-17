@@ -1,6 +1,7 @@
 package priv.cdk.bomberman.room;
 
 import priv.cdk.bomberman.Bom;
+import priv.cdk.bomberman.ai.maze.Maze;
 import priv.cdk.bomberman.charmander.Charmander;
 import priv.cdk.bomberman.charmander.CharmanderThread;
 import priv.cdk.bomberman.common.Common;
@@ -54,35 +55,35 @@ public class Room {
 
         int customsPass = game.getCustomsPass();
 
-        h = Math.min((customsPass/2) * 10 + 11 , 81);
-        w = h;
+        if (customsPass%3 != 0) {
+            h = Math.min(customsPass * 10 + 1 , 81);
+            w = h;
 
-        body = new int[h][w];
+            body = new int[h][w];
+
+            addWallAll();
+        }else {//迷宫图
+            //生成迷宫
+            Maze maze = new Maze(Math.min(customsPass * 5, 40), Math.min(customsPass * 5, 40));
+
+            body = maze.inIt();
+
+            h = maze.getR();
+            w = maze.getC();
+        }
+
         bobs = new Bom[h][w];
 
         wSize = w * CELL_WIDTH;
         hSize = h * CELL_HEIGHT;
 
-
-        for (int i = 0; i < h; i++) {
-            this.body[i][0] = -1;
-            this.body[i][w - 1] = -1;
+        if(ps != null) {
+            this.ps = ps;
+        }else{
+            this.ps = new CopyOnWriteArrayList<>();
         }
 
-        for (int i = 0; i < w; i++) {
-            this.body[0][i] = -1;
-            this.body[h-1][i] = -1;
-        }
-
-        this.body[0][0] = -1;
-        this.body[h - 1][w - 1] = -1;
-
-        for (int i = 2; i < h - 2; i+=2) {//偶数行列添加无法破坏的墙
-            for(int j=2; j < w - 2; j+=2){
-                this.body[i][j] = -1;
-            }
-        }
-
+        //统计空格数
         int blankNumber = 0;
         for (int[] ints : body) {
             for (int anInt : ints) {
@@ -94,17 +95,10 @@ public class Room {
 
         blank = blankNumber;//总共的空格数
 
-        if(ps != null) {
-            this.ps = ps;
-        }else{
-            this.ps = new CopyOnWriteArrayList<>();
-        }
-
         //随机添加可破坏砖块
         int wallNumber = blank/8;//需要随机的墙数 概率
         int number = RoomUtil.randomNumberToBody(this, 3, wallNumber);
         blank -= number;
-
 
         //随机添加门
         RoomUtil.randomAddDoor(this);
@@ -147,11 +141,33 @@ public class Room {
 
     }
 
+    private void addWallAll(){
+        for (int i = 0; i < h; i++) {
+            this.body[i][0] = -1;
+            this.body[i][w - 1] = -1;
+        }
 
+        for (int i = 0; i < w; i++) {
+            this.body[0][i] = -1;
+            this.body[h-1][i] = -1;
+        }
+
+        this.body[0][0] = -1;
+        this.body[h - 1][w - 1] = -1;
+
+        for (int i = 2; i < h - 2; i+=2) {//偶数行列添加无法破坏的墙
+            for(int j=2; j < w - 2; j+=2){
+                this.body[i][j] = -1;
+            }
+        }
+    }
+
+    /**
+     * 添加小怪
+     * @param customsPass
+     */
     private void addCritterAll(int customsPass){
-        //添加小怪
-
-        if(customsPass % 5 != 0) {
+        if(customsPass % 5 != 0) {//骑士关卡
             int eliteCritterNumber;
             if (customsPass > 3) {
                 eliteCritterNumber = Math.min(blank / 8, customsPass - 3);
@@ -203,36 +219,15 @@ public class Room {
     }
 
     /**
-     * 清除火
+     * 清除墙
      */
     public boolean destroyTheWall(int y, int x){
-        //不允许清除门
         if(body[y][x] == 3){
             new DestroyWallThread(this, y, x).start();
             return true;
-        }else return body[y][x] == Common.PROP_DOOR;
-    }
-
-    /**
-     * 摧毁墙
-     */
-    public boolean destroyTheWallAndPlayer(int y, int x){
-        playerDie(y, x);
-
-        AtomicBoolean b = new AtomicBoolean(destroyTheWall(y, x));
-
-        critters.forEach(critter -> {//监听位置是否有骑士，且生命值高于1，如果有，那么火停止蔓延
-            if (critter instanceof KnightCritter) {
-                KnightCritter knightCritter = (KnightCritter) critter;
-                if (knightCritter.getHP() > 1){
-                    if (BiotaUtil.haveBiota(knightCritter, x, y)) {
-                        b.set(true);
-                    }
-                }
-            }
-        });
-
-        return b.get();
+        }else{
+            return body[y][x] == Common.PROP_DOOR;
+        }
     }
 
     public boolean addBom(int x, int y, Bom bom){
@@ -300,7 +295,7 @@ public class Room {
                 int bodyNumber = body[i][j];
                 Bom bom = this.bobs[j][i];
 
-                if(IsUtil.isWall(bodyNumber)){
+                if(futureFireStop(bodyNumber)){
                     copyFutureBody[i][j] = bodyNumber;
                 }else if(bom != null){
                     bobs.add(bom);
@@ -335,7 +330,7 @@ public class Room {
 
                 int bodyNumber = copyFutureBody[reallyY][reallyX];
 
-                if (IsUtil.isWall(bodyNumber) || bodyNumber == Common.FUTURE_BODY_FIRE_NUMBER_CENTRE) {
+                if (futureFireStop(copyFutureBody, reallyY, reallyX) || bodyNumber == Common.FUTURE_BODY_FIRE_NUMBER_CENTRE) {
                     top = false;
                 } else {
                     copyFutureBody[reallyY][reallyX] = Common.FUTURE_BODY_FIRE_NUMBER_TOP;
@@ -348,7 +343,7 @@ public class Room {
 
                 int bodyNumber = copyFutureBody[reallyY][reallyX];
 
-                if (IsUtil.isWall(bodyNumber) || bodyNumber == Common.FUTURE_BODY_FIRE_NUMBER_CENTRE) {
+                if (futureFireStop(copyFutureBody, reallyY, reallyX) || bodyNumber == Common.FUTURE_BODY_FIRE_NUMBER_CENTRE) {
                     bottom = false;
                 } else {
                     copyFutureBody[reallyY][reallyX] = Common.FUTURE_BODY_FIRE_NUMBER_BOTTOM;
@@ -361,7 +356,7 @@ public class Room {
 
                 int bodyNumber = copyFutureBody[reallyY][reallyX];
 
-                if (IsUtil.isWall(bodyNumber) || bodyNumber == Common.FUTURE_BODY_FIRE_NUMBER_CENTRE) {
+                if (futureFireStop(copyFutureBody, reallyY, reallyX) || bodyNumber == Common.FUTURE_BODY_FIRE_NUMBER_CENTRE) {
                     left = false;
                 } else {
                     copyFutureBody[reallyY][reallyX] = Common.FUTURE_BODY_FIRE_NUMBER_LEFT;
@@ -374,7 +369,7 @@ public class Room {
 
                 int bodyNumber = copyFutureBody[reallyY][reallyX];
 
-                if (IsUtil.isWall(bodyNumber) || bodyNumber == Common.FUTURE_BODY_FIRE_NUMBER_CENTRE) {
+                if (futureFireStop(copyFutureBody, reallyY, reallyX) || bodyNumber == Common.FUTURE_BODY_FIRE_NUMBER_CENTRE) {
                     right = false;
                 } else {
                     copyFutureBody[reallyY][reallyX] = Common.FUTURE_BODY_FIRE_NUMBER_RIGHT;
@@ -385,6 +380,25 @@ public class Room {
         }
     }
 
+    /**
+     * 判断当前位置爆炸是否停止
+     */
+    private boolean futureFireStop(int[][] copyFutureBody, int reallyY, int reallyX){
+        int bodyNumber = copyFutureBody[reallyY][reallyX];
+
+        return futureFireStop(bodyNumber);
+    }
+
+    /**
+     * 仅判断当前位置是否会爆炸通过
+     */
+    private boolean futureFireStop(int bodyNumber){
+        return IsUtil.isWall(bodyNumber) || bodyNumber == Common.PROP_DOOR;
+    }
+
+    /**
+     * 暂停游戏
+     */
     public void suspendRoom(){
         if (!suspend.compareAndSet(false, true)) {
             startRoom();

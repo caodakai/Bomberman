@@ -14,9 +14,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 public class Start extends JFrame {
-    private static final int connNumber = 1;
+    private static final int connNumber = 1;//模拟连接数
 
-    public static boolean stop = false;
+    public static volatile boolean stop = false;
 
     private static UserInterface userInterface;
 

@@ -51,7 +51,7 @@ public class Knight2Thread extends MyThread {
         while (!knightCritter.isDie()) {
 
             if(point == null){
-                point = pointHelper.findShortestPaths(myRoom, movementRoutes, knightCritter);
+                point = pointHelper.findShortestPaths(myRoom.getBody(), movementRoutes, knightCritter.getLx(), knightCritter.getTy());
             }
 
             if(point != null) {
@@ -128,7 +128,7 @@ public class Knight2Thread extends MyThread {
 
             if (player.getLx() != playerLx || player.getTy() != playerTy) {//如果追踪的玩家移动了一格，那么重新计算
 
-                Point<Player> shortestPaths = pointHelper.findShortestPaths(myRoom, movementRoutes, knightCritter);
+                Point<Player> shortestPaths = pointHelper.findShortestPaths(myRoom.getBody(), movementRoutes, knightCritter.getLx(), knightCritter.getTy());
 
                 if(shortestPaths != null) {
 

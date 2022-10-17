@@ -22,6 +22,26 @@ public class UserInterface{
         Room room = game.room;
         Player player = room.ps.get(pNumber);
 
+        if (!player.isMember()) {
+            switch (keyCode) {
+                case 38:
+                case 87://W
+                case 37:
+                case 65://D
+                case 40:
+                case 83://S
+                case 39:
+                case 68://A
+                case 74://J
+                case 75://K
+                case 72://H
+                    break;
+                default:
+                    return;
+            }
+        }
+
+
         if(game.isGameOver()){//游戏结束，只能按H开始
             if(keyCode == 72){
                 game.startGame();

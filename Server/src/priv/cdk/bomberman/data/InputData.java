@@ -170,6 +170,7 @@ public class InputData implements Serializable {
         private static final long serialVersionUID = 1L;
 
         private boolean questionMark;//是否处于无敌状态
+        private boolean fireImmune;//是否处于火焰免疫状态
         private int bomNumber;//炸弹数量
         private int bomSize;//炸弹范围
         private int questionMarkTime;//无敌时间
@@ -185,6 +186,7 @@ public class InputData implements Serializable {
             this.setName(player.name);
 
             this.questionMark = player.isQuestionMark();
+            this.fireImmune = player.isFireImmune();
             this.bomNumber = player.getBomNumber();
             this.bomSize = player.getBomSize();
             this.questionMarkTime = player.questionMarkThread.getQuestionMarkTime();
@@ -220,6 +222,14 @@ public class InputData implements Serializable {
 
         public void setQuestionMarkTime(int questionMarkTime) {
             this.questionMarkTime = questionMarkTime;
+        }
+
+        public boolean isFireImmune() {
+            return fireImmune;
+        }
+
+        public void setFireImmune(boolean fireImmune) {
+            this.fireImmune = fireImmune;
         }
     }
 

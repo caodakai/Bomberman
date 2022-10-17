@@ -23,7 +23,11 @@ public abstract class MyThread extends Thread implements MyRunnable {
                     wait();
                 }
             }
-            mainSleep(millis);
+        }
+
+        mainSleep(millis);
+
+        if (!myRoom.close.get()){
             if (myRoom.suspend.get()) {
                 synchronized (this) {
                     wait();

@@ -52,10 +52,16 @@ public class CritterThread extends MyThread {
                 while (!critter.isDie()) {
                     boolean move = critter.move(tb, lr);
                     try {
-                        mySleep(moveTime);
-                        if (!move) {
+                        if (!move){
+                            if(critter instanceof BasicsCritter) {//如果为普通怪，那么降低转向速度
+                                for (int t = 0; !critter.isDie() && t < 3; t++) {
+                                    critter.move(tb, lr);
+                                    mySleep(moveTime);//如果不可移动，那么再睡眠几次移动速度，然后再重新寻路，防止转弯太快了
+                                }
+                            }
                             break;
-                        } else {
+                        }else{
+                            mySleep(moveTime);
                             if (critter.getTy() == critter.getBy() && critter.getLx() == critter.getRx()) {//路过路口时，有20%概率会重新寻路
                                 if(critter instanceof EliteCritter) {
                                     int futureBodyNumber = critter.room.futureBody[critter.getTy()][critter.getLx()];

@@ -61,7 +61,7 @@ public class KnightCritter extends Critter {
     @Override
     public boolean die(){
         if(isDie()) {//骑士已经处于死亡状态
-            return false;
+            return true;
         }
 
         if (room.close.get()) {//如果房间关闭，那么直接死亡
@@ -71,14 +71,16 @@ public class KnightCritter extends Critter {
             return false;
         }
 
-        AtomicBoolean haveDragon = new AtomicBoolean(false);
-        room.critters.forEach(critter -> {
-            if (critter instanceof DragonCritter){
-                haveDragon.set(true);
-            }
-        });
+        boolean haveDragon = false;
 
-        if (haveDragon.get()){//龙未被消灭
+        for (Critter critter : room.critters) {
+            if (critter instanceof DragonCritter) {
+                haveDragon = true;
+                break;
+            }
+        }
+
+        if (haveDragon){//龙未被消灭
             return false;
         }
 
@@ -87,10 +89,8 @@ public class KnightCritter extends Critter {
         }else{
             if (stageDie.compareAndSet(false, true)) {
                 new KnightDieThread(this).start();
-                return true;
-            }else {
-                return false;
             }
+            return false;
         }
     }
 

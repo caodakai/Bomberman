@@ -2,6 +2,9 @@ package priv.ui;
 
 import priv.Start;
 import priv.cdk.bomberman.data.InputData;
+import priv.cdk.bomberman.wayfinding.Point;
+import priv.cdk.bomberman.wayfinding.PointHelper;
+import priv.cdk.bomberman.wayfinding.PointInterface;
 import priv.common.Common;
 
 import javax.swing.*;
@@ -12,12 +15,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 界面程序
  */
 public class UserInterface extends JPanel implements KeyListener {
     private static final int showSize = 800;//查看的区域大小
+    private static final boolean drawPath = true;//绘制路线，即自动寻路
 
     private int showStartX = 0;
     private int showStartY = 0;
@@ -26,7 +31,65 @@ public class UserInterface extends JPanel implements KeyListener {
 
     public InputData inputData;
 
-    private boolean member;
+    private static final int fontSize = 12;
+    private static final Font font = new Font(null, Font.BOLD, fontSize);
+
+    public int[][] movementRoutes;
+
+    private final PointHelper<InputData.Critter> pointHelper = new PointHelper<>(new PointInterface<InputData.Critter>() {
+        @Override
+        public InputData.Critter hasT(int y, int x) {
+            boolean hasDragon = false;
+            label : for (InputData.Critter critter : inputData.getCritters()) {
+                if (critter != null && !critter.isDie()) {
+                    switch (critter.getName()) {
+                        case "Dragon_blue":
+                        case "Dragon_golden":
+                            hasDragon = true;
+                            break label;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            boolean hasCritter = false;
+            for (InputData.Critter critter : inputData.getCritters()) {
+                if (critter != null && !critter.isDie()) {
+                    hasCritter = true;
+                    if (critter.getLx() == x && critter.getTy() == y) {
+                        switch (critter.getName()) {//如果找到骑士，但是存在龙，那么不返回骑士，找到龙再返回龙
+                            case "Knight_1":
+                            case "Knight_2":
+                                if (hasDragon){
+                                    break;
+                                }else {
+                                    return critter;
+                                }
+                            default:
+                                return critter;
+                        }
+                    }
+                }
+            }
+
+            //如果没有找到任何怪，那么虚构一个怪在门的地方，并返回
+            if (!hasCritter) {
+                if (inputData.getBody(y, x) == Common.PROP_DOOR){
+                    return new InputData.Critter();
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        public boolean canMove(int number) {
+            return number != -1;
+        }
+    });
+
+    private final boolean member;
 
     public UserInterface(Socket socket){
         this.sockets.add(socket);
@@ -43,13 +106,31 @@ public class UserInterface extends JPanel implements KeyListener {
 
     //计算可视区域
     public void calculateShow(){
-        int pNumber = inputData.getpNumber();
-        InputData.Player thisPlayer = inputData.getPlayers()[pNumber];
+        InputData.Player thisPlayer = showPlayer(inputData.getPlayers(), inputData.getpNumber(), 0);
+
         showStartX = Math.max(0, thisPlayer.getActualX() - showSize/2 - Common.interfaceStartX);
         showStartY = Math.max(0, thisPlayer.getActualY() - showSize/2 - Common.interfaceStartY);
 
         showStartX = Math.min(showStartX, Math.max(0, inputData.wSize  - showSize + Common.interfaceStartX));
         showStartY = Math.min(showStartY, Math.max(0, inputData.hSize - showSize + Common.interfaceStartY));
+    }
+
+    /**
+     * 获取玩家视野区域 如果玩家死亡，那么获取下一个玩家的视野，如果玩家均死亡，那么获取当前视野
+     * @param players 玩家集合
+     * @param pNumber 玩家下标
+     * @param number 计数
+     */
+    public InputData.Player showPlayer(InputData.Player[] players, int pNumber, int number){
+        if (pNumber >= players.length){
+            pNumber = 0;
+        }
+        InputData.Player thisPlayer = players[pNumber];
+        if (thisPlayer.isDie() && number < players.length){
+            return showPlayer(players, pNumber + 1, number + 1);
+        }else {
+            return thisPlayer;
+        }
     }
 
 
@@ -63,6 +144,10 @@ public class UserInterface extends JPanel implements KeyListener {
 
         calculateShow();
 
+        g.setFont(font);//设置字体
+
+        int[][] body = inputData.getBody();
+
         for (int i = 0; i < inputData.H; i++) {
             for (int j = 0; j < inputData.W; j++) {
                 int dx1 = j * inputData.CELL_WIDTH + Common.interfaceStartX - showStartX;
@@ -74,7 +159,7 @@ public class UserInterface extends JPanel implements KeyListener {
                 Image img;
                 int dx2 = dx1 + inputData.CELL_WIDTH, dy2 = dy1 + inputData.CELL_HEIGHT;
                 int sx1,sy1,sx2,sy2;
-                switch (inputData.getBody(i,j)){
+                switch (body[i][j]){
 //                switch (room.futureBody[i][j]){
                     case Common.PROP_SCOPE_ADD:
                         img = Common.prop;
@@ -253,9 +338,18 @@ public class UserInterface extends JPanel implements KeyListener {
                         img = Common.not_destroy_wall;
                         sx1 = 0; sy1 = 0;
                         break;
+                    case 0:
+                        img = null;
+                        sx1 = 0; sy1 = 0;
+                        break;
                     default:
                         img = null;
                         sx1 = 0; sy1 = 0;
+
+                        g.setColor(Color.black);
+                        g.fillRect(dx1, dy1, inputData.CELL_WIDTH, inputData.CELL_HEIGHT);
+                        g.setColor(Color.white);
+                        g.drawString(body[i][j] + "", dx1 + 10, dy1 + 10);
                 }
                 if(img != null) {
                     sx2 = sx1 + 40; sy2 = sy1 + 40;
@@ -267,14 +361,17 @@ public class UserInterface extends JPanel implements KeyListener {
         }
 
         InputData.Player[] ps = inputData.getPlayers();
+        InputData.Critter[] critters = inputData.getCritters();
+
+        if (drawPath) {
+            drawAutomaticPathfinding(g);//绘制路线
+        }
 
         for (InputData.Player player : ps) {
             if (player != null) {
                 drawBiology(g, player, player.isQuestionMark() ? Common.player_question_mark : Common.player);
             }
         }
-
-        InputData.Critter[] critters = inputData.getCritters();
 
         for (InputData.Critter critter : critters) {
             if(critter != null){
@@ -313,13 +410,182 @@ public class UserInterface extends JPanel implements KeyListener {
         }
 
         if(inputData.isGameOver()){
-            g.drawImage(Common.gameOver, Common.interfaceStartX - 1, Common.interfaceStartY - 1,Common.interfaceStartX + showSize + 2,Common.interfaceStartY + showSize + 2,
+            g.drawImage(Common.gameOver, showStartX, showStartY, Math.min(showSize - inputData.CELL_WIDTH, showStartX + inputData.wSize),Math.min(showSize - inputData.CELL_HEIGHT, showStartY + inputData.hSize),
                     0, 0, 802, 802, null);
         }
 
         drawProperty(g, ps);
 
         drawThumbnail(g, critters, ps, charmanders);
+    }
+
+    /**
+     * 绘制自动寻路
+     */
+    private long lastDrawPathMillis = System.currentTimeMillis();
+    public void drawAutomaticPathfinding(Graphics g){
+        InputData.Player player = inputData.getPlayers()[inputData.getpNumber()];
+
+        if (player.isDie()){
+            return;
+        }
+
+        if (System.currentTimeMillis() - lastDrawPathMillis > 100) {
+            lastDrawPathMillis = System.currentTimeMillis();
+            int[][] movementRoutes = new int[inputData.H][inputData.W];
+
+            Point<InputData.Critter> shortestPaths = pointHelper.findShortestPaths(inputData.getBody(), movementRoutes, player.getLx(), player.getTy());
+
+            if (shortestPaths != null) {
+                this.movementRoutes = new int[inputData.H][inputData.W];
+
+                int pathToMoveRoutes = createPathToMoveRoutes(0, shortestPaths, false);//从下一个点开始
+
+                createPathToMoveRoutes(pathToMoveRoutes, shortestPaths.last, true);//需要前一个点做铺垫
+            }
+        }
+
+        if (this.movementRoutes != null) {
+            for (int i = 0; i < this.movementRoutes.length; i++) {
+                int[] movementRoute = this.movementRoutes[i];
+                for (int j = 0; j < movementRoute.length; j++) {
+                    if (isPath(movementRoute[j])) {
+                        int dx1 = i * inputData.CELL_WIDTH + Common.interfaceStartX - showStartX;
+                        int dy1 = j * inputData.CELL_HEIGHT + Common.interfaceStartY - showStartY;
+                        if (cannotDraw(dx1, dy1)) {
+                            continue;
+                        }
+
+                        int sx1, sy1;
+                        switch (movementRoute[j]){
+                            case 10:
+                                sx1 = 120; sy1 = 40;
+                                break;
+                            case 11:
+                                sx1 = 120; sy1 = 0;
+                                break;
+                            case 12:
+                                sx1 = 120; sy1 = 80;
+                                break;
+                            case 13:
+                                sx1 = 200; sy1 = 120;
+                                break;
+                            case 14:
+                                sx1 = 240; sy1 = 120;
+                                break;
+                            case 15:
+                                sx1 = 160; sy1 = 120;
+                                break;
+                            case 16:
+                                sx1 = 0; sy1 = 120;
+                                break;
+                            case 17:
+                                sx1 = 40; sy1 = 120;
+                                break;
+                            case 18:
+                                sx1 = 80; sy1 = 120;
+                                break;
+                            case 19:
+                                sx1 = 120; sy1 = 200;
+                                break;
+                            case 20:
+                                sx1 = 120; sy1 = 240;
+                                break;
+                            case 21:
+                                sx1 = 120; sy1 = 160;
+                                break;
+                            default:
+                                sx1 = 0; sy1 = 0;
+                                break;
+                        }
+
+                        g.drawImage(Common.playerPath, dx1, dy1, dx1 + inputData.CELL_WIDTH, dy1 + inputData.CELL_HEIGHT, sx1, sy1, sx1 + 40, sy1 + 40,null);
+//                        g.fillOval(dx1 + inputData.CELL_WIDTH / 2 - 5, dy1 + inputData.CELL_HEIGHT / 2 - 5, 10, 10);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 判断是否为路径值
+     */
+    public boolean isPath(int number){
+        switch (number){
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * 将路径赋值到数组
+     */
+    public int createPathToMoveRoutes(int lastNumber, Point<InputData.Critter> critterPoint, boolean sustain){
+        if (critterPoint != null){
+            Point<InputData.Critter> last = critterPoint.last;
+
+            if (last != null){
+                int number;
+
+                if (last.y < critterPoint.y) {//上
+                    if (lastNumber == 13 || lastNumber == 14 || lastNumber == 15){//右往上走
+                        number = 10;
+                    }else if (lastNumber == 16 || lastNumber == 17 || lastNumber == 18){//左往上走
+                        number = 11;
+                    }else {
+                        number = 12;
+                    }
+                }else if (last.y == critterPoint.y){
+                    if (last.x > critterPoint.x){//右
+                        if (lastNumber == 10 || lastNumber == 11 || lastNumber == 12){//上往右走
+                            number = 14;
+                        }else if (lastNumber == 19 || lastNumber == 20 || lastNumber == 21){//下往右走
+                            number = 13;
+                        }else {
+                            number = 15;
+                        }
+                    }else{//左
+                        if (lastNumber == 10 || lastNumber == 11 || lastNumber == 12){//上往左走
+                            number = 17;
+                        }else if (lastNumber == 19 || lastNumber == 20 || lastNumber == 21){//下往左走
+                            number = 16;
+                        }else {
+                            number = 18;
+                        }
+                    }
+                }else{
+                    if (lastNumber == 13 || lastNumber == 14 || lastNumber == 15){//右往下走
+                        number = 20;
+                    }else if (lastNumber == 16 || lastNumber == 17 || lastNumber == 18){//左往下走
+                        number = 19;
+                    }else {
+                        number = 21;
+                    }
+                }
+
+                if (sustain) {
+                    this.movementRoutes[critterPoint.x][critterPoint.y] = number;
+                    return createPathToMoveRoutes(number, critterPoint.last, true);
+                }else {
+                    return number;
+                }
+            }
+        }
+
+        return 0;
     }
 
     /**
@@ -371,12 +637,35 @@ public class UserInterface extends JPanel implements KeyListener {
                 break;
             default:
                 sx1 = 0;sy1 = 0;
+                image = null;//状态不存在那么不画图形了
 
         }
 
         if (image != null) {
             sx2 = sx1 + 40;
             sy2 = sy1 + 40;
+
+            //添加玩家名字
+            if (basicAttribute instanceof InputData.Player) {
+                if (basicAttribute == inputData.getPlayers()[inputData.getpNumber()]) {
+                    g.setColor(Color.magenta);
+                }else {
+                    g.setColor(Color.blue);
+                }
+
+                int offsetX;//计算玩家名字偏移量
+                try {
+                    int gbk = basicAttribute.getName().getBytes("gbk").length;
+
+                    offsetX = -inputData.CELL_WIDTH/2 + gbk * (fontSize / 4) + (gbk%2 == 0 ? (fontSize / 8) : 0);
+                } catch (UnsupportedEncodingException e) {
+                    offsetX = 0;
+                    e.printStackTrace();
+                }
+
+                g.drawString(basicAttribute.getName(), Math.max(0, dx1 - offsetX), dy1 - fontSize - 2);
+            }
+
             g.drawImage(image, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
         }
     }
@@ -390,10 +679,10 @@ public class UserInterface extends JPanel implements KeyListener {
         int x = Common.interfaceStartX + showSize + 2 + inputData.CELL_WIDTH * 2;
 
         g.setColor(Color.black);
-        g.drawRect(x, Common.interfaceStartY, 100, inputData.hSize);//框
+        g.drawRect(x, Common.interfaceStartY, fontSize * 15, inputData.hSize);//框
 
         final int[] y = {Common.interfaceStartY};
-        int spaceBetween = 15;//间距
+        int spaceBetween = (int) (fontSize * 1.5);//间距
         g.setColor(Color.red);
         g.drawString("分数： " + inputData.getScore() , x + 5, y[0] += spaceBetween);
         g.drawString("剩余小怪： " + inputData.getSurplusCrittersSize() , x + 5, y[0] += spaceBetween);
@@ -401,13 +690,14 @@ public class UserInterface extends JPanel implements KeyListener {
 
         for (InputData.Player player : ps) {
             g.setColor(Color.black);
-            g.drawLine(x, y[0] +=spaceBetween, x + 100, y[0]);
+            g.drawLine(x, y[0] +=spaceBetween, x + fontSize * 15, y[0]);
 
             g.setColor(player.isDie() ? Color.red : Color.blue);
             g.drawString("玩家名：" + player.getName() + (player.isDie() ? " - 死亡" : ""), x + 5, y[0] += spaceBetween);
             g.setColor(Color.blue);
             g.drawString("炸弹数量： " + player.getBomNumber() , x + 5, y[0] += spaceBetween);
             g.drawString("炸弹范围： " + player.getBomSize() , x + 5, y[0] += spaceBetween);
+            g.drawString("火焰免疫： " + player.isFireImmune() , x + 5, y[0] += spaceBetween);
             g.drawString("无敌时间： " + player.getQuestionMarkTime() , x + 5, y[0] += spaceBetween);
         }
     }

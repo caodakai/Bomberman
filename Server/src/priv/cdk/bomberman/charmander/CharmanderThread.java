@@ -3,7 +3,12 @@ package priv.cdk.bomberman.charmander;
 import priv.cdk.bomberman.ai.wayfinding.Point;
 import priv.cdk.bomberman.ai.wayfinding.PointHelper;
 import priv.cdk.bomberman.ai.wayfinding.PointInterface;
+import priv.cdk.bomberman.common.Common;
 import priv.cdk.bomberman.critter.Critter;
+import priv.cdk.bomberman.critter.basic.BasicsCritter;
+import priv.cdk.bomberman.critter.dragon.DragonCritter;
+import priv.cdk.bomberman.critter.knight.KnightCritter;
+import priv.cdk.bomberman.data.InputData;
 import priv.cdk.bomberman.parent.MyThread;
 import priv.cdk.bomberman.room.Room;
 
@@ -21,8 +26,25 @@ public class CharmanderThread extends MyThread {
          */
         @Override
         public Critter hasT(int y, int x) {
+            boolean hasDragon = false;
+
             for (Critter critter : myRoom.critters) {
                 if (!critter.isDie()) {
+                    if (critter instanceof DragonCritter) {
+                        hasDragon = true;
+                        break;
+                    }
+                }
+            }
+
+            boolean hasCritter = false;
+            for (Critter critter : myRoom.critters) {
+                if (!critter.isDie()) {
+                    hasCritter = true;
+                    if (critter instanceof KnightCritter && hasDragon){
+                        continue;
+                    }
+
                     if (critter.getLx() == x) {
                         if (critter.getTy() == y || critter.getBy() == y) {
                             return critter;
@@ -32,6 +54,12 @@ public class CharmanderThread extends MyThread {
                             return critter;
                         }
                     }
+                }
+            }
+
+            if (!hasCritter) {
+                if (myRoom.getBodyCellValue(y, x) == Common.PROP_DOOR){
+                    return new BasicsCritter(myRoom, y, x);
                 }
             }
 
@@ -59,7 +87,7 @@ public class CharmanderThread extends MyThread {
         while (!charmander.isDie()) {
 
             if(point == null){
-                point = pointHelper.findShortestPaths(myRoom, movementRoutes, charmander);
+                point = pointHelper.findShortestPaths(myRoom.getBody(), movementRoutes, charmander.getLx(), charmander.getTy());
             }
 
             if(point != null) {
@@ -138,7 +166,7 @@ public class CharmanderThread extends MyThread {
 
             if (critter.getLx() != critterLx || critter.getTy() != critterTy) {//如果追踪的怪移动了一格，那么重新计算
 
-                Point<Critter> shortestPaths = pointHelper.findShortestPaths(myRoom, movementRoutes, charmander);
+                Point<Critter> shortestPaths = pointHelper.findShortestPaths(myRoom.getBody(), movementRoutes, charmander.getLx(), charmander.getTy());
 
                 if(shortestPaths != null) {
 

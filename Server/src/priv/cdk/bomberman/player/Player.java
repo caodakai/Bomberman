@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Player extends Biota {
-    private final static boolean TEST = true;//是否为测试，如果是测试，那么创建的玩家都是无敌的
+    private final static boolean TEST = false;//是否为测试，如果是测试，那么创建的玩家都是无敌的
 
     private final boolean member;//会员
 
@@ -74,6 +74,8 @@ public class Player extends Biota {
 
         if(this.member) {
             this.bomNumber.set(this.room.getBlank());
+        }else{//过关后，火焰免疫取消
+            this.fireImmune = false;
         }
     }
 

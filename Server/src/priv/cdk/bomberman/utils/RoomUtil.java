@@ -21,7 +21,7 @@ public class RoomUtil {
         int blank = room.getBlank();
         for (int i=1; i < room.getH() - 1; i++){
             for (int j=1; j< room.getW() - 1; j++){
-                if(i < 3 && j < 3){
+                if(i < 4 && j < 4){
                     continue;
                 }
 

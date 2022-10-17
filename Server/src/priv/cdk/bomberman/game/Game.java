@@ -31,11 +31,15 @@ public class Game {
     //过关
     public void reloadRoom(){
         customsPass ++ ;
-        this.room = new Room(this, room.ps);
         room.ps.forEach(player->{
             if(!player.isDie()){
+                player.questionMarkThread.openQuestionMark(5);//先开启无敌，然后再重置房间
+            }
+        });
+        this.room = new Room(this, room.ps);
+        room.ps.forEach(player-> {
+            if (!player.isDie()) {
                 player.reload(this.room);
-                player.questionMarkThread.openQuestionMark(5);
             }
         });
     }

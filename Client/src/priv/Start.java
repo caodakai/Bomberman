@@ -18,7 +18,7 @@ import java.util.Scanner;
  * cmd 命令运行 java -jar client.jar
  */
 public class Start extends JFrame {
-    public static boolean stop = false;
+    public static volatile boolean stop = false;
 
     private static UserInterface userInterface;
 

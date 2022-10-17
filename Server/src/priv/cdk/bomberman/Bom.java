@@ -1,5 +1,9 @@
 package priv.cdk.bomberman;
 
+import priv.cdk.bomberman.common.Common;
+import priv.cdk.bomberman.critter.Critter;
+import priv.cdk.bomberman.critter.knight.KnightCritter;
+import priv.cdk.bomberman.parent.BiotaUtil;
 import priv.cdk.bomberman.parent.MyThread;
 import priv.cdk.bomberman.player.Player;
 import priv.cdk.bomberman.room.Room;
@@ -9,8 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Bom extends MyThread {
     public static final long BOM_TIME = 1000;//爆炸的速度
-    public static final long FIRE_SPREAD = 300;//火焰展开的速度
-    public static final long FIRE_SHRINK = 300;//火焰收缩的速度
+    public static final long FIRE_SPREAD = 200;//火焰展开的速度
+    public static final long FIRE_SHRINK = 200;//火焰收缩的速度
 
     public final int x;
     public final int y;
@@ -62,6 +66,8 @@ public class Bom extends MyThread {
 
         int bomState2 = bomState;//记录回收状态
 
+        int stateRefresh = 0;
+
         while (bomState <= 6) {
             int i = 0;
 
@@ -78,35 +84,19 @@ public class Bom extends MyThread {
                 if(top){
                     int reallyY = y - i;
                     int reallyX = x;
-                    if(room.getBodyCellValue(reallyY, reallyX) < 0){
-                        top = false;
-                    }else {
-                        if (room.destroyTheWallAndPlayer(reallyY, reallyX)) {
-                            top = false;
-                            if (i == 0) {
-                                bottom = false;
-                                left = false;
-                                right = false;
-                            }
-                        }else {
-                            if (i != 0 && wakeUpTheBomb(room, reallyY, reallyX, 2)) {
-                                top = false;
-                            } else {
-                                fireFilter(reallyY, reallyX);
-                                if (i == 0) {
-                                    room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
-                                } else {
-                                    int bodyCellValue = room.getBodyCellValue(reallyY, reallyX);
 
-                                    if (i == size - 1) {
-                                        setUpFireDestination(bodyCellValue, reallyY, reallyX, bomState);
-                                    } else {
-                                        setUpFire(bodyCellValue, reallyY, reallyX, bomState);
-                                    }
-                                }
-                                tj = reallyY;
-                            }
+                    boolean stop = fireStopSpread(reallyY, reallyX, i, 2);
+
+                    if (stop){
+                        top = false;
+                        if (i == 0){
+                            bottom = false;
+                            left = false;
+                            right = false;
                         }
+                    }else{
+                        fireFilter(reallyY, reallyX, i == 0, i == size - 1, 1, bomState);
+                        tj = reallyY;
                     }
 
                     if(bomState != 4) {
@@ -120,30 +110,13 @@ public class Bom extends MyThread {
                     int reallyY = y + i;
                     int reallyX = x;
 
-                    if(room.getBodyCellValue(reallyY, reallyX) < 0){
-                        bottom = false;
-                    }else {
-                        if (room.destroyTheWallAndPlayer(reallyY, reallyX)) {
-                            bottom = false;
-                        }else {
-                            if (i != 0 && wakeUpTheBomb(room, reallyY, reallyX, 1)) {
-                                bottom = false;
-                            } else {
-                                fireFilter(reallyY, reallyX);
-                                if (i == 0) {
-                                    room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
-                                } else {
-                                    int bodyCellValue = room.getBodyCellValue(reallyY, reallyX);
+                    boolean stop = fireStopSpread(reallyY, reallyX, i, 1);
 
-                                    if (i == size - 1) {
-                                        setDownFireDestination(bodyCellValue, reallyY, reallyX, bomState);
-                                    } else {
-                                        setDownFire(bodyCellValue, reallyY, reallyX, bomState);
-                                    }
-                                }
-                                bj = reallyY;
-                            }
-                        }
+                    if (stop){
+                        bottom = false;
+                    }else{
+                        fireFilter(reallyY, reallyX, i == 0, i == size - 1, 2, bomState);
+                        bj = reallyY;
                     }
 
                     if(bomState != 4) {
@@ -157,30 +130,13 @@ public class Bom extends MyThread {
                     int reallyY = y;
                     int reallyX = x - i;
 
-                    if(room.getBodyCellValue(reallyY, reallyX) < 0){
-                        left = false;
-                    }else {
-                        if (room.destroyTheWallAndPlayer(reallyY, reallyX)) {
-                            left = false;
-                        }else {
-                            if (i != 0 && wakeUpTheBomb(room, reallyY, reallyX, 4)) {
-                                left = false;
-                            } else {
-                                fireFilter(reallyY, reallyX);
-                                if (i == 0) {
-                                    room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
-                                } else {
-                                    int bodyCellValue = room.getBodyCellValue(reallyY, reallyX);
+                    boolean stop = fireStopSpread(reallyY, reallyX, i, 4);
 
-                                    if (i == size - 1) {
-                                        setLeftFireDestination(bodyCellValue, reallyY, reallyX, bomState);
-                                    } else {
-                                        setLeftFire(bodyCellValue, reallyY, reallyX, bomState);
-                                    }
-                                }
-                                li = reallyX;
-                            }
-                        }
+                    if (stop){
+                        left = false;
+                    }else{
+                        fireFilter(reallyY, reallyX, i == 0, i == size - 1, 3, bomState);
+                        li = reallyX;
                     }
 
                     if(bomState != 4) {
@@ -194,30 +150,13 @@ public class Bom extends MyThread {
                     int reallyY = y;
                     int reallyX = x + i;
 
-                    if(room.getBodyCellValue(reallyY, reallyX) < 0){
-                        right = false;
-                    }else {
-                        if (room.destroyTheWallAndPlayer(reallyY, reallyX)) {
-                            right = false;
-                        }else {
-                            if (i != 0 && wakeUpTheBomb(room, reallyY, reallyX, 3)) {
-                                right = false;
-                            } else {
-                                fireFilter(reallyY, reallyX);
-                                if (i == 0) {
-                                    room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
-                                } else {
-                                    int bodyCellValue = room.getBodyCellValue(reallyY, reallyX);
+                    boolean stop = fireStopSpread(reallyY, reallyX, i, 3);
 
-                                    if (i == size - 1) {
-                                        setRightFireDestination(bodyCellValue, reallyY, reallyX, bomState);
-                                    } else {
-                                        setRightFire(bodyCellValue, reallyY, reallyX, bomState);
-                                    }
-                                }
-                                ri = reallyX;
-                            }
-                        }
+                    if (stop){
+                        right = false;
+                    }else{
+                        fireFilter(reallyY, reallyX, i == 0, i == size - 1, 4, bomState);
+                        ri = reallyX;
                     }
 
                     if(bomState != 4) {
@@ -239,13 +178,18 @@ public class Bom extends MyThread {
                 new Thread(room::refreshFutureBody).start();
             }
 
-            bomState ++;
+            stateRefresh ++;
+            if (stateRefresh == 3){
+                stateRefresh = 0;
+                bomState ++;
+            }
 
             try {
-                mySleep(FIRE_SPREAD);
+                mySleep(FIRE_SPREAD/3);
             } catch (InterruptedException e) {
 //                e.printStackTrace();
             }
+
         }
 
         int bomState2Index = 6;
@@ -254,103 +198,52 @@ public class Bom extends MyThread {
 
             while (tj2 <= y || bj2 >= y || li2 <= x || ri2 >= x) {
                 if (tj2 <= y) {
-                    fireFilter(tj2, x);
-                    if(tj2 == y){
-                        room.setBodyCellValue(tj2, x, 1000 + bomState2Index);//1004~1006
-                    } else{
-                        int bodyCellValue = room.getBodyCellValue(tj2, x);
-
-                        if(y - tj2 == size - 1){
-                            setUpFireDestination(bodyCellValue, tj2, x, bomState2Index);//1007~1009
-                        }else {
-                            setUpFire(bodyCellValue, tj2, x, bomState2Index);//1010~1012
-                        }
-                    }
+                    fireFilter(tj2, x, tj2 == y, y - tj2 == size - 1, 1, bomState2Index);
                     tj2++;
                 }
                 if (bj2 >= y) {
-                    fireFilter(bj2, x);
-                    if(bj2 == y){
-                        room.setBodyCellValue(bj2, x, 1000 + bomState2Index);//1004~1006
-                    } else{
-                        int bodyCellValue = room.getBodyCellValue(bj2, x);
-
-                        if(bj2 - y == size - 1){
-                            setDownFireDestination(bodyCellValue, bj2, x, bomState2Index);//1013~1015
-                        }else {
-                            setDownFire(bodyCellValue, bj2, x, bomState2Index);//1010~1012
-                        }
-                    }
+                    fireFilter(bj2, x, bj2 == y, bj2 - y == size - 1, 2, bomState2Index);
                     bj2--;
                 }
                 if (li2 <= x) {
-                    fireFilter(y , li2);
-                    if(li2 == x){
-                        room.setBodyCellValue(y, li2, 1000 + bomState2Index);//1004~1006
-                    } else{
-                        int bodyCellValue = room.getBodyCellValue(y, li2);
-
-                        if(x - li2 == size - 1){
-                            setLeftFireDestination(bodyCellValue, y, li2, bomState2Index);//1019~1021
-                        }else {
-                            setLeftFire(bodyCellValue, y, li2, bomState2Index);//1022~1024
-                        }
-                    }
+                    fireFilter(y , li2, li2 == x, x - li2 == size - 1, 3, bomState2Index);
                     li2++;
                 }
                 if (ri2 >= x) {
-                    fireFilter(y , ri2);
-                    if(ri2 == x){
-                        room.setBodyCellValue(y, ri2, 1000 + bomState2Index);//1004~1006
-                    } else{
-                        int bodyCellValue = room.getBodyCellValue(y, ri2);
-
-                        if(ri2 - x == size - 1){
-                            setRightFireDestination(bodyCellValue, y, ri2, bomState2Index);//1025~1027
-                        }else {
-                            setRightFire(bodyCellValue, y, ri2, bomState2Index);//1028~1030
-                        }
-                    }
+                    fireFilter(y , ri2, ri2 == x, ri2 - x == size - 1, 4, bomState2Index);
                     ri2--;
                 }
             }
 
-            bomState2Index -- ;
+            stateRefresh ++;
+            if (stateRefresh == 3){
+                stateRefresh = 0;
+                bomState2Index --;
+            }
 
             try {
-                mySleep(FIRE_SHRINK);
+                mySleep(FIRE_SHRINK/3);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
         }
 
         while (maxTj <= y || maxBj >= y || maxLi <= x || maxRi >= x) {
             if (maxTj <= y) {
-                int bodyCellValue = room.getBodyCellValue(maxTj, x);
-                if ((bodyCellValue - 1004) % 3 == 0) {
-                    removeFire(maxTj, x);
-                }
+                removeFire(maxTj, x);
                 maxTj++;
             }
             if (maxBj >= y) {
-                int bodyCellValue = room.getBodyCellValue(maxBj, x);
-                if ((bodyCellValue - 1004) % 3 == 0) {
-                    removeFire(maxBj, x);
-                }
+                removeFire(maxBj, x);
                 maxBj--;
             }
             if (maxLi <= x) {
-                int bodyCellValue = room.getBodyCellValue(y, maxLi);
-                if ((bodyCellValue - 1004) % 3 == 0) {
-                    removeFire(y, maxLi);
-                }
+                removeFire(y, maxLi);
                 maxLi++;
             }
             if (maxRi >= x) {
-                int bodyCellValue = room.getBodyCellValue(y, maxRi);
-                if ((bodyCellValue - 1004) % 3 == 0) {
-                    removeFire(y, maxRi);
-                }
+                removeFire(y, maxRi);
                 maxRi--;
             }
         }
@@ -361,11 +254,11 @@ public class Bom extends MyThread {
 
     public void setUpFireDestination(int bodyCellValue, int reallyY, int reallyX, int bomState){
         if (bodyCellValue == 0 || IsUtil.isProp(bodyCellValue) || IsUtil.isUpDestination(bodyCellValue)){//如果为道具或者为上终火
-            room.setBodyCellValue(reallyY, reallyX, 1003 + bomState);//1007~1009
-        }else if (IsUtil.isDown(bodyCellValue) || IsUtil.isDownDestination(bodyCellValue)){//如果为向下的火，那么改成上火
-            room.setBodyCellValue(reallyY, reallyX, 1006 + bomState);//1010~1012
-        }else if (!IsUtil.isUp(bodyCellValue)){//不为上火的都改成中间火
-            room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1003 + bomState);//1007~1009
+        }else if (IsUtil.isDown(bodyCellValue) || IsUtil.isDownDestination(bodyCellValue) || IsUtil.isUp(bodyCellValue)){//如果为向下的火，那么改成上火
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1006 + bomState);//1010~1012
+        }else{
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1000 + bomState);//1004~1006
         }
     }
 
@@ -373,19 +266,21 @@ public class Bom extends MyThread {
         if (bodyCellValue == 0 || IsUtil.isProp(bodyCellValue) || IsUtil.isUpDestination(bodyCellValue) || IsUtil.isUp(bodyCellValue) ||
             IsUtil.isDownDestination(bodyCellValue) || IsUtil.isDown(bodyCellValue)) {
 
-            room.setBodyCellValue(reallyY, reallyX, 1006 + bomState);//1010~1012
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1006 + bomState);//1010~1012
         }else{
-            room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1000 + bomState);//1004~1006
         }
     }
 
     public void setDownFireDestination(int bodyCellValue, int reallyY, int reallyX, int bomState){
         if (bodyCellValue == 0 || IsUtil.isProp(bodyCellValue) || IsUtil.isDownDestination(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1009 + bomState);//1013~1015
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1009 + bomState);//1013~1015
         }else if (IsUtil.isUpDestination(bodyCellValue) || IsUtil.isUp(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1012 + bomState);//1016~1018
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1012 + bomState);//1016~1018
         }else if (!IsUtil.isDown(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1000 + bomState);//1004~1006
+        }else{
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1012 + bomState);//1016~1018
         }
     }
 
@@ -393,19 +288,21 @@ public class Bom extends MyThread {
         if (bodyCellValue == 0 || IsUtil.isProp(bodyCellValue) || IsUtil.isUpDestination(bodyCellValue) || IsUtil.isUp(bodyCellValue) ||
                 IsUtil.isDownDestination(bodyCellValue) || IsUtil.isDown(bodyCellValue)) {
 
-            room.setBodyCellValue(reallyY, reallyX, 1012 + bomState);//1016~1018
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1012 + bomState);//1016~1018
         }else{
-            room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1000 + bomState);//1004~1006
         }
     }
 
     public void setLeftFireDestination(int bodyCellValue, int reallyY, int reallyX, int bomState){
         if (bodyCellValue == 0 || IsUtil.isProp(bodyCellValue) || IsUtil.isLeftDestination(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1015 + bomState);//1019~1021
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1015 + bomState);//1019~1021
         }else if (IsUtil.isRightDestination(bodyCellValue) || IsUtil.isRight(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1018 + bomState);///1022~1024
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1018 + bomState);///1022~1024
         }else if (!IsUtil.isLeft(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1000 + bomState);//1004~1006
+        }else{
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1018 + bomState);///1022~1024
         }
     }
 
@@ -413,19 +310,21 @@ public class Bom extends MyThread {
         if (bodyCellValue == 0 || IsUtil.isProp(bodyCellValue) || IsUtil.isLeftDestination(bodyCellValue) || IsUtil.isLeft(bodyCellValue) ||
                 IsUtil.isRightDestination(bodyCellValue) || IsUtil.isRight(bodyCellValue)) {
 
-            room.setBodyCellValue(reallyY, reallyX, 1018 + bomState);///1022~1024
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1018 + bomState);///1022~1024
         }else{
-            room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1000 + bomState);//1004~1006
         }
     }
 
     public void setRightFireDestination(int bodyCellValue, int reallyY, int reallyX, int bomState){
         if (bodyCellValue == 0 || IsUtil.isProp(bodyCellValue) || IsUtil.isRightDestination(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1021 + bomState);//1025~1027
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1021 + bomState);//1025~1027
         }else if (IsUtil.isLeftDestination(bodyCellValue) || IsUtil.isLeft(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1024 + bomState);//1028~1030
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1024 + bomState);//1028~1030
         }else if (!IsUtil.isRight(bodyCellValue)){
-            room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1000 + bomState);//1004~1006
+        }else{
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1024 + bomState);//1028~1030
         }
     }
 
@@ -433,31 +332,101 @@ public class Bom extends MyThread {
         if (bodyCellValue == 0 || IsUtil.isProp(bodyCellValue) || IsUtil.isLeftDestination(bodyCellValue) || IsUtil.isLeft(bodyCellValue) ||
                 IsUtil.isRightDestination(bodyCellValue) || IsUtil.isRight(bodyCellValue)) {
 
-            room.setBodyCellValue(reallyY, reallyX, 1024 + bomState);//1028~1030
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1024 + bomState);//1028~1030
         }else{
-            room.setBodyCellValue(reallyY, reallyX, 1000 + bomState);//1004~1006
+            setBodyFireValue(reallyY, reallyX, bodyCellValue, 1000 + bomState);//1004~1006
+        }
+    }
+
+    public void setBodyFireValue(int reallyY, int reallyX, int bodyNumber, int value){
+        if (bodyNumber == value){
+            return;
+        }
+
+        if (bodyNumber < 1000 || bodyNumber > 1999){
+            room.setBodyCellValue(reallyY, reallyX, value);
+            return;
+        }
+
+        if (bomState <= 6){//火焰扩大阶段
+            int i = bodyNumber - 1003;
+            int i1 = i % 3;
+
+            int min = (i == 1 || i == 2) ? Math.min(bodyNumber + 1, bodyNumber - i1 + 3) : value;
+
+            room.setBodyCellValue(reallyY, reallyX, min);
+        }else{
+            if (IsUtil.isMiddle(value)){
+                if (!IsUtil.isMiddle(bodyNumber)){
+
+                    room.setBodyCellValue(reallyY, reallyX, value);
+                }else{
+                    room.setBodyCellValue(reallyY, reallyX, Math.min(bodyNumber, value));
+                }
+                return;
+            }
+
+            int i = bodyNumber - 1003;
+            int i1 = i % 3;
+
+            int max = (i1 != 1) ? Math.max(bodyNumber - 1, value) : value;
+
+            room.setBodyCellValue(reallyY, reallyX, max);
         }
     }
 
 
 
+    /**
+     * 火焰停止蔓延
+     * @param i 阶段
+     * @param sourceDirection 方向
+     */
+    private boolean fireStopSpread(int reallyY, int reallyX, int i, int sourceDirection){
+        int bodyNumber = room.getBodyCellValue(reallyY, reallyX);
 
+        if (bodyNumber < 0){//不可破坏的墙，停止蔓延
+            return true;
+        }
 
+        if (bodyNumber == Common.PROP_DOOR){//门处停止蔓延
+            return true;
+        }
 
+        if (IsUtil.isOrdinaryWall(bodyNumber) | room.destroyTheWall(reallyY, reallyX)){//摧毁墙
+            return true;
+        }
 
+        boolean b = false;
 
+        for (Critter critter : room.critters) {
+            if (critter instanceof KnightCritter) {
+                if (BiotaUtil.haveBiota(critter, x, y)) {
+                    b = ! critter.die();//骑士未死亡，那么不可穿过火
+                }
+            }
+        }
 
+        if (b){//如果执行过骑士死亡，并且执行失败，那么停止蔓延
+            return true;
+        }
 
+        if (i != 0 && wakeUpTheBomb(room, reallyY, reallyX, sourceDirection)){//如果当前位置是炸弹，并且引爆了炸弹，那么停止蔓延
+            return true;
+        }
 
-
-
+        return false;
+    }
 
     /**
      * 清除火 消除火的时候，仅仅消除墙
      */
     private void removeFire(int y, int x){
         if (!room.destroyTheWall(y,x)) {
-            room.setBodyCellValue(y, x,0);
+            int i = (room.getBodyCellValue(y, x) - 1003) % 3;
+            if (i == 1) {
+                room.setBodyCellValue(y, x, 0);
+            }
         }
     }
 
@@ -477,20 +446,62 @@ public class Bom extends MyThread {
     }
 
     /**
-     * 火焰监听 ， 清除小怪
+     * 火焰监听 ， 清除小怪， 清除玩家
      */
-    public void fireFilter(int y, int x){
+    private void fireFilter(int reallyY, int reallyX, boolean midpoint, boolean destination, int fireType,int thisBomState){
+
+        room.playerDie(reallyY, reallyX);
+
         room.critters.forEach(critter ->{
-            if(critter.getLx() == x){
-                if(critter.getTy() == y || critter.getBy() == y){
+            if(critter.getLx() == reallyX){
+                if(critter.getTy() == reallyY || critter.getBy() == reallyY){
                     critter.die();
                 }
-            }else if(critter.getRx() == x){
-                if(critter.getTy() == y || critter.getBy() == y){
+            }else if(critter.getRx() == reallyX){
+                if(critter.getTy() == reallyY || critter.getBy() == reallyY){
                     critter.die();
                 }
             }
         });
+
+        if (midpoint) {
+            room.setBodyCellValue(reallyY, reallyX, 1000 + thisBomState);//1004~1006
+        } else {
+            int bodyCellValue = room.getBodyCellValue(reallyY, reallyX);
+
+            switch (fireType){
+                case 1:
+                    if (destination) {
+                        setUpFireDestination(bodyCellValue, reallyY, reallyX, thisBomState);
+                    }else{
+                        setUpFire(bodyCellValue, reallyY, reallyX, thisBomState);
+                    }
+                    break;
+                case 2:
+                    if (destination){
+                        setDownFireDestination(bodyCellValue, reallyY, reallyX, thisBomState);
+                    } else {
+                        setDownFire(bodyCellValue, reallyY, reallyX, thisBomState);
+                    }
+                    break;
+                case 3:
+                    if (destination){
+                        setLeftFireDestination(bodyCellValue, reallyY, reallyX, thisBomState);
+                    } else {
+                        setLeftFire(bodyCellValue, reallyY, reallyX, thisBomState);
+                    }
+                    break;
+                case 4:
+                    if (destination){
+                        setRightFireDestination(bodyCellValue, reallyY, reallyX, thisBomState);
+                    } else {
+                        setRightFire(bodyCellValue, reallyY, reallyX, thisBomState);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     public int getSize() {

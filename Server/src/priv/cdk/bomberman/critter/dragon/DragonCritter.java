@@ -19,11 +19,11 @@ public class DragonCritter extends EliteCritter {
             dragonType = DragonType.BLUE;
 
             this.moveSize = Room.CELL_WIDTH/4;
-            this.moveTime = 100;
+            this.moveTime = Math.max( 100 - room.getCustomsPass() * 2, 10);
         }else{
             dragonType = DragonType.GOLDEN;
             this.moveSize = Room.CELL_WIDTH/4;
-            this.moveTime = 200;
+            this.moveTime = Math.max( 200 - room.getCustomsPass() * 4, 20);
         }
     }
 
@@ -48,8 +48,6 @@ public class DragonCritter extends EliteCritter {
 
     @Override
     protected boolean canMove1(int bodyNumber){
-//        return !Room.isSpecialWall(bodyNumber) && !Bom.isBom(bodyNumber) && !Bom.isFire(bodyNumber);
-
         if(dragonType == DragonType.BLUE) {
             return !IsUtil.isWall(bodyNumber) && !IsUtil.isBom(bodyNumber) && !IsUtil.isFire(bodyNumber);
         }else{

@@ -1,7 +1,4 @@
-package priv.cdk.bomberman.ai.wayfinding;
-
-import priv.cdk.bomberman.parent.Biota;
-import priv.cdk.bomberman.room.Room;
+package priv.cdk.bomberman.wayfinding;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -55,7 +52,7 @@ public class PointHelper<T> {
     private static final int[] dx = {1, -1, 0, 0};
     private static final int[] dy = {0, 0, 1, -1};
 
-    public Point<T> bfs(int[][] maze, int i, int j) {
+    private Point<T> bfs(int[][] maze, int i, int j) {
         int m = maze.length;
         int n = maze[0].length;
         Queue<Point<T>> queue = new LinkedList<>();

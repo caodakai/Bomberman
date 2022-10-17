@@ -7,7 +7,6 @@ import priv.cdk.bomberman.room.Room;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Biota implements Movement {
-
     private final AtomicBoolean die = new AtomicBoolean(false);
 
     public MotorDirection motorDirection = MotorDirection.NOT_MOVE;//1:上、2:下、3:左、4:右 0:未运动过
@@ -212,5 +211,9 @@ public abstract class Biota implements Movement {
 
     public MotorDirection getMotorDirection() {
         return motorDirection;
+    }
+
+    public int getDieTime() {
+        return 500;
     }
 }

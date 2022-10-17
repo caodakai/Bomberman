@@ -25,7 +25,6 @@ public class Common {
     public static final int PROP_FIRE_IMMUNE = 3008; //火焰免疫
     public static final int PROP_DOOR = 3009; //门
 
-
     public static final Image first_stage_wall;
     public static final Image second_stage_wall;
     public static final Image third_stage_wall;
@@ -52,6 +51,7 @@ public class Common {
 
     public static final Image player;
     public static final Image player_question_mark;
+    public static final Image playerPath;
 
     public static final Image charmander;
 
@@ -83,6 +83,7 @@ public class Common {
 
         player = defaultToolkit.getImage(commonClass.getResource("/player/player.png"));
         player_question_mark = defaultToolkit.getImage(commonClass.getResource("/player/player_question_mark.png"));
+        playerPath = defaultToolkit.getImage(commonClass.getResource("/player/path.png"));
 
         charmander = defaultToolkit.getImage(commonClass.getResource("/charmander/charmander.png"));
     }
