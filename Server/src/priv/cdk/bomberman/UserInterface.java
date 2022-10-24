@@ -88,7 +88,11 @@ public class UserInterface{
                 player.move(+ player.speed, 0);
                 break;
             case 74://J
-                player.addBom(player.getTy(), player.getLx());
+                if (player.isTank()){
+                    player.addMissile(player.getMoveY(), player.getMoveX(), player.getMotorDirection());
+                }else {
+                    player.addBom(player.getTy(), player.getLx());
+                }
                 break;
             case 75://K
                 if(player.isBomControl()){
@@ -132,8 +136,11 @@ public class UserInterface{
             case 50://2
                 room.setBodyCellValue(player.getTy(), player.getLx(), Common.PROP_DOOR);
                 break;
-            case 51://2
+            case 51://3
                 room.setBodyCellValue(player.getTy(), player.getLx(), Common.PROP_QUESTION_MARK);
+                break;
+            case 52://4
+                room.setBodyCellValue(player.getTy(), player.getLx(), Common.PROP_TANK);
                 break;
             case 82://R
                 room.addCharmander(player.getLx(), player.getTy());

@@ -44,7 +44,8 @@ public class RoomUtil {
         Random random = new Random();
         int blank = room.getBlank();
         int addSize = 0;
-        while (addSize < size) {
+        int time = 2;
+        while (addSize < size && time > 0) {
             for (int i = 5; i < room.getH() - 1; i++) {
                 for (int j = 5; j < room.getW() - 1; j++) {
                     if (room.getBodyCellValue(i, j) == 0) {
@@ -60,6 +61,8 @@ public class RoomUtil {
                     }
                 }
             }
+
+            time -- ;
         }
     }
 
@@ -94,7 +97,7 @@ public class RoomUtil {
      * @param riskX 危险坐标x
      * @param riskY 危险坐标y
      */
-    public static void toDetermineDeath(Biota biota, int riskX, int riskY){
+    public static boolean toDetermineDeath(Biota biota, int riskX, int riskY){
         if (!biota.isDie()) {
             int x = biota.getActualX() - riskX;
             int y = biota.getActualY() - riskY;
@@ -102,7 +105,9 @@ public class RoomUtil {
             boolean b = (y >= 0 && y < Room.CELL_HEIGHT) || (y <= 0 && y > -Room.CELL_HEIGHT);
             if ((x >= 0 && x < Room.CELL_WIDTH && b) || (x <= 0 && x > -Room.CELL_WIDTH && b)) {
                 biota.die();
+                return true;
             }
         }
+        return false;
     }
 }

@@ -193,6 +193,10 @@ public class UserInterface extends JPanel implements KeyListener {
                         img = Common.prop;
                         sx1 = 0; sy1 = 280;
                         break;
+                    case Common.PROP_TANK:
+                        img = Common.prop;
+                        sx1 = 0; sy1 = 320;
+                        break;
                     case Common.PROP_DOOR:
                         img = Common.door;
                         sx1 = 0; sy1 = 0;
@@ -369,7 +373,7 @@ public class UserInterface extends JPanel implements KeyListener {
 
         for (InputData.Player player : ps) {
             if (player != null) {
-                drawBiology(g, player, player.isQuestionMark() ? Common.player_question_mark : Common.player);
+                drawBiology(g, player, player.isQuestionMark() ? player.isTank() ? Common.player_tank : Common.player_question_mark : Common.player);
             }
         }
 
@@ -406,6 +410,14 @@ public class UserInterface extends JPanel implements KeyListener {
         for (InputData.Charmander charmander : charmanders) {
             if(charmander != null){
                 drawBiology(g, charmander, Common.charmander);
+            }
+        }
+
+        InputData.Missile[] missiles = inputData.getMissiles();
+
+        for (InputData.Missile missile : missiles) {
+            if(missile != null){
+                drawBiology(g, missile, Common.missile);
             }
         }
 
@@ -499,7 +511,7 @@ public class UserInterface extends JPanel implements KeyListener {
                                 break;
                         }
 
-                        g.drawImage(Common.playerPath, dx1, dy1, dx1 + inputData.CELL_WIDTH, dy1 + inputData.CELL_HEIGHT, sx1, sy1, sx1 + 40, sy1 + 40,null);
+                        g.drawImage(Common.player_path, dx1, dy1, dx1 + inputData.CELL_WIDTH, dy1 + inputData.CELL_HEIGHT, sx1, sy1, sx1 + 40, sy1 + 40,null);
 //                        g.fillOval(dx1 + inputData.CELL_WIDTH / 2 - 5, dy1 + inputData.CELL_HEIGHT / 2 - 5, 10, 10);
                     }
                 }

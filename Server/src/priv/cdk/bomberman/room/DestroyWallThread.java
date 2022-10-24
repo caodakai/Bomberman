@@ -39,6 +39,7 @@ public class DestroyWallThread extends MyThread {
         AtomicBoolean addWallThrough = new AtomicBoolean(false);
         AtomicBoolean addQuestionMark = new AtomicBoolean(false);
         AtomicBoolean addFireImmune = new AtomicBoolean(false);
+        AtomicBoolean addTank = new AtomicBoolean(false);
 
         myRoom.ps.forEach(player -> {
             if(!player.isDie()) {
@@ -56,6 +57,9 @@ public class DestroyWallThread extends MyThread {
                 }
                 if (!player.isFireImmune()) {
                     addFireImmune.set(true);
+                }
+                if (!player.isTank()){
+                    addTank.set(true);
                 }
             }
         });
@@ -88,6 +92,10 @@ public class DestroyWallThread extends MyThread {
             addWhile(bytes, Math.max(0, myRoom.getCustomsPass() - 2) * 2, (byte) 8);//添加火焰免疫道具
         }
 
+        if (addTank.get()){
+            addWhile(bytes, Math.max(0, myRoom.getCustomsPass()) * 2, (byte) 9);//添加火焰免疫道具
+        }
+
         addWhile(bytes, (bytes.size() * 2) / myRoom.getCustomsPass(), (byte) 0);//添加空的数据
 
         int prop = bytes.get(new Random().nextInt(bytes.size()));
@@ -115,6 +123,9 @@ public class DestroyWallThread extends MyThread {
                 break;
             case 8:
                 myRoom.setBodyCellValue(y, x, Common.PROP_FIRE_IMMUNE);
+                break;
+            case 9:
+                myRoom.setBodyCellValue(y, x, Common.PROP_TANK);
                 break;
         }
     }

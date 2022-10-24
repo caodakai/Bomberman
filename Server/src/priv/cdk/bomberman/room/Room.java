@@ -1,7 +1,8 @@
 package priv.cdk.bomberman.room;
 
-import priv.cdk.bomberman.Bom;
+import priv.cdk.bomberman.bom.Bom;
 import priv.cdk.bomberman.ai.maze.Maze;
+import priv.cdk.bomberman.bom.Missile;
 import priv.cdk.bomberman.charmander.Charmander;
 import priv.cdk.bomberman.charmander.CharmanderThread;
 import priv.cdk.bomberman.common.Common;
@@ -11,15 +12,12 @@ import priv.cdk.bomberman.critter.knight.Knight1Thread;
 import priv.cdk.bomberman.critter.knight.KnightCritter;
 import priv.cdk.bomberman.game.Game;
 import priv.cdk.bomberman.parent.Biota;
-import priv.cdk.bomberman.parent.BiotaUtil;
 import priv.cdk.bomberman.parent.MyThread;
 import priv.cdk.bomberman.player.Player;
 import priv.cdk.bomberman.utils.IsUtil;
 import priv.cdk.bomberman.utils.RoomUtil;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -48,6 +46,7 @@ public class Room {
 
     public final CopyOnWriteArraySet<Critter> critters = new CopyOnWriteArraySet<>();
     public final CopyOnWriteArraySet<Charmander> charmanders = new CopyOnWriteArraySet<>();
+    public final CopyOnWriteArraySet<Missile> missiles = new CopyOnWriteArraySet<>();
     public final CopyOnWriteArraySet<MyThread> threads = new CopyOnWriteArraySet<>();
 
     public Room(Game game, CopyOnWriteArrayList<Player> ps){
@@ -164,27 +163,26 @@ public class Room {
 
     /**
      * 添加小怪
-     * @param customsPass
      */
     private void addCritterAll(int customsPass){
         if(customsPass % 5 != 0) {//骑士关卡
             int eliteCritterNumber;
-            if (customsPass > 3) {
-                eliteCritterNumber = Math.min(blank / 8, customsPass - 3);
+            if (customsPass > 1) {
+                eliteCritterNumber = Math.min(100, customsPass - 3);
                 RoomUtil.randomCritterToBody(this, 1, eliteCritterNumber);
             } else {
                 eliteCritterNumber = 0;
             }
 
-            int basicsCritterNumber = Math.min(blank / 8, Math.max(0, customsPass * customsPass - eliteCritterNumber));
+            int basicsCritterNumber = Math.min(100, Math.max(0, customsPass * customsPass - eliteCritterNumber));
             RoomUtil.randomCritterToBody(this, 0, basicsCritterNumber);
 
             if (new Random().nextInt( Math.max(1,20/customsPass) ) == 0) {//有概率出现两条龙
-                RoomUtil.randomCritterToBody(this, 3, Math.min(2 * customsPass/5, 10));
+                RoomUtil.randomCritterToBody(this, 3, Math.min(2 * (customsPass/5), 10));
             }
         }else{
-            int knightCritterNumber = Math.min(blank/16, customsPass/5);
-            int dragonCritterNumber = Math.min(blank/8, customsPass/5 * 2);
+            int knightCritterNumber = Math.min(5, customsPass/5);
+            int dragonCritterNumber = Math.min(10, customsPass/5 * 2);
             RoomUtil.randomCritterToBody(this, 2, knightCritterNumber);
             RoomUtil.randomCritterToBody(this, 3, dragonCritterNumber);
         }
@@ -206,16 +204,35 @@ public class Room {
     /**
      * 当前位置有玩家，则玩家死亡
      */
-    public void playerDie(int y, int x){
+    public boolean playerDie(int y, int x){
+        AtomicBoolean die = new AtomicBoolean(false);
         ps.forEach(player -> {
             if ( (!player.isDie()) && (!player.isFireImmune())) {
                 if (player.getTy() == y || player.getBy() == y) {
                     if (player.getLx() == x || player.getRx() == x) {
                         player.die();
+                        die.set(true);
                     }
                 }
             }
         });
+        return die.get();
+    }
+
+
+    /**
+     * 以实际像素作为判断条件，判断两个目标是否重叠
+     */
+    public boolean dieActualXY(Collection<? extends Biota> biotas, Biota thisBiota){
+        int actualX = thisBiota.getActualX();
+        int actualY = thisBiota.getActualY();
+        AtomicBoolean hasMissile = new AtomicBoolean(false);
+        biotas.forEach(biota -> {
+            if (thisBiota != biota && RoomUtil.toDetermineDeath(biota, actualX, actualY)) {
+                hasMissile.set(true);
+            }
+        });
+        return hasMissile.get();
     }
 
     /**
@@ -249,6 +266,10 @@ public class Room {
             bobs[x][y] = null;
             refreshFutureBody();
         }
+    }
+
+    public void addMissile(Missile missile){
+        missiles.add(missile);
     }
 
     /**
@@ -303,9 +324,7 @@ public class Room {
             }
         }
 
-        bobs.forEach(bom ->{
-            futureBodyBom(bom, copyFutureBody);
-        });
+        bobs.forEach(bom -> futureBodyBom(bom, copyFutureBody));
 
         futureBody = copyFutureBody;
     }
@@ -448,6 +467,12 @@ public class Room {
     }
 
     public int getBodyCellValue(int y, int x){
+        if (y < 0 || y >= body.length){
+            return -1;
+        }
+        if (x < 0 || x >= body[y].length){
+            return -1;
+        }
         return body[y][x];
     }
 

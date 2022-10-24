@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class Biota implements Movement {
     private final AtomicBoolean die = new AtomicBoolean(false);
 
-    public MotorDirection motorDirection = MotorDirection.NOT_MOVE;//1:上、2:下、3:左、4:右 0:未运动过
+    public MotorDirection motorDirection = MotorDirection.TOP;//1:上、2:下、3:左、4:右 0:未运动过
     private int state = 4;
 
     private int lx;//左边位置
@@ -47,9 +47,16 @@ public abstract class Biota implements Movement {
         this.actualY = Room.CELL_HEIGHT * ty + Common.interfaceStartY;
     }
 
-    public boolean move(int xPx, int yPx){
-//        moveRecord.append(xPx).append(":").append(yPx).append("\n");
+    public void setActualPosition(int actualX, int actualY){
+        this.actualX = actualX;
+        this.actualY = actualY;
+        this.lx = (this.actualX - Common.interfaceStartX)/Room.CELL_WIDTH;
+        this.ty = (this.actualY - Common.interfaceStartY)/Room.CELL_HEIGHT;
+        this.rx = lx + ((this.actualX - Common.interfaceStartX)%Room.CELL_WIDTH == 0 ? 0 : 1);
+        this.by = ty + ((this.actualY - Common.interfaceStartY)%Room.CELL_HEIGHT == 0 ? 0 : 1);
+    }
 
+    public boolean move(int xPx, int yPx){
         if(xPx > 0){//设置运动方向
             motorDirection = MotorDirection.RIGHT;
         }else if(xPx < 0){
@@ -63,6 +70,24 @@ public abstract class Biota implements Movement {
                 motorDirection = MotorDirection.NOT_MOVE;
             }
         }
+
+        switch (motorDirection) {
+            case NOT_MOVE:
+                break;
+            case TOP:
+                setState(getState() == 5 ? 4 : 5);
+                break;
+            case BOTTOM:
+                setState(getState() == 7 ? 6 : 7);
+                break;
+            case LEFT:
+                setState(getState() == 9 ? 8 : 9);
+                break;
+            case RIGHT:
+                setState(getState() == 11 ? 10 : 11);
+                break;
+        }
+
 
         if(xPx != 0 && yPx != 0) {//不允许斜方向走动
             return false;
@@ -117,8 +142,6 @@ public abstract class Biota implements Movement {
         this.ty = tj;
         this.by = bj;
 
-//        moveRecord.append(true);
-
         return true;
     }
 
@@ -138,24 +161,6 @@ public abstract class Biota implements Movement {
      * 修改目标状态
      */
     private boolean beganToMove(int y, int x){
-        switch (motorDirection) {
-            case NOT_MOVE:
-                break;
-            case TOP:
-                setState(getState() == 5 ? 4 : 5);
-                break;
-            case BOTTOM:
-                setState(getState() == 7 ? 6 : 7);
-                break;
-            case LEFT:
-                setState(getState() == 9 ? 8 : 9);
-                break;
-            case RIGHT:
-                setState(getState() == 11 ? 10 : 11);
-                break;
-        }
-
-
         if(!canMove(y,x)){
             return false;
         }else{

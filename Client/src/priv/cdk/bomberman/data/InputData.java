@@ -15,6 +15,7 @@ public class InputData implements Serializable {
     private Player[] players;
     private Critter[] critters;
     private Charmander[] charmanders;
+    private Missile[] missiles;
     private int[][] body;
     private boolean gameOver;
     private int score;//分数
@@ -100,6 +101,7 @@ public class InputData implements Serializable {
         private int bomNumber;//炸弹数量
         private int bomSize;//炸弹范围
         private int questionMarkTime;//无敌时间
+        private boolean tank;
 
         public boolean isQuestionMark() {
             return questionMark;
@@ -140,6 +142,14 @@ public class InputData implements Serializable {
         public void setQuestionMarkTime(int questionMarkTime) {
             this.questionMarkTime = questionMarkTime;
         }
+
+        public boolean isTank() {
+            return tank;
+        }
+
+        public void setTank(boolean tank) {
+            this.tank = tank;
+        }
     }
 
     public static class Critter extends BasicAttribute implements Serializable{
@@ -150,6 +160,9 @@ public class InputData implements Serializable {
         private static final long serialVersionUID = 1L;
     }
 
+    public static class Missile extends BasicAttribute implements Serializable {
+        private static final long serialVersionUID = 1L;
+    }
 
     public Player[] getPlayers() {
         return players;
@@ -221,5 +234,17 @@ public class InputData implements Serializable {
 
     public Charmander[] getCharmanders() {
         return charmanders;
+    }
+
+    public void setCharmanders(Charmander[] charmanders) {
+        this.charmanders = charmanders;
+    }
+
+    public Missile[] getMissiles() {
+        return missiles;
+    }
+
+    public void setMissiles(Missile[] missiles) {
+        this.missiles = missiles;
     }
 }

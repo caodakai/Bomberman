@@ -31,6 +31,7 @@ public class QuestionMarkThread extends MyThread {
             }
 
             player.questionMark.set(false);
+            player.setTank(false);
 
             try {
                 synchronized (this) {

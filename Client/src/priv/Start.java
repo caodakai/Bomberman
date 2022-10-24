@@ -1,6 +1,7 @@
 package priv;
 
 import priv.cdk.bomberman.data.InputData;
+import priv.cdk.bomberman.data.UDPData;
 import priv.ui.UserInterface;
 
 import javax.swing.*;
@@ -12,7 +13,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * cmd 命令运行 java -jar client.jar
@@ -59,8 +61,95 @@ public class Start extends JFrame {
             //接收数据
             DatagramSocket datagramSocket = new DatagramSocket(dataPort);//监听本机1688端口,持续获取数据
 
-            while (!stop) {
-                byte[] buff = new byte[100000];
+            level1 : while (!stop) {
+                int finalLength = -1;
+                Map<Integer, byte[]> map =new TreeMap<>();
+                Set<Integer> surplusIndex = null;
+                long id = -1;
+                boolean end = false;
+
+                while (true) {
+                    byte[] buff = new byte[25000];
+
+                    DatagramPacket packet = new DatagramPacket(buff, buff.length);
+
+                    datagramSocket.receive(packet);//接收
+                    try (ByteArrayInputStream byteArrayStram = new ByteArrayInputStream(buff); ObjectInputStream objectStream = new ObjectInputStream(byteArrayStram)) {
+
+                        Object object = objectStream.readObject();
+
+                        if (object instanceof UDPData){
+                            UDPData data = (UDPData) object;
+
+                            if (id == -1){
+                                id = data.getId();
+                            }else if (id != data.getId()){
+                                continue level1;
+                            }
+
+                            if (finalLength == -1){
+                                if (data.getState() != UDPData.State.START && data.getFinalIndex() > 1) {
+                                    continue level1;
+                                }
+                                finalLength = data.getFinalLength();
+                            }
+
+                            map.put(data.getIndex(), data.getBytes());
+
+                            if (surplusIndex != null){
+                                surplusIndex.remove(data.getIndex());
+
+                                if (surplusIndex.isEmpty()){
+                                    end = true;
+                                    break;
+                                }
+                            }
+
+                            if (data.getState() == UDPData.State.END){
+                                boolean stop = true;
+                                for (int i = 0;  i < data.getFinalIndex(); i++) {
+                                    if (!map.containsKey(i)) {
+                                        if (surplusIndex == null){
+                                            surplusIndex = new HashSet<>();
+                                        }
+                                        surplusIndex.add(i);
+                                        stop = false;
+                                    }
+                                }
+
+                                if (stop) {
+                                    end = true;
+                                    break;
+                                }
+                            }
+                        }
+
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                }
+
+                if (finalLength != -1 && end){
+                    byte[] bytes = new byte[finalLength];
+
+                    AtomicInteger length = new AtomicInteger();
+
+                    map.forEach((key, value)->{
+                        for (byte b : value) {
+                            bytes[length.getAndIncrement()] = b;
+                        }
+                    });
+
+                    try(ByteArrayInputStream byteArrayStram = new ByteArrayInputStream(bytes);
+                        ObjectInputStream objectStream = new ObjectInputStream(byteArrayStram)) {
+
+                        userInterface.inputData = (InputData) objectStream.readObject();
+                    }
+                    userInterface.repaint();
+                }
+
+                /*byte[] buff = new byte[100000];
                 DatagramPacket packet = new DatagramPacket(buff, buff.length);
 
                 datagramSocket.receive(packet);//接收
@@ -72,7 +161,7 @@ public class Start extends JFrame {
                 userInterface.repaint();
 
                 objectStream.close();
-                byteArrayStram.close();
+                byteArrayStram.close();*/
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

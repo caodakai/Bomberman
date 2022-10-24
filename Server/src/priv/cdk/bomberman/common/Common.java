@@ -21,4 +21,5 @@ public class Common {
     public static final int PROP_QUESTION_MARK = 3007; //短暂无敌
     public static final int PROP_FIRE_IMMUNE = 3008; //火焰免疫
     public static final int PROP_DOOR = 3009; //门
+    public static final int PROP_TANK = 3010; //坦克
 }

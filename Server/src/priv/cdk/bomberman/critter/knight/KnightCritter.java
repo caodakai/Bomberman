@@ -1,6 +1,6 @@
 package priv.cdk.bomberman.critter.knight;
 
-import priv.cdk.bomberman.Bom;
+import priv.cdk.bomberman.bom.Bom;
 import priv.cdk.bomberman.critter.Critter;
 import priv.cdk.bomberman.critter.dragon.DragonCritter;
 import priv.cdk.bomberman.room.Room;

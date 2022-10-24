@@ -2,6 +2,7 @@ package priv.cdk;
 
 import priv.cdk.bomberman.UserInterface;
 import priv.cdk.bomberman.data.InputData;
+import priv.cdk.bomberman.data.UDPData;
 import priv.cdk.bomberman.game.Game;
 import priv.cdk.bomberman.server.PlayerData;
 
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.*;
+import java.util.Random;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -23,7 +26,7 @@ public class StartingProcedure extends JFrame {
     public static final int PORT = 2688;
     public static final int SEND_PORT = 3688;
 
-    public static final int maxPlayerNumber = 1;//最多多少人加入游戏
+    public static int maxPlayerNumber = 1;//最多多少人加入游戏
 
     public AtomicBoolean playerIsMax = new AtomicBoolean(false);//人数已达上限
     public final AtomicBoolean gameStop = new AtomicBoolean(false);//游戏关闭  最终指令
@@ -34,10 +37,14 @@ public class StartingProcedure extends JFrame {
     private final PlayerData[] playerData = new PlayerData[maxPlayerNumber];
 
     public static void main(String[] args) {
+        System.out.println("请输入一个房间的人数");
+        maxPlayerNumber = new Scanner(System.in).nextInt();
+        System.out.println("服务器启动");
+
         int port = PORT;
         int sendPort = SEND_PORT;
 
-        while (true) {
+        do {
             try {
                 if (port == SEND_PORT){
                     System.out.println("端口已经全部被使用");
@@ -53,7 +60,7 @@ public class StartingProcedure extends JFrame {
                 e.printStackTrace();
                 break;
             }
-        }
+        }while (false);
     }
 
     public StartingProcedure(int port, int sendPort){
@@ -216,11 +223,54 @@ public class StartingProcedure extends JFrame {
             public void run() {
                 data.reload(playerDatum.getGame());
 
-                //对象->对象流->字节数组流->字节数组
-                ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream();
-                ObjectOutputStream objectStream;
-                try {
-                    objectStream = new ObjectOutputStream(byteArrayStream);
+                try(ByteArrayOutputStream stream = new ByteArrayOutputStream(); ObjectOutputStream output = new ObjectOutputStream(stream)) {
+                    output.writeObject(data);
+
+                    byte[] bytes = stream.toByteArray();
+
+                    int byteLength = 20000;
+                    int sendLength = 0;
+                    int sendIndex = 0;
+                    int length = (bytes.length/byteLength) * byteLength;
+                    int finalIndex = (bytes.length/byteLength) + (bytes.length % byteLength == 0 ? 0 : 1 );
+                    int finalLength = bytes.length;
+                    long id = System.currentTimeMillis() + new Random().nextInt(1000000);
+
+                    while (sendLength < length){
+                        byte[] sendData = new byte[byteLength];
+
+                        for (int j = 0; j < byteLength; sendLength++, j++) {
+                            sendData[j] = bytes[sendLength];
+                        }
+                        UDPData udpData = new UDPData(id, sendIndex, sendData, finalIndex, finalLength, sendIndex == 0 ? UDPData.State.START : UDPData.State.SEND);
+
+                        send(udpData, finalPacket, finalSocket);
+
+                        sendIndex++;
+                    }
+
+                    int endLength = bytes.length % byteLength;
+
+                    byte[] sendData;
+                    if (endLength != 0){
+                        sendData = new byte[endLength];
+
+                        for (int j = 0; j < endLength; sendLength++, j++) {
+                            sendData[j] = bytes[sendLength];
+                        }
+                    }else{
+                        sendData = null;
+                    }
+
+                    UDPData udpData = new UDPData(id, sendIndex, sendData, finalIndex, finalLength, UDPData.State.END);
+
+                    send(udpData, finalPacket, finalSocket);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                /*//对象->对象流->字节数组流->字节数组
+                try (ByteArrayOutputStream byteArrayStream = new ByteArrayOutputStream(); ObjectOutputStream objectStream = new ObjectOutputStream(byteArrayStream)) {
                     objectStream.writeObject(data);
 //                    objectStream.reset();//重复数据重置
 
@@ -231,13 +281,22 @@ public class StartingProcedure extends JFrame {
                     finalSocket.send(finalPacket);//发送
 
                     objectStream.flush();
-                    objectStream.close();
-                    byteArrayStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
-        }, 0, 20);
+        }, 0, 5);
+    }
+
+    public void send(Object object, DatagramPacket finalPacket, DatagramSocket finalSocket) throws IOException {
+        try(ByteArrayOutputStream stream = new ByteArrayOutputStream(); ObjectOutputStream output = new ObjectOutputStream(stream)){
+            output.writeObject(object);
+
+            finalPacket.setData(stream.toByteArray());//填充DatagramPacket
+            finalSocket.send(finalPacket);//发送
+
+            output.flush();
+        }
     }
 
     public static String inString(Socket socket) throws UnsupportedEncodingException {

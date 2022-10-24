@@ -1,7 +1,10 @@
 package priv.cdk.bomberman.player;
 
-import priv.cdk.bomberman.Bom;
+import priv.cdk.bomberman.bom.Bom;
+import priv.cdk.bomberman.bom.Missile;
+import priv.cdk.bomberman.bom.MissileMoveThread;
 import priv.cdk.bomberman.common.Common;
+import priv.cdk.bomberman.common.MotorDirection;
 import priv.cdk.bomberman.parent.Biota;
 import priv.cdk.bomberman.parent.MyThread;
 import priv.cdk.bomberman.room.Room;
@@ -32,6 +35,7 @@ public class Player extends Biota {
     private boolean wallThrough;//墙壁穿越
     public final AtomicBoolean questionMark = new AtomicBoolean(true);//短暂无敌
     private boolean fireImmune;//火焰免疫
+    private boolean tank;//处于坦克状态
 
     public final QuestionMarkThread questionMarkThread = new QuestionMarkThread(room, this);
 
@@ -53,8 +57,8 @@ public class Player extends Biota {
         }
 
         this.bomSize = this.member ? 5 : 2;
-        this.pressProcessed = this.member ? 0 : 20;
-        this.moveInterval = this.member ? 0 : 100;
+        this.pressProcessed = 50;
+        this.moveInterval = this.member ? 0 : 180;
 
         this.moveThread.start();
 
@@ -62,6 +66,7 @@ public class Player extends Biota {
         this.bomThrough = this.member;
         this.wallThrough = this.member;
         this.fireImmune = this.member;
+        this.tank = this.member;
 
         this.questionMarkThread.start();
     }
@@ -163,6 +168,10 @@ public class Player extends Biota {
                     case Common.PROP_FIRE_IMMUNE:
                         fireImmune = true;
                         break;
+                    case Common.PROP_TANK:
+                        questionMarkThread.openQuestionMark(20);//开启无敌时间20秒
+                        tank = true;
+                        break;
                     case Common.PROP_DOOR:
                         if(room.critters.size() == 0) {
                             room.reloadRoom();
@@ -206,16 +215,47 @@ public class Player extends Biota {
         }
     }
 
+    /**
+     * 添加导弹
+     */
+    public void addMissile(int y, int x, MotorDirection motorDirection){
+        if (bomNumber.get() > 0) {
+            Missile missile = new Missile(room, x, y);
+            if (y == getMoveY() && x == getMoveX()){
+                switch (motorDirection) {
+                    case TOP:
+                        missile.setActualPosition(getActualX(), getActualY() - Room.CELL_HEIGHT);
+                        break;
+                    case BOTTOM:
+                        missile.setActualPosition(getActualX(), getActualY() + Room.CELL_HEIGHT);
+                        break;
+                    case LEFT:
+                        missile.setActualPosition(getActualX() - Room.CELL_WIDTH, getActualY());
+                        break;
+                    case RIGHT:
+                        missile.setActualPosition(getActualX() + Room.CELL_WIDTH, getActualY());
+                        break;
+                }
+            }
+            room.addMissile(missile);
+            new MissileMoveThread(room, missile, this, motorDirection).start();
+            bomNumber.addAndGet(-1);
+        }
+    }
 
     public void randomAddBobs(){
-        int size = room.getBlank()/(bomSize * 2);
+        int size = room.getBlank()/4;
         Random random = new Random();
         for (int i=1; i < room.getH() - 1; i++){
             for (int j=1; j< room.getW() - 1; j++){
                 if(canAddBom(j, i)){
                     int randomNumber = random.nextInt(room.getBlank());
                     if(randomNumber < size){
-                        addBom(j, i);
+                        if (isTank()){
+                            addMissile(j, i, getMotorDirection());
+                        }else {
+                            addBom(j, i);
+                        }
                     }
                 }
             }
@@ -333,5 +373,13 @@ public class Player extends Biota {
 
     public boolean isMember() {
         return member;
+    }
+
+    public boolean isTank() {
+        return tank;
+    }
+
+    public void setTank(boolean tank) {
+        this.tank = tank;
     }
 }

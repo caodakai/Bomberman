@@ -1,5 +1,6 @@
 package priv.cdk.bomberman.data;
 
+import priv.cdk.bomberman.bom.Missile;
 import priv.cdk.bomberman.critter.dragon.DragonCritter;
 import priv.cdk.bomberman.critter.elite.EliteCritter;
 import priv.cdk.bomberman.critter.knight.KnightCritter;
@@ -25,6 +26,7 @@ public class InputData implements Serializable {
     private Player[] players;
     private Critter[] critters;
     private Charmander[] charmanders;
+    private Missile[] missiles;
     private int[][] body;
     private boolean gameOver;
     private int score;//分数
@@ -76,6 +78,18 @@ public class InputData implements Serializable {
             this.charmanders[j.getAndIncrement()] = new Charmander( charmander );
         });
 
+        CopyOnWriteArraySet<priv.cdk.bomberman.bom.Missile> missiles = room.missiles;
+
+        this.missiles = new Missile[missiles.size()];
+
+        AtomicInteger k = new AtomicInteger();
+        missiles.forEach(missile -> {
+            int andIncrement = k.getAndIncrement();
+
+            if (andIncrement < this.missiles.length) {
+                this.missiles[andIncrement] = new Missile(missile);
+            }
+        });
 
         this.body = room.getBody();
         this.gameOver = game.isGameOver();
@@ -174,6 +188,7 @@ public class InputData implements Serializable {
         private int bomNumber;//炸弹数量
         private int bomSize;//炸弹范围
         private int questionMarkTime;//无敌时间
+        private boolean tank;
 
         public Player(priv.cdk.bomberman.player.Player player){
             super(player);
@@ -190,6 +205,7 @@ public class InputData implements Serializable {
             this.bomNumber = player.getBomNumber();
             this.bomSize = player.getBomSize();
             this.questionMarkTime = player.questionMarkThread.getQuestionMarkTime();
+            this.tank = player.isTank();
         }
 
         public boolean isQuestionMark() {
@@ -231,6 +247,14 @@ public class InputData implements Serializable {
         public void setFireImmune(boolean fireImmune) {
             this.fireImmune = fireImmune;
         }
+
+        public boolean isTank() {
+            return tank;
+        }
+
+        public void setTank(boolean tank) {
+            this.tank = tank;
+        }
     }
 
     public static class Critter extends BasicAttribute implements Serializable{
@@ -271,6 +295,15 @@ public class InputData implements Serializable {
         public Charmander(priv.cdk.bomberman.charmander.Charmander charmander) {
             super(charmander);
             this.setName("小火龙");
+        }
+    }
+
+    public static class Missile extends BasicAttribute implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        public Missile(priv.cdk.bomberman.bom.Missile missile) {
+            super(missile);
+            this.setName("导弹");
         }
     }
 

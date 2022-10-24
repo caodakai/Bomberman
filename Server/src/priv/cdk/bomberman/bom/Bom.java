@@ -1,4 +1,4 @@
-package priv.cdk.bomberman;
+package priv.cdk.bomberman.bom;
 
 import priv.cdk.bomberman.common.Common;
 import priv.cdk.bomberman.critter.Critter;
