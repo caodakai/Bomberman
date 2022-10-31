@@ -22,7 +22,7 @@ public class IsUtil {
      * 坐标是否为火
      */
     public static boolean isFire(int number){
-        return number > 1000 && number < 2000;
+        return isMiddle(number) || isUpDestination(number) || isUp(number) || isDownDestination(number) || isDown(number) || isLeftDestination(number) || isLeft(number) || isRightDestination(number) || isRight(number);
     }
 
     /**
@@ -204,6 +204,7 @@ public class IsUtil {
             case Common.PROP_WALL_THROUGH:
             case Common.PROP_QUESTION_MARK:
             case Common.PROP_FIRE_IMMUNE:
+            case Common.PROP_TANK:
             case Common.PROP_DOOR:
                 return true;
             default:

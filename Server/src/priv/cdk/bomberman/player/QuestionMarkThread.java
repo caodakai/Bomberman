@@ -7,19 +7,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuestionMarkThread extends MyThread {
     private final Player player;
+    private long id;
     private final AtomicInteger questionMarkTime = new AtomicInteger(5);//无敌时间
     
     public QuestionMarkThread(Room room, Player player) {
         super(room);
         this.player = player;
+        this.id = player.getId();
     }
     
     @Override
     public void myRun() {
-        while (!player.isDie()) {
+        while (!player.isDie(id)) {
             player.questionMark.set(true);
 
-            while (questionMarkTime.get() > 0 && !player.isDie()) {
+            while (questionMarkTime.get() > 0 && !player.isDie(id)) {
                 try {
                     mySleep(1000);
                 } catch (InterruptedException e) {
@@ -35,7 +37,7 @@ public class QuestionMarkThread extends MyThread {
 
             try {
                 synchronized (this) {
-                    if(!player.isDie()) {
+                    if(!player.isDie(id)) {
                         this.wait();
                     }
                 }
@@ -56,6 +58,10 @@ public class QuestionMarkThread extends MyThread {
                 this.notify();
             }
         }
+    }
+
+    public void updateId(){
+        this.id = player.getId();
     }
 
     public int getQuestionMarkTime() {

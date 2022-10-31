@@ -25,6 +25,7 @@ public class Bom extends MyThread {
     public int sourceDirection = 0;//爆炸来源方向，当其它炸弹爆炸时，会影响当前炸弹，0:自然爆炸，1:上,2:下,3:左,4:右
 
     private final Player player;
+    private final long id;
     private final Room room;
 
     public Bom(int x, int y, Player player){
@@ -33,6 +34,7 @@ public class Bom extends MyThread {
         this.x = x;
         this.y = y;
         this.player = player;
+        this.id = player.getId();
         this.room = player.room;
         this.size = player.bomSize;
     }
@@ -249,7 +251,7 @@ public class Bom extends MyThread {
         }
 
         room.removeBom(x, y);//尝试清除炸弹对象
-        player.bomNumberAdd();
+        player.bomNumberAdd(id);
     }
 
     public void setUpFireDestination(int bodyCellValue, int reallyY, int reallyX, int bomState){
@@ -436,11 +438,18 @@ public class Bom extends MyThread {
     public static boolean wakeUpTheBomb(Room room, int y, int x, int sourceDirection){
         if(IsUtil.isBom(room.getBodyCellValue(y, x))){
             Bom bom = room.getBomCellValue(x, y);
-            if (bom != null && bom.direction.compareAndSet(false, true)) {
-                bom.sourceDirection = sourceDirection;
-                bom.interrupt();
+            if (bom != null && bom.wakeUp(sourceDirection)){
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean wakeUp(int sourceDirection){
+        if (this.direction.compareAndSet(false, true)) {
+            this.sourceDirection = sourceDirection;
+            this.interrupt();
+            return true;
         }
         return false;
     }

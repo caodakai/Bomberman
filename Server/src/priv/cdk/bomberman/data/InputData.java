@@ -66,7 +66,10 @@ public class InputData implements Serializable {
 
         AtomicInteger i = new AtomicInteger();
         critters.forEach(critter -> {
-            this.critters[i.getAndIncrement()] = new Critter(critter);
+            try {
+                this.critters[i.getAndIncrement()] = new Critter(critter);
+            }catch (ArrayIndexOutOfBoundsException ignored){//放怪的时候，可能会溢出
+            }
         });
 
         CopyOnWriteArraySet<priv.cdk.bomberman.charmander.Charmander> charmanders = room.charmanders;

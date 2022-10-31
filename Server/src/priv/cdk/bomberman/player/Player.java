@@ -13,31 +13,34 @@ import priv.cdk.bomberman.utils.IsUtil;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Player extends Biota {
+    private static final String CLASSNAME = Player.class.getName();
+
     private final static boolean TEST = false;//是否为测试，如果是测试，那么创建的玩家都是无敌的
+
+    private final AtomicLong ID = new AtomicLong(1L);//当前对象是为了用于顽疾死亡校验，如果获取是否死亡状态不等于当前ID，那么会返回是死亡状态
 
     private final boolean member;//会员
 
-    private static final String CLASSNAME = Player.class.getName();
-
     public final String name;
 
-    private final AtomicInteger bomNumber = new AtomicInteger(1);
+    private final AtomicInteger bomNumber;
     public int bomSize;
     private int pressProcessed;//移动速度
     private int moveInterval;//移动间隔时间
-    public final MoveThread moveThread = new MoveThread(this);
-    public final AtomicBoolean canMoveThread = new AtomicBoolean(true);
+    public MoveThread moveThread;
+    public final AtomicBoolean canMoveThread;
 
     private boolean bomControl;//炸弹爆炸控制
     private boolean bomThrough;//炸弹穿越
     private boolean wallThrough;//墙壁穿越
-    public final AtomicBoolean questionMark = new AtomicBoolean(true);//短暂无敌
+    public final AtomicBoolean questionMark;//短暂无敌
     private boolean fireImmune;//火焰免疫
     private boolean tank;//处于坦克状态
 
-    public final QuestionMarkThread questionMarkThread = new QuestionMarkThread(room, this);
+    public QuestionMarkThread questionMarkThread;
 
 
 //    public int speed = Room.CELL_WIDTH/4;
@@ -52,13 +55,14 @@ public class Player extends Biota {
             this.member = true;
         }else this.member = this.name.equals("cdk");
 
-        if(this.member) {
-            this.bomNumber.set(this.room.getBlank());
-        }
+        this.bomNumber = new AtomicInteger(this.member ? this.room.getBlank() : 1);
 
         this.bomSize = this.member ? 5 : 2;
         this.pressProcessed = 50;
         this.moveInterval = this.member ? 0 : 180;
+
+        this.moveThread = new MoveThread(this);
+        this.canMoveThread = new AtomicBoolean(true);
 
         this.moveThread.start();
 
@@ -66,13 +70,37 @@ public class Player extends Biota {
         this.bomThrough = this.member;
         this.wallThrough = this.member;
         this.fireImmune = this.member;
+        this.questionMark = new AtomicBoolean(true);
         this.tank = this.member;
 
+        this.questionMarkThread = new QuestionMarkThread(room, this);
         this.questionMarkThread.start();
     }
 
+    @Override
+    public boolean revive(){
+        if (super.revive()) {
+            this.bomNumber.set(this.member ? this.room.getBlank() : 1);
+
+            this.ID.addAndGet(1);
+            this.moveThread = new MoveThread(this);
+            this.canMoveThread.set(true);
+            this.moveThread.start();
+            this.questionMark.set(true);
+
+            this.questionMarkThread = new QuestionMarkThread(room, this);
+            this.questionMarkThread.start();
+
+            return true;
+        }
+
+        return false;
+    }
+
     public void reload(Room room){
-//        this.bomNumber.set(room.getBlank());
+        this.ID.addAndGet(1);
+        this.moveThread.updateId();
+        this.questionMarkThread.updateId();
 
         setPosition(1,1);
         this.room = room;
@@ -205,14 +233,16 @@ public class Player extends Biota {
     /**
      * 添加炸弹
      */
-    public void addBom(int y, int x){
+    public Bom addBom(int y, int x){
         if(canAddBom(x, y)) {
             Bom bom = new Bom(x, y, this);
             if (room.addBom(x, y, bom)) {
                 bom.start();
                 bomNumber.addAndGet(-1);
+                return bom;
             }
         }
+        return null;
     }
 
     /**
@@ -220,20 +250,20 @@ public class Player extends Biota {
      */
     public void addMissile(int y, int x, MotorDirection motorDirection){
         if (bomNumber.get() > 0) {
-            Missile missile = new Missile(room, x, y);
+            Missile missile = new Missile(room, x, y, this);
             if (y == getMoveY() && x == getMoveX()){
                 switch (motorDirection) {
                     case TOP:
-                        missile.setActualPosition(getActualX(), getActualY() - Room.CELL_HEIGHT);
+                        missile.setActualPosition(getActualX(), getActualY() - Room.CELL_HEIGHT + missile.getMoveSize());
                         break;
                     case BOTTOM:
-                        missile.setActualPosition(getActualX(), getActualY() + Room.CELL_HEIGHT);
+                        missile.setActualPosition(getActualX(), getActualY() + Room.CELL_HEIGHT - missile.getMoveSize());
                         break;
                     case LEFT:
-                        missile.setActualPosition(getActualX() - Room.CELL_WIDTH, getActualY());
+                        missile.setActualPosition(getActualX() - Room.CELL_WIDTH + missile.getMoveSize(), getActualY());
                         break;
                     case RIGHT:
-                        missile.setActualPosition(getActualX() + Room.CELL_WIDTH, getActualY());
+                        missile.setActualPosition(getActualX() + Room.CELL_WIDTH - missile.getMoveSize(), getActualY());
                         break;
                 }
             }
@@ -244,7 +274,7 @@ public class Player extends Biota {
     }
 
     public void randomAddBobs(){
-        int size = room.getBlank()/4;
+        int size = Math.min(room.getBlank()/4, 100);
         Random random = new Random();
         for (int i=1; i < room.getH() - 1; i++){
             for (int j=1; j< room.getW() - 1; j++){
@@ -299,6 +329,13 @@ public class Player extends Biota {
         return !IsUtil.isWall(bodyNumber);
     }
 
+    public boolean isDie(long id){
+        if (id == ID.get()){
+            return isDie();
+        }else {
+            return true;
+        }
+    }
 
     @Override
     public boolean die(){
@@ -321,6 +358,15 @@ public class Player extends Biota {
         return false;
     }
 
+    @Override
+    public void setState(int state){
+        if (state == 3 || state == 2 || state == 1 || state == 0){
+            if (!isDie()){//设置状态为死亡时，并未死亡，那么不进行设置
+                return;
+            }
+        }
+        super.setState(state);
+    }
 
     public void stop(){
         super.die();
@@ -330,13 +376,18 @@ public class Player extends Biota {
         System.out.println(CLASSNAME + method + ":   " + message);
     }
 
+    public long getId(){
+        return ID.get();
+    }
 
     public int getBomNumber() {
         return bomNumber.get();
     }
 
-    public void bomNumberAdd(){
-        bomNumber.addAndGet(1);
+    public void bomNumberAdd(long id){
+        if (id == ID.get()) {
+            bomNumber.addAndGet(1);
+        }
     }
 
     public int getBomSize() {

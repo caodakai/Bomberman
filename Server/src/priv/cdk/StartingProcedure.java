@@ -60,7 +60,7 @@ public class StartingProcedure extends JFrame {
                 e.printStackTrace();
                 break;
             }
-        }while (false);
+        }while (true);
     }
 
     public StartingProcedure(int port, int sendPort){

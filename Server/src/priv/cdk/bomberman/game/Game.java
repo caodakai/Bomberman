@@ -34,6 +34,8 @@ public class Game {
         room.ps.forEach(player->{
             if(!player.isDie()){
                 player.questionMarkThread.openQuestionMark(5);//先开启无敌，然后再重置房间
+            }else {
+                player.revive();
             }
         });
         this.room = new Room(this, room.ps);

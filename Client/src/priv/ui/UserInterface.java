@@ -13,9 +13,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
+import java.util.Timer;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 界面程序
@@ -769,26 +770,28 @@ public class UserInterface extends JPanel implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
-//        System.out.println("按下了能输入内容的按键 : " + e.getKeyCode());
+//        System.out.println("keyTyped : " + e.getKeyCode());
     }
 
+    //创建实时监听按钮事件
+    private final Timer timer = new Timer();
+    private final CopyOnWriteArraySet<String> keyDown = new CopyOnWriteArraySet<>();
+    {
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sendKey();
+            }
+        },0 , 60);
+    }
     @Override
     public void keyPressed(KeyEvent e) {
-//        System.out.println("按下了能输入内容的按键 : " + e.getKeyCode());
+//        System.out.println("keyPressed : " + e.getKeyCode());
 
-        if(member) {
-            sockets.forEach(socket -> {
-                Start.outString(socket, e.getKeyCode() + "");
-            });
+        keyDown.add(e.getKeyCode() + "");
 
-            sockets.forEach(socket -> {
-                try {
-                    String s = Start.inString(socket);
-                } catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception) {
-                    System.out.println("服务器关闭！");
-                    Start.stop = true;
-                }
-            });
+        /*if(member) {
+            sendKey();
         }else {
             switch (e.getKeyCode()){
                 case 38:
@@ -802,22 +805,12 @@ public class UserInterface extends JPanel implements KeyListener {
                 case 74://J
                 case 75://K
                 case 72://H
-                    sockets.forEach(socket -> {
-                        Start.outString(socket, e.getKeyCode() + "");
-                    });
-
-                    sockets.forEach(socket -> {
-                        try {
-                            String s = Start.inString(socket);
-                        }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
-                            System.out.println("服务器关闭！");
-                            Start.stop = true;
-                        }
-                    });
+                    sendKey();
+                    break;
                 default:
                     break;
             }
-        }
+        }*/
     }
 
     /**
@@ -825,11 +818,29 @@ public class UserInterface extends JPanel implements KeyListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
-
+        keyDown.remove(e.getKeyCode() + "");
     }
 
+    /**
+     * 发送点击事件到服务器
+     */
+    public void sendKey(){
+        keyDown.forEach(key->{
+            sockets.forEach(socket -> {
+                    Start.outString(socket, key);
+            });
 
-
+            sockets.forEach(socket -> {
+                try {
+                    String s = Start.inString(socket);
+                }catch (StringIndexOutOfBoundsException | UnsupportedEncodingException exception){
+                    System.out.println("服务器关闭！");
+                    keyDown.remove(key);
+                    Start.stop = true;
+                }
+            });
+        });
+    }
 
 
 

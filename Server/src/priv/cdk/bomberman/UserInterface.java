@@ -99,6 +99,9 @@ public class UserInterface{
                     player.wakeUpTheBombAll();
                 }
                 break;
+            case 76://L
+                player.setTank(!player.isTank());
+                break;
             case 77://M
                 player.randomAddBobs();
                 break;

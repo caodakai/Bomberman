@@ -8,13 +8,14 @@ public class MoveThread extends Thread {
     private int yPx = 0;
 
     Player player;
+    private long id;
 
     @Override
     public void run() {
-        while (!player.isDie()) {
+        while (!player.isDie(id)) {
             try {
                 synchronized (this) {
-                    if (!player.isDie()) {
+                    if (!player.isDie(id)) {
                         this.wait();
                     }
                 }
@@ -85,8 +86,12 @@ public class MoveThread extends Thread {
         this.yPx = yPx;
     }
 
-
     public MoveThread(Player player) {
         this.player = player;
+        this.id = player.getId();
+    }
+
+    public void updateId(){
+        this.id = player.getId();
     }
 }

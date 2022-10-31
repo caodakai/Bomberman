@@ -9,6 +9,8 @@ import priv.cdk.bomberman.critter.basic.BasicsCritter;
 import priv.cdk.bomberman.critter.dragon.DragonCritter;
 import priv.cdk.bomberman.critter.knight.KnightCritter;
 import priv.cdk.bomberman.data.InputData;
+import priv.cdk.bomberman.parent.Biota;
+import priv.cdk.bomberman.parent.BiotaUtil;
 import priv.cdk.bomberman.parent.MyThread;
 import priv.cdk.bomberman.room.Room;
 
@@ -38,23 +40,36 @@ public class CharmanderThread extends MyThread {
             }
 
             boolean hasCritter = false;
+            Critter readyCritter = null;
+            boolean hasOtherCritter = false;
             for (Critter critter : myRoom.critters) {
                 if (!critter.isDie()) {
                     hasCritter = true;
-                    if (critter instanceof KnightCritter && hasDragon){
-                        continue;
-                    }
 
-                    if (critter.getLx() == x) {
-                        if (critter.getTy() == y || critter.getBy() == y) {
-                            return critter;
+                    boolean flag = BiotaUtil.haveBiota(critter, x, y);
+
+                    if (flag){
+                        if(critter instanceof KnightCritter){
+                            if (hasDragon){
+                                continue;
+                            }else {
+                                if (((KnightCritter) critter).isStageDie()){
+                                    readyCritter = critter;
+                                    continue;
+                                }else{
+                                    return critter;
+                                }
+                            }
                         }
-                    } else if (critter.getRx() == x) {
-                        if (critter.getTy() == y || critter.getBy() == y) {
-                            return critter;
-                        }
+                        return critter;
+                    }else {
+                        hasOtherCritter = true;//当怪不在当前位置，说明还有怪在其它地方，那么优先抓其它怪
                     }
                 }
+            }
+
+            if (!hasOtherCritter && readyCritter != null){
+                return readyCritter;
             }
 
             if (!hasCritter) {

@@ -170,6 +170,19 @@ public abstract class Biota implements Movement {
         return true;
     }
 
+    /**
+     * 复活
+     * @return 从死亡状态复活
+     */
+    public boolean revive(){
+        if (die.compareAndSet(true, false)) {
+            state = 4;
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     public boolean isDie() {
         return die.get();
     }

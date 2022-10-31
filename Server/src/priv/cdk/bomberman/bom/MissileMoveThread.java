@@ -8,6 +8,7 @@ import priv.cdk.bomberman.room.Room;
 public class MissileMoveThread extends MyThread {
     private final Missile missile;
     private final Player player;
+    private final long id;
     private final int moveTime;
     private final int moveXSize;
     private final int moveYSize;
@@ -16,8 +17,9 @@ public class MissileMoveThread extends MyThread {
         super(room);
         this.missile = missile;
         this.player = player;
+        this.id = player.getId();
 
-        int moveSize = Room.CELL_WIDTH / 10;
+        int moveSize = missile.getMoveSize();
         this.moveTime = 20;
 
         switch (motorDirection) {
@@ -59,6 +61,8 @@ public class MissileMoveThread extends MyThread {
             }
         }
 
-        player.bomNumberAdd();
+        player.bomNumberAdd(id);
     }
+
+
 }
