@@ -17,15 +17,23 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * cmd 命令运行 java -jar client.jar
+ * cmd 命令运行 java -jar client.jar [member1] [member2]
+ *
+ * member1 : true 为游戏会员，游戏角色是无敌的
+ * member2 : true 为超级管理员，可以使用更多的功能
  */
 public class Start extends JFrame {
     public static volatile boolean stop = false;
 
-    private static UserInterface userInterface;
+    private UserInterface userInterface;
 
-    public static void main(String[] args) {
-        String host = "192.168.1.80";
+    public static void main(String[] args){
+        Start start = new Start();
+        start.start(args);
+    }
+
+    public void start(String[] args) {
+        String host = "192.168.1.26";
         int post;
         try {
             Socket so = new Socket(host, 2688);
@@ -50,13 +58,17 @@ public class Start extends JFrame {
             System.out.println("请输入姓名！");
             String name = new Scanner(System.in).nextLine();
 
+            String member = getArgByIndex(0, args);
+
+            UserInterface.member = getArgByIndex(1, args).equals("true");
+
             // '-' 后面的是名字
-            outString(socket, InetAddress.getLocalHost().getHostAddress() + ":" + dataPort + "-" + name);
+            outString(socket, InetAddress.getLocalHost().getHostAddress() + ":" + member.equals("true") + "+" + dataPort + "-" + name);
 
             System.out.println(inString(socket));
 
             //创建监听对象
-            new Start(socket);
+            init(socket);
 
             //接收数据
             DatagramSocket datagramSocket = new DatagramSocket(dataPort);//监听本机1688端口,持续获取数据
@@ -168,12 +180,13 @@ public class Start extends JFrame {
         }
     }
 
-    private Start(Socket socket){
+    private void init(Socket socket){
         userInterface = new UserInterface(socket);
 
         this.add(userInterface);
 
         this.addKeyListener(userInterface);
+        this.addFocusListener(userInterface);
         this.setSize(1800,1000);
         this.setLocation(100,50);
         this.setTitle("炸弹人");
@@ -182,7 +195,7 @@ public class Start extends JFrame {
     }
 
     public static String inString(Socket socket) throws UnsupportedEncodingException {
-        byte[] bs=new byte[10240];
+        byte[] bs=new byte[1024];
         int len=0;
         try {
             len=socket.getInputStream().read(bs);		//读取数据,异常则说明客户端突然关闭,则将本端口号设置成可连接状态
@@ -200,6 +213,20 @@ public class Start extends JFrame {
         }catch (Exception e) {            //用户自动退出时发送异常
             System.out.println("服务器关闭");
             stop = true;
+        }
+    }
+
+    /**
+     * 通过下标获取args的值
+     * @param index 下标
+     * @param args 数组
+     * @return 返回输入的泛型值
+     */
+    private String getArgByIndex(int index, String[] args){
+        if (args.length <= index){
+            return "";
+        }else {
+            return args[index];
         }
     }
 }

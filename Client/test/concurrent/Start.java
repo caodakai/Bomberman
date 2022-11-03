@@ -13,10 +13,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Start extends JFrame {
@@ -53,7 +50,7 @@ public class Start extends JFrame {
                 dataPort = Integer.parseInt(split[1]);
 
                 // '-' 后面的是名字
-                outString(socket, InetAddress.getLocalHost().getHostAddress() + ":" + dataPort + "-cdk" /*+ InetAddress.getLocalHost().getHostAddress() + ":" + dataPort*/);
+                outString(socket, InetAddress.getLocalHost().getHostAddress() + ":" + true + "+" + dataPort + "-cdk" /*+ InetAddress.getLocalHost().getHostAddress() + ":" + dataPort*/);
 
                 System.out.println(inString(socket));
 
@@ -176,6 +173,7 @@ public class Start extends JFrame {
         this.add(userInterface);
 
         this.addKeyListener(userInterface);
+        this.addFocusListener(userInterface);
         this.setSize(1800,1000);
         this.setLocation(100,50);
         this.setTitle("炸弹人");

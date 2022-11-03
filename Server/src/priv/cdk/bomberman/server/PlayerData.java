@@ -11,6 +11,8 @@ public class PlayerData {
 
     private String playerName;//玩家名称
 
+    private boolean member;//是否为管理员
+
     private Game game;//玩家所处游戏对象
 
     private UserInterface userInterface;//玩家操作对象
@@ -109,5 +111,13 @@ public class PlayerData {
 
     public void setUserInterface(UserInterface userInterface) {
         this.userInterface = userInterface;
+    }
+
+    public boolean isMember() {
+        return member;
+    }
+
+    public void setMember(boolean member) {
+        this.member = member;
     }
 }

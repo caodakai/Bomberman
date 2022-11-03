@@ -1,5 +1,6 @@
 package priv.cdk.bomberman.parent;
 
+import priv.cdk.bomberman.bom.Missile;
 import priv.cdk.bomberman.charmander.Charmander;
 import priv.cdk.bomberman.critter.Critter;
 import priv.cdk.bomberman.data.InputData;
@@ -37,6 +38,8 @@ public class BiotaDieThread extends MyThread {
             biota.room.critters.remove(biota);
         }else if (biota instanceof Charmander){
             biota.room.charmanders.remove(biota);
+        }else if (biota instanceof Missile){
+            biota.room.missiles.remove(biota);
         }
         biota.setState(0);
     }

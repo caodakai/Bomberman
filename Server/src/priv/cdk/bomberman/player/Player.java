@@ -26,6 +26,7 @@ public class Player extends Biota {
 
     public final String name;
 
+    private int maxBomNumber;
     private final AtomicInteger bomNumber;
     public int bomSize;
     private int pressProcessed;//移动速度
@@ -44,18 +45,19 @@ public class Player extends Biota {
 
 
 //    public int speed = Room.CELL_WIDTH/4;
-    public int speed = Room.CELL_WIDTH/2;
+    public int speed = Room.CELL_WIDTH/4 * 3;
 
-    public Player(Room room, int lx, int ty, String name){
+    public Player(Room room, int lx, int ty, String name, boolean member){
         super(room,lx,ty);
 
         this.name = name;
 
         if (TEST){
             this.member = true;
-        }else this.member = this.name.equals("cdk");
+        }else this.member = member;
 
         this.bomNumber = new AtomicInteger(this.member ? this.room.getBlank() : 1);
+        this.maxBomNumber = this.bomNumber.get();
 
         this.bomSize = this.member ? 5 : 2;
         this.pressProcessed = 50;
@@ -80,9 +82,9 @@ public class Player extends Biota {
     @Override
     public boolean revive(){
         if (super.revive()) {
-            this.bomNumber.set(this.member ? this.room.getBlank() : 1);
-
             this.ID.addAndGet(1);
+            this.bomNumber.set(this.member ? this.room.getBlank() : 1);
+            this.maxBomNumber = this.bomNumber.get();
             this.moveThread = new MoveThread(this);
             this.canMoveThread.set(true);
             this.moveThread.start();
@@ -107,7 +109,9 @@ public class Player extends Biota {
 
         if(this.member) {
             this.bomNumber.set(this.room.getBlank());
+            this.maxBomNumber = this.bomNumber.get();
         }else{//过关后，火焰免疫取消
+            this.bomNumber.set(this.maxBomNumber);
             this.fireImmune = false;
         }
     }
@@ -172,7 +176,8 @@ public class Player extends Biota {
                         bomSize ++;
                         break;
                     case Common.PROP_BOM_ADD:
-                        bomNumber.addAndGet(1);
+                        bomNumberAdd(this.ID.get());
+                        this.maxBomNumber++;
                         break;
                     case Common.PROP_BOM_CONTROL:
                         bomControl = true;
@@ -237,7 +242,6 @@ public class Player extends Biota {
         if(canAddBom(x, y)) {
             Bom bom = new Bom(x, y, this);
             if (room.addBom(x, y, bom)) {
-                bom.start();
                 bomNumber.addAndGet(-1);
                 return bom;
             }
@@ -250,7 +254,7 @@ public class Player extends Biota {
      */
     public void addMissile(int y, int x, MotorDirection motorDirection){
         if (bomNumber.get() > 0) {
-            Missile missile = new Missile(room, x, y, this);
+            Missile missile = new Missile(room, x, y, this, motorDirection);
             if (y == getMoveY() && x == getMoveX()){
                 switch (motorDirection) {
                     case TOP:
@@ -268,7 +272,6 @@ public class Player extends Biota {
                 }
             }
             room.addMissile(missile);
-            new MissileMoveThread(room, missile, this, motorDirection).start();
             bomNumber.addAndGet(-1);
         }
     }
@@ -299,8 +302,8 @@ public class Player extends Biota {
         for (int i = 0; i < room.getH(); i++) {
             for (int j = 0; j < room.getW(); j++) {
                 Bom bom = room.getBomCellValue(i, j);
-                if(bom != null && bom.getPlayer() == this){
-                    Bom.wakeUpTheBomb(room, j, i, 0);
+                if(bom != null){
+                    Bom.wakeUpTheBomb(room, j, i, this);
                 }
             }
         }

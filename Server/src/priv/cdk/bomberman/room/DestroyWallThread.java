@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DestroyWallThread extends MyThread {
-    public static final long DESTROY_THE_WALL_TIME = 300;//摧毁墙的速度
+    public static final long DESTROY_THE_WALL_TIME = 500;//摧毁墙的速度
 
     private final int y;
     private final int x;

@@ -18,11 +18,11 @@ public class Game {
 
     public Room room;
 
-    public Game(String...players){
+    public Game(boolean[] members,String[] players){
        this.room = new Room(this, null);
 
-        for (String name : players) {
-            this.room.addPlayer(name);
+        for (int i = 0; i < players.length; i++) {
+            this.room.addPlayer(players[i], members[i]);
         }
 
        this.gameOverThread.start();
@@ -57,9 +57,7 @@ public class Game {
 
             this.room = new Room(this, null);
 
-            ps.forEach(player -> {
-                this.room.addPlayer(player.name);
-            });
+            ps.forEach(player -> this.room.addPlayer(player.name, player.isMember()));
             this.score.set(0);
             this.gameOver.set(false);
         }
@@ -116,7 +114,6 @@ public class Game {
 
     public void startGame(){
         if(gameOver.get() && gameOverThread.canManualAwaken.compareAndSet(true, false)){
-            System.out.println("重启");
             gameOverThread.interrupt();
         }
     }

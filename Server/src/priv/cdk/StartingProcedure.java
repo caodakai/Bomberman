@@ -3,6 +3,7 @@ package priv.cdk;
 import priv.cdk.bomberman.UserInterface;
 import priv.cdk.bomberman.data.InputData;
 import priv.cdk.bomberman.data.UDPData;
+import priv.cdk.bomberman.exception.VersionException;
 import priv.cdk.bomberman.game.Game;
 import priv.cdk.bomberman.server.PlayerData;
 
@@ -28,6 +29,7 @@ public class StartingProcedure extends JFrame {
 
     public static int maxPlayerNumber = 1;//最多多少人加入游戏
 
+    public final String name;
     public AtomicBoolean playerIsMax = new AtomicBoolean(false);//人数已达上限
     public final AtomicBoolean gameStop = new AtomicBoolean(false);//游戏关闭  最终指令
 
@@ -64,6 +66,7 @@ public class StartingProcedure extends JFrame {
     }
 
     public StartingProcedure(int port, int sendPort){
+        this.name = port + "-" + sendPort;
         AtomicInteger maxNumber = new AtomicInteger(0);
 
         //打开PORT的端口，接收客户端第一次连接 ，返回一个可交互的端口
@@ -122,44 +125,62 @@ public class StartingProcedure extends JFrame {
                         break;
                     }
 
-                    if (first) {
-                        String cHost = data.substring(0, data.indexOf(":"));
-                        String cPost = data.substring(data.indexOf(":") + 1, data.indexOf("-"));
-                        String playName = data.substring(data.indexOf("-") + 1);
+                    try {
+                        if (first) {
+                            String cHost;
+                            String member;
+                            String cPost;
+                            String playName;
 
-                        playerDatum.setPlayerName(playName);
-                        playerDatum.setIp(cHost);
-                        playerDatum.setAddress(InetAddress.getByName(cHost));
-
-                        if (i == maxPlayerNumber - 1) {//第一次回应，并且玩家已达上限
-
-                            String[] players = new String[playerData.length];
-                            for (PlayerData datum : playerData) {
-                                players[datum.getNumber()] = datum.getPlayerName();
+                            try {
+                                cHost = data.substring(0, data.indexOf(":"));
+                                member = data.substring(data.indexOf(":") + 1, data.indexOf("+"));
+                                cPost = data.substring(data.indexOf("+") + 1, data.indexOf("-"));
+                                playName = data.substring(data.indexOf("-") + 1);
+                            } catch (Exception e) {
+                                throw new VersionException(1);
                             }
-                            game = new Game(players);
+                            playerDatum.setPlayerName(playName);
+                            playerDatum.setMember(Boolean.parseBoolean(member));
+                            playerDatum.setIp(cHost);
+                            playerDatum.setAddress(InetAddress.getByName(cHost));
 
-                            for (PlayerData datum : playerData) {
+                            if (i == maxPlayerNumber - 1) {//第一次回应，并且玩家已达上限
 
-                                datum.setGame(game);
-                                datum.setUserInterface(new UserInterface(game));
+                                String[] players = new String[playerData.length];
+                                boolean[] members = new boolean[playerData.length];
+                                for (PlayerData datum : playerData) {
+                                    players[datum.getNumber()] = datum.getPlayerName();
+                                    members[datum.getNumber()] = datum.isMember();
+                                }
+                                game = new Game(members, players);
 
-                                createGame(datum.getNumber());
+                                for (PlayerData datum : playerData) {
+
+                                    datum.setGame(game);
+                                    datum.setUserInterface(new UserInterface(game));
+
+                                    createGame(datum.getNumber());
+                                }
                             }
-                        }
 
-                        first = false;
+                            first = false;
 
-                    } else {
+                        } else {
 //                        System.out.println(data);
-                        if (data.equals("")) {
-                            System.out.println(playerDatum.getPlayerName() + "退出！");
-                            break;
+                            if (data.equals("")) {
+                                System.out.println(playerDatum.getPlayerName() + "退出！");
+                                break;
+                            }
+                            playerDatum.getUserInterface().keyPressed(i, Integer.parseInt(data));
                         }
-                        playerDatum.getUserInterface().keyPressed(i, Integer.parseInt(data));
+                    }catch (VersionException e){
+                        outString(s, e.getMassage());
+                        System.out.println(playerDatum.getPlayerName() + "退出！");
+                        break;
                     }
 
-                    outString(s, "接收成功！");
+                    outString(s, "接收成功！" + this.name);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

@@ -31,7 +31,7 @@ public class KnightCritter extends Critter {
         boolean move = super.move(xPx, yPx);
 
         if (move){//如果移动成功，那么监听是否碰到了炸弹或者墙，如果有，则清除墙
-            Bom.wakeUpTheBomb(room, getMoveY(), getMoveX(), 0);
+            Bom.wakeUpTheBomb(room, getMoveY(), getMoveX(), null);
             room.destroyTheWall(getMoveY(), getMoveX());
         }
 

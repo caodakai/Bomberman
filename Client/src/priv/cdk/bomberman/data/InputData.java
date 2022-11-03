@@ -185,7 +185,11 @@ public class InputData implements Serializable {
     }
 
     public int getBody(int x, int y) {
-        return body[x][y];
+        if (x < body.length && y < body[y].length){
+            return body[x][y];
+        }else {
+            return -1;
+        }
     }
 
     public void setBody(int[][] body) {

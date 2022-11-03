@@ -2,7 +2,9 @@ package priv.cdk.bomberman.room;
 
 import priv.cdk.bomberman.bom.Bom;
 import priv.cdk.bomberman.ai.maze.Maze;
+import priv.cdk.bomberman.bom.BomThread;
 import priv.cdk.bomberman.bom.Missile;
+import priv.cdk.bomberman.bom.MissileMoveThread;
 import priv.cdk.bomberman.charmander.Charmander;
 import priv.cdk.bomberman.charmander.CharmanderThread;
 import priv.cdk.bomberman.common.Common;
@@ -133,10 +135,8 @@ public class Room {
         */
 
 
-
-
-
-
+        new BomThread(this).start();
+        new MissileMoveThread(this).start();
 
     }
 
@@ -527,17 +527,21 @@ public class Room {
         return game.getCustomsPass();
     }
 
-    public void addPlayer(String name){
+    public void addPlayer(String name, boolean member){
         Player player;
         if(name != null && !name.equals("")) {
-            player = new Player(this, 1, 1, name);
+            player = new Player(this, 1, 1, name, member);
         }else{
-            player = new Player(this, 1, 1, "P" + (ps.size() + 1));
+            player = new Player(this, 1, 1, "P" + (ps.size() + 1), member);
         }
         ps.add(player);
     }
 
     public int[][] getBody() {
         return body;
+    }
+
+    public Bom[][] getBobs() {
+        return bobs;
     }
 }
