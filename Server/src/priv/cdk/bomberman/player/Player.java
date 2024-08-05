@@ -31,7 +31,7 @@ public class Player extends Biota {
     public int bomSize;
     private int pressProcessed;//移动速度
     private int moveInterval;//移动间隔时间
-    public MoveThread moveThread;
+    public final MoveThread moveThread;
     public final AtomicBoolean canMoveThread;
 
     private boolean bomControl;//炸弹爆炸控制
@@ -41,7 +41,7 @@ public class Player extends Biota {
     private boolean fireImmune;//火焰免疫
     private boolean tank;//处于坦克状态
 
-    public QuestionMarkThread questionMarkThread;
+    public final QuestionMarkThread questionMarkThread;
 
 
 //    public int speed = Room.CELL_WIDTH/4;
@@ -82,16 +82,13 @@ public class Player extends Biota {
     @Override
     public boolean revive(){
         if (super.revive()) {
-            this.ID.addAndGet(1);
-            this.bomNumber.set(this.member ? this.room.getBlank() : 1);
-            this.maxBomNumber = this.bomNumber.get();
-            this.moveThread = new MoveThread(this);
-            this.canMoveThread.set(true);
-            this.moveThread.start();
-            this.questionMark.set(true);
+            this.ID.addAndGet(1); // 修改玩家ID
+            this.bomNumber.set(this.member ? this.room.getBlank() : 1); // 炸弹数量重置
+            this.maxBomNumber = this.bomNumber.get(); // 最大炸弹数量重置
+            this.canMoveThread.set(true); // 允许移动
+            this.questionMark.set(false); // 设置无敌为否
 
-            this.questionMarkThread = new QuestionMarkThread(room, this);
-            this.questionMarkThread.start();
+            this.questionMarkThread.openQuestionMark(5); // 启动5秒的无敌时间
 
             return true;
         }
@@ -101,8 +98,6 @@ public class Player extends Biota {
 
     public void reload(Room room){
         this.ID.addAndGet(1);
-        this.moveThread.updateId();
-        this.questionMarkThread.updateId();
 
         setPosition(1,1);
         this.room = room;
@@ -369,6 +364,10 @@ public class Player extends Biota {
             }
         }
         super.setState(state);
+    }
+
+    public boolean gameStop(){
+        return room.gameStop();
     }
 
     public void stop(){

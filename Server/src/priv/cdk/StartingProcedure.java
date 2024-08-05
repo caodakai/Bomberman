@@ -38,7 +38,8 @@ public class StartingProcedure extends JFrame {
 
     private final PlayerData[] playerData = new PlayerData[maxPlayerNumber];
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
+        System.out.println("服务器IP：" + InetAddress.getLocalHost().getHostAddress());
         System.out.println("请输入一个房间的人数");
         maxPlayerNumber = new Scanner(System.in).nextInt();
         System.out.println("服务器启动");

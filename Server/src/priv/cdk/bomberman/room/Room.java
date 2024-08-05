@@ -544,4 +544,8 @@ public class Room {
     public Bom[][] getBobs() {
         return bobs;
     }
+
+    public boolean gameStop(){
+        return game.stop.get();
+    }
 }

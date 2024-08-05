@@ -9,10 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.net.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -33,12 +30,15 @@ public class Start extends JFrame {
     }
 
     public void start(String[] args) {
-        String host = "192.168.1.26";
+        String host = "192.168.0.177";
+        String clientHost; // 客户端实际IP
         int post;
         try {
             Socket so = new Socket(host, 2688);
 
-            outString(so, "当前用户ip:" + InetAddress.getLocalHost().getHostAddress());
+            clientHost = findIP(host);
+
+            outString(so, "当前用户ip:" + clientHost);
 
             String s = inString(so);//第一次连接，接收到可用端口
 
@@ -63,7 +63,7 @@ public class Start extends JFrame {
             UserInterface.member = getArgByIndex(1, args).equals("true");
 
             // '-' 后面的是名字
-            outString(socket, InetAddress.getLocalHost().getHostAddress() + ":" + member.equals("true") + "+" + dataPort + "-" + name);
+            outString(socket, clientHost + ":" + member.equals("true") + "+" + dataPort + "-" + name);
 
             System.out.println(inString(socket));
 
@@ -228,5 +228,34 @@ public class Start extends JFrame {
         }else {
             return args[index];
         }
+    }
+
+    /**
+     * 获取和服务器同一网段的IP
+     */
+    private String findIP(String serverIP){
+        String networkSegment = serverIP.substring(0, serverIP.lastIndexOf(".") + 1);
+
+        try {
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+                Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+                while (inetAddresses.hasMoreElements()) {
+                    InetAddress inetAddress = inetAddresses.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress.isSiteLocalAddress()) {
+                        String ipAddress = inetAddress.getHostAddress();
+                        if (ipAddress.startsWith(networkSegment)) {
+                            return ipAddress;
+                        }
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+            System.out.println("获取本地IP错误！" + e.getMessage());
+        }
+
+        return null;
     }
 }
