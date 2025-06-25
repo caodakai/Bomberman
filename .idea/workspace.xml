@@ -5,6 +5,9 @@
       <artifact name="client" />
     </artifacts-to-build>
   </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -30,43 +33,13 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" name="My Changelist" comment="添加玩家寻路">
-      <change afterPath="$PROJECT_DIR$/Client/images/tank/missile/missile.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/images/tank/tank.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/images/tank/tank_template.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/src/priv/cdk/bomberman/data/UDPData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/bom/Missile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/bom/MissileMoveThread.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/data/UDPData.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/test/udpTest/UDP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/images/prop/prop.png" beforeDir="false" afterPath="$PROJECT_DIR$/Client/images/prop/prop.png" afterDir="false" />
+    <list default="true" id="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" name="My Changelist" comment="1.遍历实际网段，发送到服务端&#10;2.优化">
       <change beforePath="$PROJECT_DIR$/Client/src/priv/Start.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/priv/Start.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/src/priv/cdk/bomberman/data/InputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/priv/cdk/bomberman/data/InputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/src/priv/common/Common.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/priv/common/Common.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/src/priv/ui/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/src/priv/ui/UserInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/test/concurrent/Start.java" beforeDir="false" afterPath="$PROJECT_DIR$/Client/test/concurrent/Start.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/Server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Server/Server.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/StartingProcedure.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/StartingProcedure.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/Bom.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/bom/Bom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/UserInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/UserInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/common/Common.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/common/Common.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/knight/KnightCritter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/critter/knight/KnightCritter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/data/InputData.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/data/InputData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/parent/Biota.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/parent/Biota.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/player/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/player/Player.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/player/QuestionMarkThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/player/QuestionMarkThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/room/DestroyWallThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/room/DestroyWallThread.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/room/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/room/Room.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/utils/RoomUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Server/src/priv/cdk/bomberman/utils/RoomUtil.java" afterDir="false" />
     </list>
     <list id="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" name="Default Changelist" comment="第一次提交">
       <change afterPath="$PROJECT_DIR$/.idea/artifacts/client.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/server.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/dictionaries/Thinkpad.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Default_Changelist]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[My_Changelist]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__Default_Changelist_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase__My_Changelist_.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
@@ -84,89 +57,47 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitRewordedCommitMessages">
     <option name="onto" value="bea0e63c3ad47b09a134880d067a9694c8c77df3" />
   </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/.idea/workspace.xml">
-      <ranges>
-        <range start1="32" end1="45" start2="32" end2="41" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="46" end1="53" start2="42" end2="43" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="58" end1="59" start2="48" end2="49" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="60" end1="60" start2="50" end2="51" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="61" end1="66" start2="52" end2="53" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="68" end1="68" start2="55" end2="56" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="69" end1="69" start2="57" end2="59" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="75" end1="75" start2="65" end2="69" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="76" end1="76" start2="70" end2="71" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="92" end1="92" start2="87" end2="149" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="105" end1="106" start2="162" end2="163" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="107" end1="108" start2="164" end2="165" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="110" end1="111" start2="167" end2="168" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="114" end1="118" start2="171" end2="173" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="119" end1="119" start2="174" end2="176" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="121" end1="121" start2="178" end2="180" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="124" end1="124" start2="183" end2="185" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="128" end1="129" start2="189" end2="203" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="143" end1="143" start2="217" end2="224" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="171" end1="171" start2="252" end2="253" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="174" end1="174" start2="256" end2="257" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="177" end1="177" start2="260" end2="261" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="178" end1="179" start2="262" end2="263" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="204" end1="205" start2="288" end2="299" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="227" end1="228" start2="321" end2="350" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="248" end1="248" start2="370" end2="376" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="261" end1="262" start2="389" end2="394" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="264" end1="265" start2="396" end2="397" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="267" end1="268" start2="399" end2="400" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="272" end1="273" start2="404" end2="405" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="275" end1="277" start2="407" end2="409" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="279" end1="280" start2="411" end2="412" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="288" end1="289" start2="420" end2="425" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="291" end1="293" start2="427" end2="429" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="295" end1="297" start2="431" end2="433" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="299" end1="300" start2="435" end2="436" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="304" end1="305" start2="440" end2="441" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="307" end1="309" start2="443" end2="445" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="311" end1="313" start2="447" end2="449" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="315" end1="317" start2="451" end2="453" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="319" end1="321" start2="455" end2="457" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="323" end1="325" start2="459" end2="461" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="327" end1="329" start2="463" end2="465" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="331" end1="333" start2="467" end2="469" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="335" end1="336" start2="471" end2="472" changelist="cb22bc89-3d91-4cd1-ad5f-9ef20f098b04" />
-        <range start1="344" end1="345" start2="480" end2="493" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-        <range start1="347" end1="349" start2="495" end2="497" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-        <range start1="351" end1="353" start2="499" end2="501" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-        <range start1="355" end1="357" start2="503" end2="505" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-        <range start1="359" end1="360" start2="507" end2="508" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-        <range start1="368" end1="369" start2="516" end2="517" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-        <range start1="371" end1="373" start2="519" end2="521" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-        <range start1="375" end1="376" start2="523" end2="527" changelist="e33a2ede-36ea-4b87-ae53-ff440e8f9a49" />
-      </ranges>
-    </file>
-  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2F4TgRW3630pNrOTG9riPROBBbO" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Client/images/tank/missile" />
-    <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2724138" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/Idea Location/games/Bomberman",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "工件",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.31954023",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true",
+    "应用程序.client1.executor": "Run",
+    "应用程序.client2.executor": "Run",
+    "应用程序.client3.executor": "Run",
+    "应用程序.server.executor": "Run"
+  }
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Idea Location\games\Bomberman\Client\images\tank\missile" />
@@ -187,7 +118,7 @@
       <recent name="D:\Idea Location\games\Bomberman" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.test1">
+  <component name="RunManager" selected="应用程序.client3">
     <configuration name="UDP" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="udpTest.UDP" />
       <module name="Server" />
@@ -224,6 +155,7 @@
     <configuration name="client3" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="priv.Start" />
       <module name="Client" />
+      <option name="PROGRAM_PARAMETERS" value="true true" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -248,22 +180,37 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="test2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="concurrent.Start" />
+      <module name="Client" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <list>
-      <item itemvalue="Application.client2" />
-      <item itemvalue="Application.client3" />
-      <item itemvalue="Application.test1" />
-      <item itemvalue="Application.server" />
-      <item itemvalue="Application.client1" />
-      <item itemvalue="Application.UDP" />
+      <item itemvalue="应用程序.client2" />
+      <item itemvalue="应用程序.client3" />
+      <item itemvalue="应用程序.test1" />
+      <item itemvalue="应用程序.test2" />
+      <item itemvalue="应用程序.UDP" />
+      <item itemvalue="应用程序.client1" />
+      <item itemvalue="应用程序.server" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.server" />
-        <item itemvalue="Application.client1" />
-        <item itemvalue="Application.UDP" />
+        <item itemvalue="应用程序.client1" />
+        <item itemvalue="应用程序.server" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-1.8.0_392-corretto-1.8.0_392-1571ab7be1d6-ffeb729a" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="项目级" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -296,7 +243,39 @@
       <workItem from="1666146809385" duration="2652000" />
       <workItem from="1666228673555" duration="4012000" />
       <workItem from="1666314207340" duration="18789000" />
-      <workItem from="1666573421079" duration="11999000" />
+      <workItem from="1666573421079" duration="14276000" />
+      <workItem from="1666836237622" duration="23250000" />
+      <workItem from="1666919330342" duration="1189000" />
+      <workItem from="1667186892757" duration="17531000" />
+      <workItem from="1667264593601" duration="25809000" />
+      <workItem from="1667351456359" duration="3767000" />
+      <workItem from="1667437802139" duration="5733000" />
+      <workItem from="1667524500038" duration="1253000" />
+      <workItem from="1667526491952" duration="596000" />
+      <workItem from="1667533014578" duration="594000" />
+      <workItem from="1667783045021" duration="595000" />
+      <workItem from="1667889862184" duration="1349000" />
+      <workItem from="1668148278935" duration="7676000" />
+      <workItem from="1668388395813" duration="134000" />
+      <workItem from="1672208475436" duration="1924000" />
+      <workItem from="1672276315963" duration="1133000" />
+      <workItem from="1672362680234" duration="1875000" />
+      <workItem from="1672708450240" duration="643000" />
+      <workItem from="1673229124648" duration="617000" />
+      <workItem from="1678348903426" duration="1447000" />
+      <workItem from="1678762248016" duration="600000" />
+      <workItem from="1681892491341" duration="3038000" />
+      <workItem from="1681903207557" duration="15000" />
+      <workItem from="1691567738453" duration="24000" />
+      <workItem from="1698995701427" duration="558000" />
+      <workItem from="1701247437655" duration="85000" />
+      <workItem from="1704792879809" duration="2558000" />
+      <workItem from="1704847099192" duration="2168000" />
+      <workItem from="1722844479914" duration="224000" />
+      <workItem from="1722844709873" duration="6150000" />
+      <workItem from="1723688344813" duration="159000" />
+      <workItem from="1732874154090" duration="29000" />
+      <workItem from="1750839343740" duration="3271000" />
     </task>
     <task id="LOCAL-00001" summary="第一次提交">
       <created>1663809955217</created>
@@ -347,11 +326,40 @@
       <option name="project" value="LOCAL" />
       <updated>1665972568120</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="新增坦克道具，修改udp传输和接收，提高inputdata的数据大小上限">
+      <created>1666589147088</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1666589147088</updated>
+    </task>
+    <task id="LOCAL-00009" summary="优化">
+      <created>1667194571064</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1667194571064</updated>
+    </task>
+    <task id="LOCAL-00010" summary="将炸弹的多线程改为单线程；新增可以同时按两个按键。">
+      <created>1667441130165</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1667441130166</updated>
+    </task>
+    <task id="LOCAL-00011" summary="1.遍历实际网段，发送到服务端&#10;2.优化">
+      <option name="closed" value="true" />
+      <created>1722850360899</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1722850360899</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -370,18 +378,11 @@
                   </entry>
                 </map>
               </option>
-              <option name="COLUMN_WIDTH">
-                <map>
-                  <entry key="2" value="61" />
-                  <entry key="3" value="116" />
-                </map>
-              </option>
             </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="第一次提交" />
@@ -391,124 +392,13 @@
     <MESSAGE value="修复bug" />
     <MESSAGE value="优化连续爆炸时，火焰的爆炸规则，使之更加流程，不会造成覆盖的抖动效果" />
     <MESSAGE value="添加玩家寻路" />
-    <option name="LAST_COMMIT_MESSAGE" value="添加玩家寻路" />
+    <MESSAGE value="新增坦克道具，修改udp传输和接收，提高inputdata的数据大小上限" />
+    <MESSAGE value="优化" />
+    <MESSAGE value="将炸弹的多线程改为单线程；新增可以同时按两个按键。" />
+    <MESSAGE value="1.遍历实际网段，发送到服务端&#10;2.优化" />
+    <option name="LAST_COMMIT_MESSAGE" value="1.遍历实际网段，发送到服务端&#10;2.优化" />
   </component>
-  <component name="WindowStateProjectService">
-    <state x="223" y="63" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1665538692863">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="223" y="63" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.816@0.0.1536.816" timestamp="1665538692863" />
-    <state x="456" y="209" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1663927084084">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="456" y="209" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.816@0.0.1536.816" timestamp="1663927084084" />
-    <state x="574" y="92" key="#com.intellij.ide.util.MemberChooser" timestamp="1666578683366">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="574" y="92" key="#com.intellij.ide.util.MemberChooser/0.0.1536.816@0.0.1536.816" timestamp="1666578683366" />
-    <state x="498" y="197" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1665538683552">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="498" y="197" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.816@0.0.1536.816" timestamp="1665538683552" />
-    <state x="468" y="266" key="#com.intellij.refactoring.memberPullUp.PullUpDialog" timestamp="1665384934661">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="468" y="266" key="#com.intellij.refactoring.memberPullUp.PullUpDialog/0.0.1536.816@0.0.1536.816" timestamp="1665384934661" />
-    <state x="499" y="155" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1664349887349">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="499" y="155" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog/0.0.1536.816@0.0.1536.816" timestamp="1664349887349" />
-    <state x="939" y="243" width="488" height="553" key="#xdebugger.evaluate" timestamp="1666581365654">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="939" y="243" width="488" height="553" key="#xdebugger.evaluate/0.0.1536.816@0.0.1536.816" timestamp="1666581365654" />
-    <state width="511" height="466" key="DebuggerActiveHint" timestamp="1666580430211">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="511" height="466" key="DebuggerActiveHint/0.0.1536.816@0.0.1536.816" timestamp="1666580430211" />
-    <state x="503" y="165" key="FileChooserDialogImpl" timestamp="1666232936431">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="503" y="165" key="FileChooserDialogImpl/0.0.1536.816@0.0.1536.816" timestamp="1666232936431" />
-    <state x="266" y="94" key="Git.Interactive.Rebase.Dialog" timestamp="1665994307553">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="266" y="94" key="Git.Interactive.Rebase.Dialog/0.0.1536.816@0.0.1536.816" timestamp="1665994307553" />
-    <state x="632" y="306" key="Github.ShareDialog" timestamp="1663810442196">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="632" y="306" key="Github.ShareDialog/0.0.1536.816@0.0.1536.816" timestamp="1663810442196" />
-    <state width="1493" height="295" key="GridCell.Tab.0.bottom" timestamp="1666589049753">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1493" height="295" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1666589049753" />
-    <state width="1493" height="295" key="GridCell.Tab.0.center" timestamp="1666589049753">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1493" height="295" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1666589049753" />
-    <state width="1493" height="295" key="GridCell.Tab.0.left" timestamp="1666589049753">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1493" height="295" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1666589049753" />
-    <state width="1493" height="295" key="GridCell.Tab.0.right" timestamp="1666589049753">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1493" height="295" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1666589049753" />
-    <state width="1493" height="295" key="GridCell.Tab.1.bottom" timestamp="1666589049753">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1493" height="295" key="GridCell.Tab.1.bottom/0.0.1536.816@0.0.1536.816" timestamp="1666589049753" />
-    <state width="1493" height="295" key="GridCell.Tab.1.center" timestamp="1666589049753">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1493" height="295" key="GridCell.Tab.1.center/0.0.1536.816@0.0.1536.816" timestamp="1666589049753" />
-    <state width="1493" height="295" key="GridCell.Tab.1.left" timestamp="1666589049753">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1493" height="295" key="GridCell.Tab.1.left/0.0.1536.816@0.0.1536.816" timestamp="1666589049753" />
-    <state width="1493" height="295" key="GridCell.Tab.1.right" timestamp="1666589049753">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1493" height="295" key="GridCell.Tab.1.right/0.0.1536.816@0.0.1536.816" timestamp="1666589049753" />
-    <state x="408" y="112" key="NewModule_or_Project.wizard" timestamp="1663751049704">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="408" y="112" key="NewModule_or_Project.wizard/0.0.1536.816@0.0.1536.816" timestamp="1663751049704" />
-    <state x="531" y="110" key="RollbackChangesDialog" timestamp="1663922961399">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="531" y="110" key="RollbackChangesDialog/0.0.1536.816@0.0.1536.816" timestamp="1663922961399" />
-    <state x="297" y="0" key="SettingsEditor" timestamp="1665300036677">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="297" y="0" key="SettingsEditor/0.0.1536.816@0.0.1536.816" timestamp="1665300036677" />
-    <state x="599" y="277" key="VCS.EditChangelistDialog" timestamp="1663810027441">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="599" y="277" key="VCS.EditChangelistDialog/0.0.1536.816@0.0.1536.816" timestamp="1663810027441" />
-    <state x="361" y="141" key="Vcs.Push.Dialog.v2" timestamp="1664357121404">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="361" y="141" key="Vcs.Push.Dialog.v2/0.0.1536.816@0.0.1536.816" timestamp="1664357121404" />
-    <state x="807" y="142" width="600" height="556" key="find.popup" timestamp="1665309485525">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="807" y="142" width="600" height="556" key="find.popup/0.0.1536.816@0.0.1536.816" timestamp="1665309485525" />
-    <state x="278" y="59" key="new project wizard" timestamp="1664256376151">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="278" y="59" key="new project wizard/0.0.1536.816@0.0.1536.816" timestamp="1664256376151" />
-    <state x="470" y="164" key="refactoring.ChangeSignatureDialog" timestamp="1664350338010">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="470" y="164" key="refactoring.ChangeSignatureDialog/0.0.1536.816@0.0.1536.816" timestamp="1664350338010" />
-    <state x="425" y="185" key="run.anything.popup" timestamp="1664354209627">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="425" y="185" key="run.anything.popup/0.0.1536.816@0.0.1536.816" timestamp="1664354209627" />
-    <state x="431" y="137" width="672" height="678" key="search.everywhere.popup" timestamp="1665375644265">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="431" y="137" width="672" height="678" key="search.everywhere.popup/0.0.1536.816@0.0.1536.816" timestamp="1665375644265" />
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/Bomberman$test1.ic" NAME="test1 Coverage Results" MODIFIED="1666340128855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
   </component>
 </project>

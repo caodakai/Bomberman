@@ -30,7 +30,8 @@ public class Start extends JFrame {
     }
 
     public void start(String[] args) {
-        String host = "192.168.0.177";
+        System.out.println("请输入服务器IP");
+        String host = new Scanner(System.in).next();
         String clientHost; // 客户端实际IP
         int post;
         try {
